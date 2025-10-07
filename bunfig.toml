@@ -1,0 +1,8 @@
+[install]
+# Ensure bun respects package-lock semantics when contributors use npm/yarn
+saveTextLockfile = true
+
+defaultRegistry = "https://registry.npmjs.org"
+
+[test]
+root = "tests"
