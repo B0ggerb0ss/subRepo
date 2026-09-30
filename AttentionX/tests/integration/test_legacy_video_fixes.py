@@ -63,3 +63,16 @@ def test_generate_workflow_accepts_silent_video(media_dir: Path, tmp_path: Path,
     assert "silent source" in status
     streams = ffprobe_json(clip1, "stream=codec_type")["streams"]
     assert {s["codec_type"] for s in streams} == {"video"}
+
+
+def test_generate_degrades_visibly_without_asr_weights(source_video: Path, tmp_path: Path,
+                                                      monkeypatch: pytest.MonkeyPatch) -> None:
+    temp_dir, output_dir = tmp_path / "temp", tmp_path / "out"
+    temp_dir.mkdir()
+    output_dir.mkdir()
+    monkeypatch.setattr("app.make_session_dirs", lambda: (str(temp_dir), str(output_dir)))
+    monkeypatch.setenv("HF_HUB_OFFLINE", "1")
+    monkeypatch.setenv("ATTENTIONX_WHISPER_DIR", str(tmp_path / "no-whisper-weights"))
+    clip1, _, _, downloads, status = app.run_pipeline(str(source_video), None, progress=lambda *a, **k: None)
+    assert clip1 is not None and downloads == [clip1]
+    assert "ASR unavailable" in status and "without transcript" in status

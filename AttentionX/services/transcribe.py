@@ -37,7 +37,17 @@ def _get_model(model_size: str, device: str = "cpu", compute_type: str = "int8")
                 raise TranscriptionError(
                     "ASR unavailable: faster-whisper is not installed"
                 ) from e
-            model = WhisperModel(model_size, device=device, compute_type=compute_type)
+            # Never download implicitly: weights must be provisioned (a local
+            # directory via ATTENTIONX_WHISPER_DIR, or an existing local cache).
+            import os
+
+            source = os.getenv("ATTENTIONX_WHISPER_DIR") or model_size
+            try:
+                model = WhisperModel(source, device=device, compute_type=compute_type, local_files_only=True)
+            except Exception as e:
+                raise TranscriptionError(
+                    f"ASR unavailable: Whisper '{model_size}' weights are not provisioned locally"
+                ) from e
             _MODEL_CACHE[key] = model
         return model
 

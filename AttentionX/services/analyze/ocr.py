@@ -27,7 +27,7 @@ from pathlib import Path
 
 import numpy as np
 
-OCR_VERSION = "ocr/1.0"
+OCR_VERSION = "ocr/1.1"
 NORMALIZATION_VERSION = "norm/1.0"
 
 _TYPO = str.maketrans({
@@ -229,13 +229,18 @@ def build_engine(languages: tuple[str, ...], allow_tesseract: bool, expected_has
 def plan_tiles(width: int, height: int, tile: int, overlap: int) -> tuple[float, list[Tile]]:
     """Plan overlapping tiles in display space.
 
-    Scale is >= 1 for small images (tiny text gets upsampled), 1 otherwise, and
-    only drops below 1 for very wide images (> 2 tiles across), keeping the
-    per-tile canvas under RapidOCR's internal 2000 px cap.
+    Scale is 1.5-2x for small and typical screenshot widths (tiny text and word
+    spacing survive recognition), 1 for wide images, and only drops below 1 for
+    very wide images (> 2 tiles across), keeping each tile under RapidOCR's
+    internal 2000 px cap.
     """
     scale = 1.0
     if width < 640:
         scale = min(2.0, 1000.0 / width)
+    elif width <= 1400:
+        # PP-OCRv4's recognizer drops inter-word spaces on ~15 px UI text; 1.5x
+        # restores them (measured in reports/evaluation.md) at ~1.5x OCR cost.
+        scale = 1.5
     elif width > 2 * tile:
         scale = (2 * tile) / width
     sw, sh = width * scale, height * scale

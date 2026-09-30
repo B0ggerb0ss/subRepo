@@ -106,7 +106,8 @@ Agents should always:
 
 ### Out of scope (hard boundary — do not implement)
 - user accounts or authentication
-- persistent storage or databases
+- persistent storage or databases **for the video clip pipeline** (the local image
+  library below is the authorized exception — see ADR-010)
 - billing or payment integration
 - timeline or manual editing UI
 - collaborative editing
@@ -150,3 +151,26 @@ Gate pass criteria are defined per stage in `Features/` — each feature file co
 8. **Face fallback is mandatory.** Every crop path must handle zero-face detection.
 9. **CPU-aware sampling.** Use frame sampling (not every frame) for face and scene analysis.
 10. **Gate before composing.** Validate each stage output before feeding it to the next stage.
+
+---
+
+## IMAGE LIBRARY (authorized extension, 2026-09-30 — ADR-010)
+
+The earlier prototype rules above conflicted with the requested persistent local
+media library. They still govern the video clip path. For the image library:
+
+- **Allowed:** a local SQLite library (`data/library/` by default) with immutable
+  content-addressed originals, derived thumbnails/previews, stage cache, jobs,
+  annotations, collections and exports under separate managed roots.
+- **Process model:** the Gradio app plus one local analysis worker (spawned process,
+  or thread). No microservices, no vector service, no queue infrastructure.
+- **Network:** models are provisioned explicitly (`scripts/provision_models.py`,
+  pinned in `docs/model-manifest.json`). Analysis and search never download and
+  never fall back to a cloud service. `ANALYSIS_LOCAL_ONLY=1` is the default.
+- **Binding:** loopback (`127.0.0.1`) by default. A hosted profile would need
+  authentication and ownership filtering first — not implemented.
+- **Never:** delete a user's source files, auto-delete duplicates, deploy or publish
+  as part of development, or present uncalibrated scores as certainty.
+- **Honesty:** every stage reports complete/cached/partial/missing/disabled/error
+  distinctly; unavailable providers are shown, not faked. Feature status lives in
+  `docs/feature-status.md` with evidence.

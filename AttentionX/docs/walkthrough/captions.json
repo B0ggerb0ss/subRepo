@@ -1,0 +1,10 @@
+{
+ "01_imported": "Batch imported and analyzed; capability badges and job counts at the top.",
+ "02_text_search_highlight": "text:\"feature store\" finds an image named IMG_0001_q9z.png and highlights the OCR region.",
+ "03_source_and_text": "Visible-LinkedIn-UI source filter AND a literal OCR phrase, with evidence and typed decisions.",
+ "04_object_filter": "object:cat \u2014 the detector box that matched is drawn; score is a raw detector score.",
+ "05_find_similar": "Find similar from the inspected image (visual similarity, no fabricated boxes).",
+ "06_linkedin_collection": "Smart set 'LinkedIn screenshots' with membership method, affinity and its kind.",
+ "07_correction": "Rename + exclude a member; recorded as corrections, kept across re-analysis.",
+ "08_after_restart_export": "After an app restart the renamed set and the exclusion are intact; snapshot exported."
+}

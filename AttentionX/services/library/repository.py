@@ -18,7 +18,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 5
 
 _MIGRATIONS: dict[int, str] = {
     1: """
@@ -127,7 +127,8 @@ CREATE TABLE job_stages (
   stage TEXT NOT NULL,
   seq INTEGER NOT NULL,
   status TEXT NOT NULL CHECK (status IN
-    ('planned','running','cached','complete','skipped','missing','partial','error','cancelled')),
+    ('planned','running','cached','complete','skipped','disabled','missing','not_applicable',
+     'partial','error','cancelled')),
   cache_key TEXT,
   detail TEXT,
   started_at REAL,
@@ -317,6 +318,14 @@ CREATE TABLE metadata_overrides (
   PRIMARY KEY (asset_id, question_id)
 );
 """,
+    4: """
+ALTER TABLE decisions ADD COLUMN prob_kind TEXT;
+ALTER TABLE decisions ADD COLUMN calibration_version TEXT;
+""",
+    5: """
+ALTER TABLE assets ADD COLUMN phash64 TEXT;
+ALTER TABLE assets ADD COLUMN dhash64 TEXT;
+""",
 }
 
 
@@ -395,6 +404,9 @@ class Repository:
             conn.execute("BEGIN IMMEDIATE")
             try:
                 yield conn
+                # O(1) change marker for read-side caches (search results).
+                conn.execute("INSERT INTO schema_meta(key, value) VALUES ('write_seq', '1') ON CONFLICT(key)"
+                             " DO UPDATE SET value = CAST(value AS INTEGER) + 1")
             except BaseException:
                 conn.execute("ROLLBACK")
                 raise
@@ -409,6 +421,10 @@ class Repository:
             conn.execute("PRAGMA query_only = ON")
             self._local.reader = conn
         return conn
+
+    def write_seq(self) -> int:
+        r = self.read().execute("SELECT value FROM schema_meta WHERE key='write_seq'").fetchone()
+        return int(r[0]) if r else 0
 
     def query(self, sql: str, params: tuple | dict = ()) -> list[sqlite3.Row]:
         return self.read().execute(sql, params).fetchall()

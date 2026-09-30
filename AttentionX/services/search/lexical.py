@@ -82,16 +82,68 @@ def phrase_search(repo: Repository, phrase: str, eligible: set[str] | None = Non
         flat = r["norm_text"].replace("\n", " ")
         spans = find_occurrences(flat, norm)
         if spans:
-            out[r["asset_id"]] = _regions_for_spans(repo, r["asset_id"], spans)
+            out[r["asset_id"]] = [{"span": sp, "spaceless": False} for sp in spans]
+    if " " in norm:
+        for aid, matches in _spaceless_phrase(repo, norm, eligible, set(out), limit_candidates).items():
+            out[aid] = matches
     return out
 
 
+def _spaceless_phrase(repo: Repository, norm: str, eligible: set[str] | None, skip: set[str],
+                      limit: int) -> dict[str, list[dict]]:
+    """Fallback for multi-word phrases when OCR merged words ("lessonlearned").
+
+    Compares whitespace-free views only; raw OCR text is untouched and the
+    evidence says the match ignored word spacing. Word boundaries cannot be
+    checked inside merged words, so single-word phrases never use this path.
+    """
+    words = [w for w in norm.split(" ") if w]
+    if not words or any(len(w) < 3 for w in words):
+        candidates_sql = "SELECT asset_id, norm_text FROM ocr_docs WHERE instr(replace(replace(norm_text, char(10), ''), ' ', ''), ?) > 0 LIMIT ?"
+        rows = repo.query(candidates_sql, ("".join(words), limit))
+    else:
+        q = " AND ".join(fts_phrase(w) for w in words)
+        rows = repo.query("SELECT d.asset_id, d.norm_text FROM ocr_doc_tri t JOIN ocr_docs d ON d.asset_id = t.asset_id"
+                          " WHERE ocr_doc_tri MATCH ? LIMIT ?", (q, limit))
+    target = "".join(words)
+    out: dict[str, list[dict]] = {}
+    for r in rows:
+        aid = r["asset_id"]
+        if aid in skip or (eligible is not None and aid not in eligible):
+            continue
+        flat = r["norm_text"].replace("\n", " ")
+        # Map spaceless offsets back to flat-text offsets.
+        idx = [i for i, ch in enumerate(flat) if ch != " "]
+        compact = "".join(flat[i] for i in idx)
+        spans = []
+        k = compact.find(target)
+        while k >= 0:
+            spans.append((idx[k], idx[k + len(target) - 1] + 1))
+            k = compact.find(target, k + 1)
+        if spans:
+            out[aid] = [{"span": sp, "spaceless": True} for sp in spans]
+    return out
+
+
+def phrase_evidence(repo: Repository, asset_id: str, matches: list[dict]) -> list[dict]:
+    """Map phrase match spans to OCR regions (only for results actually shown)."""
+    regions = _regions_for_spans(repo, asset_id, [m["span"] for m in matches])
+    for reg, m in zip(regions, matches):
+        reg["spaceless"] = m["spaceless"]
+    return regions
+
+
 _WORD = re.compile(r"[\w+#][\w+#.\-/$%]*", re.UNICODE)
+# Free-text intent only; literal text:"..." phrases keep every word.
+STOPWORDS = frozenset("""a an and are as at be but by for from has have i in into is it its of on or our
+that the their them they this to was we were what when where which who why will with you your about
+after all also any can do does how if just more most not no so some than then there these those up""".split())
 
 
-def tokens(text: str) -> list[str]:
+def tokens(text: str, drop_stopwords: bool = True) -> list[str]:
     norm = normalize_for_search(text)
-    return [t.strip(".-/") for t in _WORD.findall(norm) if t.strip(".-/")]
+    toks = [t.strip(".-/") for t in _WORD.findall(norm) if t.strip(".-/")]
+    return [t for t in toks if not (drop_stopwords and t in STOPWORDS)]
 
 
 def word_search(repo: Repository, free_text: str, eligible: set[str] | None = None,
@@ -108,17 +160,43 @@ def word_search(repo: Repository, free_text: str, eligible: set[str] | None = No
     for r in rows:
         if eligible is not None and r["asset_id"] not in eligible:
             continue
-        regs = repo.query("SELECT region_id, raw_text, norm_text, polygon FROM ocr_regions WHERE asset_id=?"
-                          " ORDER BY order_idx", (r["asset_id"],))
-        ev = []
-        for reg in regs:
-            hit = [t for t in toks if find_occurrences(reg["norm_text"], t)]
-            if hit:
-                ev.append({"region_id": reg["region_id"], "polygon": json.loads(reg["polygon"]),
-                           "excerpt": reg["raw_text"], "terms": hit})
         # bm25() is "lower is better"; expose the positive magnitude.
-        out.append((r["asset_id"], -float(r["s"]), ev[:5]))
+        out.append((r["asset_id"], -float(r["s"]), False))
+    found = {a for a, _, _ in out}
+    # Fallback: OCR sometimes merges words ("lessonlearned"); find query words of
+    # >= 4 chars inside merged tokens via the trigram index. Ranked after bm25
+    # hits and labelled as such in the evidence.
+    long_toks = [t for t in toks if len(t) >= 4]
+    if long_toks:
+        q = " OR ".join(fts_phrase(t) for t in long_toks)
+        rows = repo.query("SELECT d.asset_id, d.norm_text FROM ocr_doc_tri t JOIN ocr_docs d ON d.asset_id=t.asset_id"
+                          " WHERE ocr_doc_tri MATCH ? LIMIT ?", (q, limit))
+        extra = []
+        for r in rows:
+            aid = r["asset_id"]
+            if aid in found or (eligible is not None and aid not in eligible):
+                continue
+            hits = [t for t in long_toks if t in r["norm_text"]]
+            extra.append((aid, float(len(hits)), True))
+        extra.sort(key=lambda x: (-x[1], x[0]))
+        out.extend(extra)
     return out
+
+
+def word_evidence(repo: Repository, asset_id: str, free_text: str, merged: bool) -> list[dict]:
+    """Regions containing the query words (only for results actually shown)."""
+    toks = tokens(free_text)
+    if merged:
+        toks = [t for t in toks if len(t) >= 4]
+    regs = repo.query("SELECT region_id, raw_text, norm_text, polygon FROM ocr_regions WHERE asset_id=?"
+                      " ORDER BY order_idx", (asset_id,))
+    ev = []
+    for g in regs:
+        hit = [t for t in toks if (t in g["norm_text"] if merged else find_occurrences(g["norm_text"], t))]
+        if hit:
+            ev.append({"region_id": g["region_id"], "polygon": json.loads(g["polygon"]), "excerpt": g["raw_text"],
+                       "terms": hit, "merged": merged})
+    return ev[:5]
 
 
 def annotation_search(repo: Repository, free_text: str, eligible: set[str] | None = None,

@@ -1,12 +1,26 @@
+# Runtime (Python 3.11/3.12). Exact resolved versions: requirements.lock
+# System packages: packages.txt (ffmpeg, tesseract-ocr(-eng), libegl1, libgles2, fonts)
 gradio>=5.0,<6.0
-faster-whisper>=1.0.3
-librosa>=0.10.2
-mediapipe>=0.10.14
-scenedetect[opencv]>=0.6.4
-opencv-python-headless>=4.9.0.80
 numpy>=1.24.0,<2.0
+pillow>=10.0
+pydantic>=2,<3
+# One OpenCV family version for every wheel that ships cv2 (they share files).
+opencv-python==4.11.0.86
+opencv-contrib-python==4.11.0.86
+onnxruntime>=1.18
+rapidocr_onnxruntime==1.4.4        # OCR weights ship in this wheel (hashes in docs/model-manifest.json)
+tokenizers>=0.15
+regex>=2023.0
+ftfy>=6.1
+rapidfuzz>=3.0
+mediapipe>=0.10.14                  # object detector + face detector (Tasks API)
+# Legacy video pipeline
+librosa>=0.10.2
+scenedetect>=0.6.4
 scipy>=1.11.0
+# Optional ASR (weights must be provisioned separately; see docs/runbook.md)
+faster-whisper>=1.0.3
+# Legacy optional/unused-by-default integrations kept from the original project
 google-generativeai>=0.8.0
 datasets>=2.18.0
 yt-dlp>=2024.1.0
-pytest>=8.0.0

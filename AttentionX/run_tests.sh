@@ -16,11 +16,17 @@ case "$MODE" in
   integration)
     pytest tests/integration -q
     ;;
+  e2e)
+    pytest tests/e2e -q
+    ;;
   all)
     pytest tests/unit tests/integration -q
     ;;
+  full)
+    pytest tests/unit tests/integration tests/e2e -q
+    ;;
   *)
-    echo "Usage: bash run_tests.sh [unit|integration|all]" >&2
+    echo "Usage: bash run_tests.sh [unit|integration|e2e|all|full]" >&2
     exit 1
     ;;
 esac

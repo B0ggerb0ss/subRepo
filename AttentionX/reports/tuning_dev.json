@@ -1,0 +1,374 @@
+{
+  "visual_min_cos": {
+    "0.18": {
+      "ndcg": 0.8624,
+      "no_relevant_hits": 2
+    },
+    "0.2": {
+      "ndcg": 0.8624,
+      "no_relevant_hits": 0
+    },
+    "0.22": {
+      "ndcg": 0.8624,
+      "no_relevant_hits": 0
+    },
+    "0.24": {
+      "ndcg": 0.8422,
+      "no_relevant_hits": 0
+    },
+    "0.26": {
+      "ndcg": 0.7616,
+      "no_relevant_hits": 0
+    }
+  },
+  "ocr_min_cos": {
+    "0.3": {
+      "ndcg": 0.5868,
+      "recall": 0.5227,
+      "false_positive_hits": 26
+    },
+    "0.34": {
+      "ndcg": 0.5868,
+      "recall": 0.5227,
+      "false_positive_hits": 12
+    },
+    "0.38": {
+      "ndcg": 0.5548,
+      "recall": 0.4773,
+      "false_positive_hits": 2
+    },
+    "0.42": {
+      "ndcg": 0.5471,
+      "recall": 0.4672,
+      "false_positive_hits": 1
+    },
+    "0.46": {
+      "ndcg": 0.4938,
+      "recall": 0.4129,
+      "false_positive_hits": 0
+    }
+  },
+  "clustering": {
+    "photos": [
+      [
+        0.6128,
+        0.75,
+        0.65,
+        0.7774,
+        0.5057,
+        0.8205
+      ],
+      [
+        0.6067,
+        0.7,
+        0.65,
+        0.7582,
+        0.5057,
+        0.8333
+      ],
+      [
+        0.6067,
+        0.7,
+        0.6,
+        0.7582,
+        0.5057,
+        0.8333
+      ],
+      [
+        0.6033,
+        0.8,
+        0.6,
+        0.7774,
+        0.4929,
+        0.8077
+      ],
+      [
+        0.5921,
+        0.75,
+        0.55,
+        0.7142,
+        0.5057,
+        0.8205
+      ]
+    ],
+    "movie_tv_frames": [
+      [
+        1.0,
+        0.9,
+        0.85,
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        0.9,
+        0.8,
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        0.9,
+        0.7,
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        0.85,
+        0.8,
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        0.85,
+        0.75,
+        1.0,
+        1.0,
+        1.0
+      ]
+    ],
+    "linkedin_screenshots": [
+      [
+        0.4887,
+        0.8,
+        0.75,
+        0.9286,
+        0.3316,
+        0.2143
+      ],
+      [
+        0.4887,
+        0.8,
+        0.7,
+        0.9286,
+        0.3316,
+        0.2143
+      ],
+      [
+        0.4887,
+        0.8,
+        0.6,
+        0.9286,
+        0.3316,
+        0.2143
+      ],
+      [
+        0.4664,
+        0.7,
+        0.65,
+        0.7857,
+        0.3316,
+        0.4286
+      ],
+      [
+        0.4664,
+        0.7,
+        0.6,
+        0.7857,
+        0.3316,
+        0.4286
+      ]
+    ]
+  },
+  "duplicates": {
+    "ssim0.6_text0.75": {
+      "precision": 0.7381,
+      "recall": 0.9688
+    },
+    "ssim0.6_text0.85": {
+      "precision": 0.8,
+      "recall": 1.0
+    },
+    "ssim0.6_text0.9": {
+      "precision": 0.8,
+      "recall": 1.0
+    },
+    "ssim0.7_text0.75": {
+      "precision": 0.7561,
+      "recall": 0.9688
+    },
+    "ssim0.7_text0.85": {
+      "precision": 0.8205,
+      "recall": 1.0
+    },
+    "ssim0.7_text0.9": {
+      "precision": 0.8205,
+      "recall": 1.0
+    },
+    "ssim0.8_text0.75": {
+      "precision": 0.775,
+      "recall": 0.9688
+    },
+    "ssim0.8_text0.85": {
+      "precision": 0.8421,
+      "recall": 1.0
+    },
+    "ssim0.8_text0.9": {
+      "precision": 0.8421,
+      "recall": 1.0
+    },
+    "ssim0.9_text0.75": {
+      "precision": 0.8611,
+      "recall": 0.9688
+    },
+    "ssim0.9_text0.85": {
+      "precision": 0.9412,
+      "recall": 1.0
+    },
+    "ssim0.9_text0.9": {
+      "precision": 0.9412,
+      "recall": 1.0
+    }
+  },
+  "decision_thresholds": {
+    "source_app": {
+      "collection": {
+        "t": 0.35,
+        "precision": 1.0,
+        "recall": 1.0,
+        "floor": 0.95
+      },
+      "filter": {
+        "t": 0.35,
+        "precision": 1.0,
+        "recall": 1.0
+      }
+    },
+    "context.film_tv_frame": {
+      "collection": {
+        "t": 0.7,
+        "precision": 1.0,
+        "recall": 1.0,
+        "floor": 0.9
+      },
+      "filter": {
+        "t": 0.7,
+        "precision": 1.0,
+        "recall": 1.0
+      }
+    },
+    "context.presentation_slide": {
+      "collection": {
+        "t": 0.55,
+        "precision": 1.0,
+        "recall": 1.0,
+        "floor": null
+      },
+      "filter": {
+        "t": 0.55,
+        "precision": 1.0,
+        "recall": 1.0
+      }
+    },
+    "context.source_code": {
+      "collection": {
+        "t": 0.95,
+        "precision": 1.0,
+        "recall": 1.0,
+        "floor": null
+      },
+      "filter": {
+        "t": 0.95,
+        "precision": 1.0,
+        "recall": 1.0
+      }
+    },
+    "context.job_posting": {
+      "collection": {
+        "t": 0.45,
+        "precision": 1.0,
+        "recall": 1.0,
+        "floor": null
+      },
+      "filter": {
+        "t": 0.45,
+        "precision": 1.0,
+        "recall": 1.0
+      }
+    },
+    "context.article": {
+      "collection": {
+        "t": 0.4,
+        "precision": 1.0,
+        "recall": 0.308,
+        "floor": null
+      },
+      "filter": {
+        "t": 0.4,
+        "precision": 1.0,
+        "recall": 0.308
+      }
+    },
+    "topic.hiring": {
+      "collection": {
+        "t": 0.25,
+        "precision": 0.737,
+        "recall": 1.0,
+        "floor": null
+      },
+      "filter": {
+        "t": 0.25,
+        "precision": 0.737,
+        "recall": 1.0
+      }
+    },
+    "topic.ai_ml": {
+      "collection": {
+        "t": 0.5,
+        "precision": 1.0,
+        "recall": 0.65,
+        "floor": null
+      },
+      "filter": {
+        "t": 0.5,
+        "precision": 1.0,
+        "recall": 0.65
+      }
+    },
+    "topic.software_development": {
+      "collection": {
+        "t": 0.35,
+        "precision": 0.688,
+        "recall": 0.786,
+        "floor": null
+      },
+      "filter": {
+        "t": 0.35,
+        "precision": 0.688,
+        "recall": 0.786
+      }
+    },
+    "topic.education": {
+      "collection": {
+        "t": 0.25,
+        "precision": 0.556,
+        "recall": 0.833,
+        "floor": null
+      },
+      "filter": {
+        "t": 0.25,
+        "precision": 0.556,
+        "recall": 0.833
+      }
+    },
+    "topic.entertainment": {
+      "collection": {
+        "t": 0.15,
+        "precision": 0.323,
+        "recall": 0.667,
+        "floor": null
+      },
+      "filter": {
+        "t": 0.15,
+        "precision": 0.323,
+        "recall": 0.667
+      }
+    }
+  }
+}

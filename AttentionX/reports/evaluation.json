@@ -1,0 +1,2258 @@
+{
+  "generated": "2026-09-30T19:27:54Z",
+  "split": "test",
+  "dataset": {
+    "labels": 428,
+    "assets": 378,
+    "split_conflicts_identical_bytes": 26,
+    "by_split": {
+      "test": 214,
+      "dev": 164
+    },
+    "note": "synthetic-rendered screenshots + real CC-BY photos; NOT the consented pilot"
+  },
+  "hardware": {
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "logical_cpus": 4,
+    "mem_total": "16480972 kB",
+    "python": "3.11.15",
+    "sqlite": "3.45.1",
+    "onnxruntime": "1.30.0",
+    "gpu": "none"
+  },
+  "ocr": {
+    "n": 110,
+    "clean": {
+      "n": 47,
+      "cer_mean": 0.0739,
+      "cer_median": 0.0653,
+      "cer_nospace_mean": 0.054,
+      "word_recall_mean": 0.8615
+    },
+    "by_group": {
+      "app_settings": {
+        "n": 1,
+        "cer_mean": 0.0,
+        "cer_nospace_mean": 0.0,
+        "word_recall_mean": 1.0,
+        "tiles_max": 3
+      },
+      "article": {
+        "n": 4,
+        "cer_mean": 0.0901,
+        "cer_nospace_mean": 0.0877,
+        "word_recall_mean": 0.9379,
+        "tiles_max": 2
+      },
+      "chat": {
+        "n": 6,
+        "cer_mean": 0.0347,
+        "cer_nospace_mean": 0.004,
+        "word_recall_mean": 0.9033,
+        "tiles_max": 3
+      },
+      "code": {
+        "n": 8,
+        "cer_mean": 0.0343,
+        "cer_nospace_mean": 0.0148,
+        "word_recall_mean": 0.8543,
+        "tiles_max": 2
+      },
+      "film_frame_synthetic": {
+        "n": 15,
+        "cer_mean": 0.1675,
+        "cer_nospace_mean": 0.1466,
+        "word_recall_mean": 1.0,
+        "tiles_max": 2
+      },
+      "linkedin_post": {
+        "n": 50,
+        "cer_mean": 0.0945,
+        "cer_nospace_mean": 0.0747,
+        "word_recall_mean": 0.8479,
+        "tiles_max": 3
+      },
+      "linkedin_post_variant": {
+        "n": 4,
+        "cer_mean": 0.1581,
+        "cer_nospace_mean": 0.0668,
+        "word_recall_mean": 0.2984,
+        "tiles_max": 1
+      },
+      "linkedin_tall_feed": {
+        "n": 5,
+        "cer_mean": 0.1995,
+        "cer_nospace_mean": 0.2012,
+        "word_recall_mean": 0.8619,
+        "tiles_max": 3
+      },
+      "scanned_document": {
+        "n": 11,
+        "cer_mean": 0.0937,
+        "cer_nospace_mean": 0.0005,
+        "word_recall_mean": 0.2031,
+        "tiles_max": 2
+      },
+      "slide": {
+        "n": 6,
+        "cer_mean": 0.0068,
+        "cer_nospace_mean": 0.0057,
+        "word_recall_mean": 1.0,
+        "tiles_max": 2
+      },
+      "tag:dark": {
+        "n": 20,
+        "cer_mean": 0.0788,
+        "cer_nospace_mean": 0.062,
+        "word_recall_mean": 0.8692,
+        "tiles_max": 3
+      },
+      "tag:mobile": {
+        "n": 18,
+        "cer_mean": 0.0662,
+        "cer_nospace_mean": 0.0594,
+        "word_recall_mean": 0.9518,
+        "tiles_max": 3
+      },
+      "tag:reencoded_variant": {
+        "n": 4,
+        "cer_mean": 0.1581,
+        "cer_nospace_mean": 0.0668,
+        "word_recall_mean": 0.2984,
+        "tiles_max": 1
+      },
+      "tag:scanned": {
+        "n": 11,
+        "cer_mean": 0.0937,
+        "cer_nospace_mean": 0.0005,
+        "word_recall_mean": 0.2031,
+        "tiles_max": 2
+      },
+      "tag:tall": {
+        "n": 5,
+        "cer_mean": 0.1995,
+        "cer_nospace_mean": 0.2012,
+        "word_recall_mean": 0.8619,
+        "tiles_max": 3
+      }
+    }
+  },
+  "literal_search": {
+    "queries": 60,
+    "recall_at_10": 0.9057,
+    "missed_relevant_ocr_miss": 6,
+    "missed_relevant_ocr_word_merge": 48,
+    "missed_relevant_index_miss": 0,
+    "results_via_spaceless_fallback": 29,
+    "examples": [
+      "notifications marco",
+      "verification",
+      "researcher",
+      "human",
+      "accessibility about",
+      "data",
+      "fold four",
+      "confirms",
+      "review",
+      "actually helps",
+      "contact human",
+      "never have"
+    ]
+  },
+  "retrieval": {
+    "hybrid": {
+      "combined": {
+        "queries": 9,
+        "ndcg_at_10": 0.8356,
+        "recall_at_10": 0.7889,
+        "p_at_10": 0.4778
+      },
+      "crop": {
+        "queries": 5,
+        "ndcg_at_10": 0.622,
+        "recall_at_10": 0.52,
+        "p_at_10": 0.52
+      },
+      "ocr_meaning": {
+        "queries": 11,
+        "ndcg_at_10": 0.7543,
+        "recall_at_10": 0.7394,
+        "p_at_10": 0.6182
+      },
+      "reference": {
+        "queries": 12,
+        "ndcg_at_10": 0.7953,
+        "recall_at_10": 0.7917,
+        "p_at_10": 0.6583
+      },
+      "source_context": {
+        "queries": 10,
+        "ndcg_at_10": 0.8904,
+        "recall_at_10": 0.87,
+        "p_at_10": 0.84
+      },
+      "visual": {
+        "queries": 15,
+        "ndcg_at_10": 0.8597,
+        "recall_at_10": 0.9067,
+        "p_at_10": 0.6667
+      }
+    },
+    "image_only": {
+      "combined": {
+        "queries": 9,
+        "ndcg_at_10": 0.6936,
+        "recall_at_10": 0.663,
+        "p_at_10": 0.3778
+      },
+      "crop": {
+        "queries": 5,
+        "ndcg_at_10": 0.622,
+        "recall_at_10": 0.52,
+        "p_at_10": 0.52
+      },
+      "ocr_meaning": {
+        "queries": 11,
+        "ndcg_at_10": 0.6195,
+        "recall_at_10": 0.5182,
+        "p_at_10": 0.4455
+      },
+      "reference": {
+        "queries": 12,
+        "ndcg_at_10": 0.7953,
+        "recall_at_10": 0.7917,
+        "p_at_10": 0.6583
+      },
+      "source_context": {
+        "queries": 10,
+        "ndcg_at_10": 0.8904,
+        "recall_at_10": 0.87,
+        "p_at_10": 0.84
+      },
+      "visual": {
+        "queries": 15,
+        "ndcg_at_10": 0.9209,
+        "recall_at_10": 0.94,
+        "p_at_10": 0.7
+      }
+    },
+    "ocr_only": {
+      "combined": {
+        "queries": 9,
+        "ndcg_at_10": 0.7838,
+        "recall_at_10": 0.7667,
+        "p_at_10": 0.4556
+      },
+      "ocr_meaning": {
+        "queries": 11,
+        "ndcg_at_10": 0.7313,
+        "recall_at_10": 0.6909,
+        "p_at_10": 0.5636
+      },
+      "source_context": {
+        "queries": 10,
+        "ndcg_at_10": 0.8904,
+        "recall_at_10": 0.87,
+        "p_at_10": 0.84
+      },
+      "visual": {
+        "queries": 15,
+        "ndcg_at_10": 0.0,
+        "recall_at_10": 0.0,
+        "p_at_10": 0.0
+      }
+    }
+  },
+  "retrieval_per_query": {
+    "hybrid": [
+      {
+        "family": "visual",
+        "query": "daisy flowers",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.9052,
+        "recall10": 0.9
+      },
+      {
+        "family": "visual",
+        "query": "a white daisy with a yellow center",
+        "relevant": 36,
+        "returned": 47,
+        "ndcg10": 0.9052,
+        "recall10": 0.9
+      },
+      {
+        "family": "visual",
+        "query": "dandelions",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a dandelion seed head",
+        "relevant": 36,
+        "returned": 48,
+        "ndcg10": 0.4517,
+        "recall10": 0.5
+      },
+      {
+        "family": "visual",
+        "query": "red roses",
+        "relevant": 36,
+        "returned": 36,
+        "ndcg10": 0.9337,
+        "recall10": 0.9
+      },
+      {
+        "family": "visual",
+        "query": "a bouquet of roses",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.7949,
+        "recall10": 0.8
+      },
+      {
+        "family": "visual",
+        "query": "sunflowers",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a field of sunflowers",
+        "relevant": 36,
+        "returned": 35,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "tulips",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "colorful tulips in a garden",
+        "relevant": 36,
+        "returned": 31,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a cat",
+        "relevant": 1,
+        "returned": 6,
+        "ndcg10": 0.6309,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a cup of coffee",
+        "relevant": 1,
+        "returned": 6,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "an astronaut",
+        "relevant": 1,
+        "returned": 6,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a rocket launch",
+        "relevant": 1,
+        "returned": 18,
+        "ndcg10": 0.6309,
+        "recall10": 1.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "posts discussing train-serving skew",
+        "relevant": 23,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "features differ between training and production",
+        "relevant": 23,
+        "returned": 27,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "how to evaluate large language models",
+        "relevant": 6,
+        "returned": 24,
+        "ndcg10": 0.3396,
+        "recall10": 0.5
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "catching hallucinations before a release",
+        "relevant": 6,
+        "returned": 32,
+        "ndcg10": 0.876,
+        "recall10": 0.8333
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "kubernetes deployment problems",
+        "relevant": 17,
+        "returned": 25,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "health checks restarting containers",
+        "relevant": 17,
+        "returned": 16,
+        "ndcg10": 0.5541,
+        "recall10": 0.4
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "dealing with flaky tests in continuous integration",
+        "relevant": 6,
+        "returned": 50,
+        "ndcg10": 0.8716,
+        "recall10": 1.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "online courses and studying",
+        "relevant": 14,
+        "returned": 19,
+        "ndcg10": 0.9364,
+        "recall10": 0.9
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "celebrating a promotion or a new job",
+        "relevant": 12,
+        "returned": 50,
+        "ndcg10": 0.568,
+        "recall10": 0.5
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "frontend developer job openings",
+        "relevant": 6,
+        "returned": 50,
+        "ndcg10": 0.7323,
+        "recall10": 0.6667
+      },
+      {
+        "family": "source_context",
+        "query": "source:linkedin",
+        "relevant": 90,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "capture:screenshot",
+        "relevant": 122,
+        "returned": 50,
+        "ndcg10": 0.7273,
+        "recall10": 0.6
+      },
+      {
+        "family": "source_context",
+        "query": "capture:photo",
+        "relevant": 190,
+        "returned": 50,
+        "ndcg10": 0.5638,
+        "recall10": 0.4
+      },
+      {
+        "family": "source_context",
+        "query": "context:source_code",
+        "relevant": 15,
+        "returned": 13,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:conversation",
+        "relevant": 7,
+        "returned": 8,
+        "ndcg10": 0.8118,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:presentation_slide",
+        "relevant": 15,
+        "returned": 17,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:film_tv_frame",
+        "relevant": 30,
+        "returned": 26,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:article",
+        "relevant": 28,
+        "returned": 7,
+        "ndcg10": 0.8007,
+        "recall10": 0.7
+      },
+      {
+        "family": "source_context",
+        "query": "collection:linkedin_screenshots",
+        "relevant": 90,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "collection:movie_tv_frames",
+        "relevant": 30,
+        "returned": 26,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "combined",
+        "query": "source:linkedin text:\"hiring\"",
+        "relevant": 24,
+        "returned": 23,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "combined",
+        "query": "LinkedIn ML jobs mentioning Python",
+        "relevant": 10,
+        "returned": 50,
+        "ndcg10": 0.8643,
+        "recall10": 0.8
+      },
+      {
+        "family": "combined",
+        "query": "LinkedIn posts about machine learning jobs",
+        "relevant": 17,
+        "returned": 50,
+        "ndcg10": 0.8007,
+        "recall10": 0.7
+      },
+      {
+        "family": "combined",
+        "query": "source:linkedin kubernetes",
+        "relevant": 12,
+        "returned": 15,
+        "ndcg10": 0.6906,
+        "recall10": 0.6
+      },
+      {
+        "family": "combined",
+        "query": "python training loop code",
+        "relevant": 3,
+        "returned": 50,
+        "ndcg10": 0.906,
+        "recall10": 1.0
+      },
+      {
+        "family": "combined",
+        "query": "chat about a failed deploy",
+        "relevant": 2,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "combined",
+        "query": "context:source_code text:\"select\"",
+        "relevant": 3,
+        "returned": 2,
+        "ndcg10": 0.7654,
+        "recall10": 0.6667
+      },
+      {
+        "family": "combined",
+        "query": "job posts for frontend engineers",
+        "relevant": 6,
+        "returned": 50,
+        "ndcg10": 0.4935,
+        "recall10": 0.3333
+      },
+      {
+        "family": "combined",
+        "query": "slides about kubernetes",
+        "relevant": 3,
+        "returned": 24,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a field of yellow flowers",
+        "relevant": 72,
+        "returned": 50,
+        "ndcg10": 0.6429,
+        "recall10": 0.6
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "benchmarks and golden sets for model quality",
+        "relevant": 6,
+        "returned": 39,
+        "ndcg10": 0.4197,
+        "recall10": 0.3333
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_b5873364320e825a6996",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 0.4923,
+        "recall10": 0.6
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_bb69f929649346f4e266",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 0.312,
+        "recall10": 0.3
+      },
+      {
+        "family": "crop",
+        "query": "similar:ast_e3e410c629a31b84fd76 crop=(0.2, 0.2, 0.8, 0.8)",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.6332,
+        "recall10": 0.5
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_d1dea4b0ac48a2be3cdb",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 0.2247,
+        "recall10": 0.3
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_5439c0a0f26f90a73cdf",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "crop",
+        "query": "similar:ast_f49afc2143e2fbec76b2 crop=(0.2, 0.2, 0.8, 0.8)",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.8643,
+        "recall10": 0.8
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_eb9ea9080a3340e326a3",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 0.8669,
+        "recall10": 0.8
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_4bba464a724292f989f0",
+        "relevant": 35,
+        "returned": 47,
+        "ndcg10": 0.8701,
+        "recall10": 0.8
+      },
+      {
+        "family": "crop",
+        "query": "similar:ast_f936f18399b73aefe544 crop=(0.2, 0.2, 0.8, 0.8)",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.3836,
+        "recall10": 0.3
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_43f03f40a0a9debbe97e",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_c43767b1f36486689562",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "crop",
+        "query": "similar:ast_f8893bd2b9505f3e887a crop=(0.2, 0.2, 0.8, 0.8)",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.359,
+        "recall10": 0.2
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_c631aa18419a96a4988b",
+        "relevant": 35,
+        "returned": 15,
+        "ndcg10": 0.7779,
+        "recall10": 0.7
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_ab371d44724e1525ea31",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "crop",
+        "query": "similar:ast_e2518fe2944cb81232bb crop=(0.2, 0.2, 0.8, 0.8)",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.8701,
+        "recall10": 0.8
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_11d5c4e17a6780e9dc6e",
+        "relevant": 2,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_3b83f8e2eec99429f54d",
+        "relevant": 2,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      }
+    ],
+    "image_only": [
+      {
+        "family": "visual",
+        "query": "daisy flowers",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.9052,
+        "recall10": 0.9
+      },
+      {
+        "family": "visual",
+        "query": "a white daisy with a yellow center",
+        "relevant": 36,
+        "returned": 47,
+        "ndcg10": 0.9052,
+        "recall10": 0.9
+      },
+      {
+        "family": "visual",
+        "query": "dandelions",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a dandelion seed head",
+        "relevant": 36,
+        "returned": 43,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "red roses",
+        "relevant": 36,
+        "returned": 36,
+        "ndcg10": 0.9337,
+        "recall10": 0.9
+      },
+      {
+        "family": "visual",
+        "query": "a bouquet of roses",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.7949,
+        "recall10": 0.8
+      },
+      {
+        "family": "visual",
+        "query": "sunflowers",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a field of sunflowers",
+        "relevant": 36,
+        "returned": 35,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "tulips",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "colorful tulips in a garden",
+        "relevant": 36,
+        "returned": 31,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a cat",
+        "relevant": 1,
+        "returned": 6,
+        "ndcg10": 0.6309,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a cup of coffee",
+        "relevant": 1,
+        "returned": 6,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "an astronaut",
+        "relevant": 1,
+        "returned": 2,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a rocket launch",
+        "relevant": 1,
+        "returned": 17,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "posts discussing train-serving skew",
+        "relevant": 23,
+        "returned": 3,
+        "ndcg10": 0.469,
+        "recall10": 0.3
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "features differ between training and production",
+        "relevant": 23,
+        "returned": 14,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "how to evaluate large language models",
+        "relevant": 6,
+        "returned": 10,
+        "ndcg10": 0.45,
+        "recall10": 0.5
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "catching hallucinations before a release",
+        "relevant": 6,
+        "returned": 5,
+        "ndcg10": 0.6448,
+        "recall10": 0.5
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "kubernetes deployment problems",
+        "relevant": 17,
+        "returned": 10,
+        "ndcg10": 0.8643,
+        "recall10": 0.8
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "health checks restarting containers",
+        "relevant": 17,
+        "returned": 4,
+        "ndcg10": 0.469,
+        "recall10": 0.3
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "dealing with flaky tests in continuous integration",
+        "relevant": 6,
+        "returned": 50,
+        "ndcg10": 0.4935,
+        "recall10": 0.3333
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "online courses and studying",
+        "relevant": 14,
+        "returned": 10,
+        "ndcg10": 0.9337,
+        "recall10": 0.9
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "celebrating a promotion or a new job",
+        "relevant": 12,
+        "returned": 15,
+        "ndcg10": 0.5424,
+        "recall10": 0.4
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "frontend developer job openings",
+        "relevant": 6,
+        "returned": 13,
+        "ndcg10": 0.6448,
+        "recall10": 0.5
+      },
+      {
+        "family": "source_context",
+        "query": "source:linkedin",
+        "relevant": 90,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "capture:screenshot",
+        "relevant": 122,
+        "returned": 50,
+        "ndcg10": 0.7273,
+        "recall10": 0.6
+      },
+      {
+        "family": "source_context",
+        "query": "capture:photo",
+        "relevant": 190,
+        "returned": 50,
+        "ndcg10": 0.5638,
+        "recall10": 0.4
+      },
+      {
+        "family": "source_context",
+        "query": "context:source_code",
+        "relevant": 15,
+        "returned": 13,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:conversation",
+        "relevant": 7,
+        "returned": 8,
+        "ndcg10": 0.8118,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:presentation_slide",
+        "relevant": 15,
+        "returned": 17,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:film_tv_frame",
+        "relevant": 30,
+        "returned": 26,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:article",
+        "relevant": 28,
+        "returned": 7,
+        "ndcg10": 0.8007,
+        "recall10": 0.7
+      },
+      {
+        "family": "source_context",
+        "query": "collection:linkedin_screenshots",
+        "relevant": 90,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "collection:movie_tv_frames",
+        "relevant": 30,
+        "returned": 26,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "combined",
+        "query": "source:linkedin text:\"hiring\"",
+        "relevant": 24,
+        "returned": 23,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "combined",
+        "query": "LinkedIn ML jobs mentioning Python",
+        "relevant": 10,
+        "returned": 19,
+        "ndcg10": 0.5077,
+        "recall10": 0.4
+      },
+      {
+        "family": "combined",
+        "query": "LinkedIn posts about machine learning jobs",
+        "relevant": 17,
+        "returned": 23,
+        "ndcg10": 0.7008,
+        "recall10": 0.6
+      },
+      {
+        "family": "combined",
+        "query": "source:linkedin kubernetes",
+        "relevant": 12,
+        "returned": 6,
+        "ndcg10": 0.4374,
+        "recall10": 0.3
+      },
+      {
+        "family": "combined",
+        "query": "python training loop code",
+        "relevant": 3,
+        "returned": 46,
+        "ndcg10": 0.338,
+        "recall10": 0.6667
+      },
+      {
+        "family": "combined",
+        "query": "chat about a failed deploy",
+        "relevant": 2,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "combined",
+        "query": "context:source_code text:\"select\"",
+        "relevant": 3,
+        "returned": 2,
+        "ndcg10": 0.7654,
+        "recall10": 0.6667
+      },
+      {
+        "family": "combined",
+        "query": "job posts for frontend engineers",
+        "relevant": 6,
+        "returned": 18,
+        "ndcg10": 0.4935,
+        "recall10": 0.3333
+      },
+      {
+        "family": "combined",
+        "query": "slides about kubernetes",
+        "relevant": 3,
+        "returned": 4,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a field of yellow flowers",
+        "relevant": 72,
+        "returned": 50,
+        "ndcg10": 0.6429,
+        "recall10": 0.6
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "benchmarks and golden sets for model quality",
+        "relevant": 6,
+        "returned": 15,
+        "ndcg10": 0.3026,
+        "recall10": 0.1667
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_b5873364320e825a6996",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 0.4923,
+        "recall10": 0.6
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_bb69f929649346f4e266",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 0.312,
+        "recall10": 0.3
+      },
+      {
+        "family": "crop",
+        "query": "similar:ast_e3e410c629a31b84fd76 crop=(0.2, 0.2, 0.8, 0.8)",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.6332,
+        "recall10": 0.5
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_d1dea4b0ac48a2be3cdb",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 0.2247,
+        "recall10": 0.3
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_5439c0a0f26f90a73cdf",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "crop",
+        "query": "similar:ast_f49afc2143e2fbec76b2 crop=(0.2, 0.2, 0.8, 0.8)",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.8643,
+        "recall10": 0.8
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_eb9ea9080a3340e326a3",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 0.8669,
+        "recall10": 0.8
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_4bba464a724292f989f0",
+        "relevant": 35,
+        "returned": 47,
+        "ndcg10": 0.8701,
+        "recall10": 0.8
+      },
+      {
+        "family": "crop",
+        "query": "similar:ast_f936f18399b73aefe544 crop=(0.2, 0.2, 0.8, 0.8)",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.3836,
+        "recall10": 0.3
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_43f03f40a0a9debbe97e",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_c43767b1f36486689562",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "crop",
+        "query": "similar:ast_f8893bd2b9505f3e887a crop=(0.2, 0.2, 0.8, 0.8)",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.359,
+        "recall10": 0.2
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_c631aa18419a96a4988b",
+        "relevant": 35,
+        "returned": 15,
+        "ndcg10": 0.7779,
+        "recall10": 0.7
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_ab371d44724e1525ea31",
+        "relevant": 35,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "crop",
+        "query": "similar:ast_e2518fe2944cb81232bb crop=(0.2, 0.2, 0.8, 0.8)",
+        "relevant": 36,
+        "returned": 50,
+        "ndcg10": 0.8701,
+        "recall10": 0.8
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_11d5c4e17a6780e9dc6e",
+        "relevant": 2,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "reference",
+        "query": "similar:ast_3b83f8e2eec99429f54d",
+        "relevant": 2,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      }
+    ],
+    "ocr_only": [
+      {
+        "family": "visual",
+        "query": "daisy flowers",
+        "relevant": 36,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "a white daisy with a yellow center",
+        "relevant": 36,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "dandelions",
+        "relevant": 36,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "a dandelion seed head",
+        "relevant": 36,
+        "returned": 5,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "red roses",
+        "relevant": 36,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "a bouquet of roses",
+        "relevant": 36,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "sunflowers",
+        "relevant": 36,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "a field of sunflowers",
+        "relevant": 36,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "tulips",
+        "relevant": 36,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "colorful tulips in a garden",
+        "relevant": 36,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "a cat",
+        "relevant": 1,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "a cup of coffee",
+        "relevant": 1,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "an astronaut",
+        "relevant": 1,
+        "returned": 4,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "visual",
+        "query": "a rocket launch",
+        "relevant": 1,
+        "returned": 1,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "posts discussing train-serving skew",
+        "relevant": 23,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "features differ between training and production",
+        "relevant": 23,
+        "returned": 26,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "how to evaluate large language models",
+        "relevant": 6,
+        "returned": 18,
+        "ndcg10": 0.3026,
+        "recall10": 0.1667
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "catching hallucinations before a release",
+        "relevant": 6,
+        "returned": 30,
+        "ndcg10": 0.876,
+        "recall10": 0.8333
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "kubernetes deployment problems",
+        "relevant": 17,
+        "returned": 23,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "health checks restarting containers",
+        "relevant": 17,
+        "returned": 13,
+        "ndcg10": 0.359,
+        "recall10": 0.2
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "dealing with flaky tests in continuous integration",
+        "relevant": 6,
+        "returned": 7,
+        "ndcg10": 0.9496,
+        "recall10": 1.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "online courses and studying",
+        "relevant": 14,
+        "returned": 14,
+        "ndcg10": 0.7467,
+        "recall10": 0.7
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "celebrating a promotion or a new job",
+        "relevant": 12,
+        "returned": 47,
+        "ndcg10": 0.359,
+        "recall10": 0.2
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "frontend developer job openings",
+        "relevant": 6,
+        "returned": 50,
+        "ndcg10": 0.9705,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "source:linkedin",
+        "relevant": 90,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "capture:screenshot",
+        "relevant": 122,
+        "returned": 50,
+        "ndcg10": 0.7273,
+        "recall10": 0.6
+      },
+      {
+        "family": "source_context",
+        "query": "capture:photo",
+        "relevant": 190,
+        "returned": 50,
+        "ndcg10": 0.5638,
+        "recall10": 0.4
+      },
+      {
+        "family": "source_context",
+        "query": "context:source_code",
+        "relevant": 15,
+        "returned": 13,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:conversation",
+        "relevant": 7,
+        "returned": 8,
+        "ndcg10": 0.8118,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:presentation_slide",
+        "relevant": 15,
+        "returned": 17,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:film_tv_frame",
+        "relevant": 30,
+        "returned": 26,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "context:article",
+        "relevant": 28,
+        "returned": 7,
+        "ndcg10": 0.8007,
+        "recall10": 0.7
+      },
+      {
+        "family": "source_context",
+        "query": "collection:linkedin_screenshots",
+        "relevant": 90,
+        "returned": 50,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "source_context",
+        "query": "collection:movie_tv_frames",
+        "relevant": 30,
+        "returned": 26,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "combined",
+        "query": "source:linkedin text:\"hiring\"",
+        "relevant": 24,
+        "returned": 23,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "combined",
+        "query": "LinkedIn ML jobs mentioning Python",
+        "relevant": 10,
+        "returned": 50,
+        "ndcg10": 0.5959,
+        "recall10": 0.5
+      },
+      {
+        "family": "combined",
+        "query": "LinkedIn posts about machine learning jobs",
+        "relevant": 17,
+        "returned": 50,
+        "ndcg10": 0.7511,
+        "recall10": 0.8
+      },
+      {
+        "family": "combined",
+        "query": "source:linkedin kubernetes",
+        "relevant": 12,
+        "returned": 13,
+        "ndcg10": 0.7152,
+        "recall10": 0.6
+      },
+      {
+        "family": "combined",
+        "query": "python training loop code",
+        "relevant": 3,
+        "returned": 46,
+        "ndcg10": 0.7328,
+        "recall10": 1.0
+      },
+      {
+        "family": "combined",
+        "query": "chat about a failed deploy",
+        "relevant": 2,
+        "returned": 21,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "combined",
+        "query": "context:source_code text:\"select\"",
+        "relevant": 3,
+        "returned": 2,
+        "ndcg10": 0.7654,
+        "recall10": 0.6667
+      },
+      {
+        "family": "combined",
+        "query": "job posts for frontend engineers",
+        "relevant": 6,
+        "returned": 50,
+        "ndcg10": 0.4935,
+        "recall10": 0.3333
+      },
+      {
+        "family": "combined",
+        "query": "slides about kubernetes",
+        "relevant": 3,
+        "returned": 24,
+        "ndcg10": 1.0,
+        "recall10": 1.0
+      },
+      {
+        "family": "visual",
+        "query": "a field of yellow flowers",
+        "relevant": 72,
+        "returned": 0,
+        "ndcg10": 0.0,
+        "recall10": 0.0
+      },
+      {
+        "family": "ocr_meaning",
+        "query": "benchmarks and golden sets for model quality",
+        "relevant": 6,
+        "returned": 33,
+        "ndcg10": 0.4812,
+        "recall10": 0.5
+      }
+    ]
+  },
+  "no_relevant_queries": {
+    "text:\"quantum banana xylophone\"": 0,
+    "a snowy mountain with skiers": 0,
+    "a bowl of ramen noodles": 1,
+    "text:\"zzqx\"": 0,
+    "a red sports car on a race track": 4
+  },
+  "judged_query_count": 62,
+  "heads": {
+    "context.film_tv_frame": {
+      "n": 214,
+      "positives": 15,
+      "brier": 0.0065,
+      "ece": 0.0317,
+      "reliability": [
+        {
+          "bin": "0.0-0.2",
+          "n": 199,
+          "mean_p": 0.014,
+          "frac_pos": 0.0
+        },
+        {
+          "bin": "0.4-0.6",
+          "n": 3,
+          "mean_p": 0.538,
+          "frac_pos": 1.0
+        },
+        {
+          "bin": "0.6-0.8",
+          "n": 9,
+          "mean_p": 0.752,
+          "frac_pos": 1.0
+        },
+        {
+          "bin": "0.8-1.0",
+          "n": 3,
+          "mean_p": 0.838,
+          "frac_pos": 1.0
+        }
+      ],
+      "precision@0.5": 1.0,
+      "recall@0.5": 1.0,
+      "precision@0.8": 1.0,
+      "recall@0.8": 0.2
+    },
+    "context.presentation_slide": {
+      "n": 214,
+      "positives": 6,
+      "brier": 0.009,
+      "ece": 0.0127,
+      "reliability": [
+        {
+          "bin": "0.0-0.2",
+          "n": 206,
+          "mean_p": 0.001,
+          "frac_pos": 0.0
+        },
+        {
+          "bin": "0.6-0.8",
+          "n": 2,
+          "mean_p": 0.754,
+          "frac_pos": 1.0
+        },
+        {
+          "bin": "0.8-1.0",
+          "n": 6,
+          "mean_p": 0.93,
+          "frac_pos": 0.667
+        }
+      ],
+      "precision@0.5": 0.75,
+      "recall@0.5": 1.0,
+      "precision@0.8": 0.6667,
+      "recall@0.8": 0.6667
+    },
+    "context.source_code": {
+      "n": 214,
+      "positives": 8,
+      "brier": 0.0006,
+      "ece": 0.0032,
+      "reliability": [
+        {
+          "bin": "0.0-0.2",
+          "n": 206,
+          "mean_p": 0.001,
+          "frac_pos": 0.0
+        },
+        {
+          "bin": "0.6-0.8",
+          "n": 1,
+          "mean_p": 0.646,
+          "frac_pos": 1.0
+        },
+        {
+          "bin": "0.8-1.0",
+          "n": 7,
+          "mean_p": 0.987,
+          "frac_pos": 1.0
+        }
+      ],
+      "precision@0.5": 1.0,
+      "recall@0.5": 1.0,
+      "precision@0.8": 1.0,
+      "recall@0.8": 0.875
+    },
+    "context.job_posting": {
+      "n": 214,
+      "positives": 20,
+      "brier": 0.0271,
+      "ece": 0.0634,
+      "reliability": [
+        {
+          "bin": "0.0-0.2",
+          "n": 190,
+          "mean_p": 0.024,
+          "frac_pos": 0.0
+        },
+        {
+          "bin": "0.2-0.4",
+          "n": 5,
+          "mean_p": 0.264,
+          "frac_pos": 0.4
+        },
+        {
+          "bin": "0.4-0.6",
+          "n": 19,
+          "mean_p": 0.508,
+          "frac_pos": 0.947
+        }
+      ],
+      "precision@0.5": 1.0,
+      "recall@0.5": 0.55,
+      "precision@0.8": null,
+      "recall@0.8": 0.0
+    },
+    "context.article": {
+      "n": 214,
+      "positives": 15,
+      "brier": 0.0587,
+      "ece": 0.0262,
+      "reliability": [
+        {
+          "bin": "0.0-0.2",
+          "n": 206,
+          "mean_p": 0.072,
+          "frac_pos": 0.058
+        },
+        {
+          "bin": "0.2-0.4",
+          "n": 5,
+          "mean_p": 0.259,
+          "frac_pos": 0.0
+        },
+        {
+          "bin": "0.4-0.6",
+          "n": 3,
+          "mean_p": 0.486,
+          "frac_pos": 1.0
+        }
+      ],
+      "precision@0.5": 1.0,
+      "recall@0.5": 0.0667,
+      "precision@0.8": null,
+      "recall@0.8": 0.0
+    },
+    "context.conversation": {
+      "n": 214,
+      "positives": 6,
+      "brier": 0.0187,
+      "ece": 0.0617,
+      "reliability": [
+        {
+          "bin": "0.0-0.2",
+          "n": 185,
+          "mean_p": 0.019,
+          "frac_pos": 0.0
+        },
+        {
+          "bin": "0.2-0.4",
+          "n": 15,
+          "mean_p": 0.31,
+          "frac_pos": 0.0
+        },
+        {
+          "bin": "0.4-0.6",
+          "n": 9,
+          "mean_p": 0.468,
+          "frac_pos": 0.111
+        },
+        {
+          "bin": "0.6-0.8",
+          "n": 2,
+          "mean_p": 0.698,
+          "frac_pos": 1.0
+        },
+        {
+          "bin": "0.8-1.0",
+          "n": 3,
+          "mean_p": 0.846,
+          "frac_pos": 1.0
+        }
+      ],
+      "precision@0.5": 1.0,
+      "recall@0.5": 1.0,
+      "precision@0.8": 1.0,
+      "recall@0.8": 0.5
+    },
+    "topic.hiring": {
+      "n": 214,
+      "positives": 22,
+      "brier": 0.0577,
+      "ece": 0.0418,
+      "reliability": [
+        {
+          "bin": "0.0-0.2",
+          "n": 185,
+          "mean_p": 0.018,
+          "frac_pos": 0.032
+        },
+        {
+          "bin": "0.2-0.4",
+          "n": 16,
+          "mean_p": 0.285,
+          "frac_pos": 0.375
+        },
+        {
+          "bin": "0.4-0.6",
+          "n": 6,
+          "mean_p": 0.515,
+          "frac_pos": 1.0
+        },
+        {
+          "bin": "0.6-0.8",
+          "n": 4,
+          "mean_p": 0.624,
+          "frac_pos": 0.5
+        },
+        {
+          "bin": "0.8-1.0",
+          "n": 3,
+          "mean_p": 0.9,
+          "frac_pos": 0.667
+        }
+      ],
+      "precision@0.5": 0.7273,
+      "recall@0.5": 0.3636,
+      "precision@0.8": 0.6667,
+      "recall@0.8": 0.0909
+    },
+    "topic.ai_ml": {
+      "n": 214,
+      "positives": 32,
+      "brier": 0.0456,
+      "ece": 0.0911,
+      "reliability": [
+        {
+          "bin": "0.0-0.2",
+          "n": 179,
+          "mean_p": 0.044,
+          "frac_pos": 0.022
+        },
+        {
+          "bin": "0.2-0.4",
+          "n": 10,
+          "mean_p": 0.293,
+          "frac_pos": 0.3
+        },
+        {
+          "bin": "0.4-0.6",
+          "n": 12,
+          "mean_p": 0.479,
+          "frac_pos": 1.0
+        },
+        {
+          "bin": "0.6-0.8",
+          "n": 7,
+          "mean_p": 0.747,
+          "frac_pos": 1.0
+        },
+        {
+          "bin": "0.8-1.0",
+          "n": 6,
+          "mean_p": 0.884,
+          "frac_pos": 1.0
+        }
+      ],
+      "precision@0.5": 1.0,
+      "recall@0.5": 0.5312,
+      "precision@0.8": 1.0,
+      "recall@0.8": 0.1875
+    },
+    "topic.software_development": {
+      "n": 214,
+      "positives": 33,
+      "brier": 0.074,
+      "ece": 0.0812,
+      "reliability": [
+        {
+          "bin": "0.0-0.2",
+          "n": 172,
+          "mean_p": 0.037,
+          "frac_pos": 0.017
+        },
+        {
+          "bin": "0.2-0.4",
+          "n": 26,
+          "mean_p": 0.298,
+          "frac_pos": 0.692
+        },
+        {
+          "bin": "0.4-0.6",
+          "n": 15,
+          "mean_p": 0.51,
+          "frac_pos": 0.733
+        },
+        {
+          "bin": "0.6-0.8",
+          "n": 1,
+          "mean_p": 0.605,
+          "frac_pos": 1.0
+        }
+      ],
+      "precision@0.5": 0.8,
+      "recall@0.5": 0.2424,
+      "precision@0.8": null,
+      "recall@0.8": 0.0
+    },
+    "topic.education": {
+      "n": 214,
+      "positives": 7,
+      "brier": 0.0306,
+      "ece": 0.0235,
+      "reliability": [
+        {
+          "bin": "0.0-0.2",
+          "n": 209,
+          "mean_p": 0.015,
+          "frac_pos": 0.024
+        },
+        {
+          "bin": "0.2-0.4",
+          "n": 1,
+          "mean_p": 0.316,
+          "frac_pos": 1.0
+        },
+        {
+          "bin": "0.4-0.6",
+          "n": 3,
+          "mean_p": 0.535,
+          "frac_pos": 0.333
+        },
+        {
+          "bin": "0.6-0.8",
+          "n": 1,
+          "mean_p": 0.689,
+          "frac_pos": 0.0
+        }
+      ],
+      "precision@0.5": 0.0,
+      "recall@0.5": 0.0,
+      "precision@0.8": null,
+      "recall@0.8": 0.0
+    },
+    "topic.entertainment": {
+      "n": 214,
+      "positives": 15,
+      "brier": 0.0633,
+      "ece": 0.0605,
+      "reliability": [
+        {
+          "bin": "0.0-0.2",
+          "n": 205,
+          "mean_p": 0.064,
+          "frac_pos": 0.073
+        },
+        {
+          "bin": "0.2-0.4",
+          "n": 6,
+          "mean_p": 0.258,
+          "frac_pos": 0.0
+        },
+        {
+          "bin": "0.4-0.6",
+          "n": 3,
+          "mean_p": 0.47,
+          "frac_pos": 0.0
+        }
+      ],
+      "precision@0.5": 0.0,
+      "recall@0.5": 0.0,
+      "precision@0.8": null,
+      "recall@0.8": 0.0
+    },
+    "capture_type": {
+      "n": 193,
+      "accuracy_decided": 0.9792,
+      "abstained": 1,
+      "confusion": {
+        "photo->abstained": 1,
+        "photo->graphic": 4,
+        "photo->photo": 99,
+        "scanned_document->scanned_document": 11,
+        "screenshot->screenshot": 78
+      }
+    },
+    "source_app.linkedin": {
+      "precision": 1.0,
+      "recall": 0.8983,
+      "tp": 53,
+      "fp": 0,
+      "fn": 6,
+      "abstained": 1
+    },
+    "scenes_no_positive_labels": {
+      "scene.beach": {
+        "n": 214,
+        "fp@0.5": 0,
+        "fp@0.8": 0
+      },
+      "scene.city_street": {
+        "n": 214,
+        "fp@0.5": 0,
+        "fp@0.8": 0
+      },
+      "scene.forest": {
+        "n": 214,
+        "fp@0.5": 1,
+        "fp@0.8": 0
+      },
+      "scene.mountain": {
+        "n": 214,
+        "fp@0.5": 0,
+        "fp@0.8": 0
+      },
+      "scene.office": {
+        "n": 214,
+        "fp@0.5": 0,
+        "fp@0.8": 0
+      },
+      "scene.kitchen": {
+        "n": 214,
+        "fp@0.5": 0,
+        "fp@0.8": 0
+      },
+      "scene.classroom": {
+        "n": 214,
+        "fp@0.5": 0,
+        "fp@0.8": 0
+      },
+      "scene.stadium": {
+        "n": 214,
+        "fp@0.5": 0,
+        "fp@0.8": 0
+      }
+    }
+  },
+  "collections": {
+    "linkedin_screenshots": {
+      "precision": 1.0,
+      "recall": 0.8983,
+      "members": 53,
+      "relevant": 59,
+      "false_positive_categories": {}
+    },
+    "movie_tv_frames": {
+      "precision": 1.0,
+      "recall": 0.7333,
+      "members": 11,
+      "relevant": 15,
+      "false_positive_categories": {}
+    },
+    "source_code": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "members": 6,
+      "relevant": 8,
+      "false_positive_categories": {}
+    },
+    "conversations": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "members": 3,
+      "relevant": 6,
+      "false_positive_categories": {}
+    },
+    "presentation_slides": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "members": 8,
+      "relevant": 6,
+      "false_positive_categories": {
+        "article": 2
+      }
+    },
+    "documents": {
+      "precision": 1.0,
+      "recall": 0.8667,
+      "members": 13,
+      "relevant": 15,
+      "false_positive_categories": {}
+    },
+    "photos": {
+      "precision": 0.8585,
+      "recall": 0.875,
+      "members": 106,
+      "relevant": 104,
+      "false_positive_categories": {
+        "film_frame_synthetic": 15
+      }
+    },
+    "needs_review": {
+      "members": 1
+    }
+  },
+  "duplicates": {
+    "positive_pairs": 34,
+    "predicted_pairs": 38,
+    "precision": 0.8947,
+    "recall": 1.0,
+    "false_pairs_linkedin_chrome": 0,
+    "false_pairs_crop": 0
+  },
+  "groups": {
+    "photos": {
+      "channel": "image",
+      "items": 101,
+      "bcubed_precision": 0.8078,
+      "bcubed_recall": 0.4093,
+      "bcubed_f1": 0.5433,
+      "grouped_coverage": 0.8614,
+      "groups": 15,
+      "gold_groups": 10
+    },
+    "movie_tv_frames": {
+      "channel": "image",
+      "items": 11,
+      "bcubed_precision": 0.4545,
+      "bcubed_recall": 1.0,
+      "bcubed_f1": 0.625,
+      "grouped_coverage": 1.0,
+      "groups": 2,
+      "gold_groups": 4
+    },
+    "linkedin_screenshots": {
+      "channel": "text",
+      "items": 48,
+      "bcubed_precision": 0.9167,
+      "bcubed_recall": 0.2154,
+      "bcubed_f1": 0.3489,
+      "grouped_coverage": 0.3542,
+      "groups": 9,
+      "gold_groups": 9
+    }
+  },
+  "stage_latency": {
+    "context": {
+      "n": 1890,
+      "p50_s": 0.003,
+      "p95_s": 0.011,
+      "max_s": 4.156
+    },
+    "image_embed": {
+      "n": 378,
+      "p50_s": 0.307,
+      "p95_s": 0.573,
+      "max_s": 2.064
+    },
+    "index": {
+      "n": 3024,
+      "p50_s": 0.002,
+      "p95_s": 0.015,
+      "max_s": 0.049
+    },
+    "objects": {
+      "n": 378,
+      "p50_s": 0.039,
+      "p95_s": 0.076,
+      "max_s": 0.524
+    },
+    "ocr": {
+      "n": 378,
+      "p50_s": 0.825,
+      "p95_s": 4.991,
+      "max_s": 10.297
+    },
+    "ocr_text_embed": {
+      "n": 1575,
+      "p50_s": 0.0,
+      "p95_s": 0.473,
+      "max_s": 1.53
+    },
+    "organize": {
+      "n": 3024,
+      "p50_s": 0.104,
+      "p95_s": 0.16,
+      "max_s": 0.339
+    },
+    "pixels": {
+      "n": 378,
+      "p50_s": 0.145,
+      "p95_s": 0.318,
+      "max_s": 0.59
+    }
+  },
+  "search_latency_ms": {
+    "visual": {
+      "n": 45,
+      "p50": 7.9,
+      "p95": 10.7
+    },
+    "ocr_meaning": {
+      "n": 33,
+      "p50": 11.7,
+      "p95": 13.9
+    },
+    "source_context": {
+      "n": 30,
+      "p50": 2.4,
+      "p95": 4.0
+    },
+    "combined": {
+      "n": 27,
+      "p50": 11.1,
+      "p95": 20.3
+    },
+    "lexical_filter": {
+      "n": 20,
+      "p50": 3.4,
+      "p95": 4.5
+    }
+  },
+  "calibration": "platt-synthetic-dev-20260930-f49f053e95"
+}

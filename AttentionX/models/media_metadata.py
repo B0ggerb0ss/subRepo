@@ -173,7 +173,8 @@ class Decision(StrictModel):
     def _distribution(self):
         if any(not math.isfinite(p) or not 0 <= p <= 1 for p in self.probs.values()):
             raise ValueError("probabilities must be finite and within [0, 1]")
-        if self.status in {"complete", "abstained"} and self.dtype != "multilabel":
+        needs_dist = self.status == "complete" or (self.status == "abstained" and self.probs)
+        if needs_dist and self.dtype != "multilabel":
             if not self.probs or abs(sum(self.probs.values()) - 1) > 1e-4:
                 raise ValueError("probabilities must sum to one")
         if self.status != "complete":
@@ -204,7 +205,7 @@ class EmbeddingRecord(StrictModel):
     dim: int = Field(gt=0)
     normalization: Literal["l2"]
     preprocess_version: str
-    view_kind: Literal["global_letterbox", "region", "ocr_chunk"]
+    view_kind: Literal["global_letterbox", "region", "ocr_chunk", "ocr_body"]
     view_id: str
     region: tuple[float, float, float, float] | None = None
     source_refs: list[str] = Field(default_factory=list)

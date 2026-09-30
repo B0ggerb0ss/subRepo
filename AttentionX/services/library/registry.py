@@ -236,3 +236,44 @@ class Library:
         from services.analyze.providers import get_providers
 
         return [a.__dict__ for a in get_providers(self.cfg).availability()]
+
+    # -- organization & corrections --------------------------------------------
+    def collections(self, ctype: str | None = None, parent_id: str | None = None, with_members: bool = False,
+                    include_hidden: bool = False):
+        from services.organize.overrides import list_collections
+
+        return list_collections(self.repo, self.cfg.library_id, ctype=ctype, parent_id=parent_id,
+                                include_hidden=include_hidden, with_members=with_members)
+
+    def collection(self, collection_id: str):
+        from services.organize.overrides import list_collections, resolve_collection_id
+
+        cid = resolve_collection_id(self.repo, collection_id)
+        if cid is None:
+            return None
+        return next((c for c in list_collections(self.repo, self.cfg.library_id, include_hidden=True,
+                                                 with_members=True) if c.id == cid), None)
+
+    def correct(self, command: dict, expected_revision: int | None = None, actor: str = "local-user"):
+        from models.collections import CorrectionCommand
+        from services.organize.overrides import apply_correction
+
+        return apply_correction(self.repo, self.cfg.library_id, CorrectionCommand(**command), expected_revision, actor)
+
+    def refresh_organization(self, inline: bool = False):
+        """Rebuild smart sets, duplicate candidates and similarity groups."""
+        from services.organize.service import enqueue_refresh, refresh_all
+
+        if inline:
+            return refresh_all(self.repo, self.cfg)
+        return enqueue_refresh(self.queue)
+
+    def corrections(self, limit: int = 100) -> list[dict]:
+        return [dict(r) for r in self.repo.query("SELECT * FROM corrections ORDER BY at DESC LIMIT ?", (limit,))]
+
+    # -- export --------------------------------------------------------------
+    def export_snapshot(self, asset_ids: list[str] | None = None, collection_ids: list[str] | None = None,
+                        **options):
+        from services.library.export import ExportOptions, export_library_snapshot
+
+        return export_library_snapshot(self.repo, self.cfg, asset_ids, collection_ids, ExportOptions(**options))

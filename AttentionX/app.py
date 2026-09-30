@@ -11,8 +11,14 @@ import os
 from pathlib import Path
 from typing import Any
 
+# Local-only by default: no Gradio usage analytics, no Hugging Face Hub calls.
+os.environ.setdefault("GRADIO_ANALYTICS_ENABLED", "False")
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
+
 import gradio as gr
 
+from models.schemas import TranscriptionError
 from models.settings import settings
 from services.captions import generate_srt
 from services.ingest import extract_audio, has_audio_stream, normalize_video
@@ -109,9 +115,14 @@ def run_pipeline(
             wav_path = extract_audio(norm_path, temp_dir)
 
             progress(0.20, desc="Transcribing speech...")
-            transcript = transcribe(wav_path, model_size=settings.whisper_model_size)
-            if not transcript:
-                notes.append("no speech detected")
+            try:
+                transcript = transcribe(wav_path, model_size=settings.whisper_model_size)
+                if not transcript:
+                    notes.append("no speech detected")
+            except TranscriptionError as e:
+                # Degrade visibly: clips are chosen from audio/scene/face signals only.
+                transcript = []
+                notes.append(f"{e}; clips chosen without transcript, no captions")
 
             progress(0.35, desc="Analyzing audio energy...")
             energy_peaks, _ = analyze_audio_energy(
@@ -177,43 +188,80 @@ def run_pipeline(
     finally:
         cleanup_temp(temp_dir)
 
-def build_demo() -> gr.Blocks:
+_LIBRARY = None
+
+
+def get_library():
+    """Process-wide Library (created lazily so importing app has no side effects)."""
+    global _LIBRARY
+    if _LIBRARY is None:
+        from services.library.registry import Library
+
+        _LIBRARY = Library(worker_mode="none")
+    return _LIBRARY
+
+
+def _build_generate_tab() -> None:
     demo_sample = Path("data/test/test_video.mp4")
     default_video = str(demo_sample) if demo_sample.exists() else None
 
+    gr.Markdown("Upload a long-form video, run the full pipeline, and download up to three 9:16 clips.")
+    with gr.Row(elem_id="attentionx-shell", equal_height=True):
+        with gr.Column(scale=5):
+            long_video = gr.Video(
+                label="Upload Long-Form Video",
+                value=default_video,
+                height=260,
+            )
+            ref_clips_input = gr.File(
+                label="Reference Shorts (optional — for style matching)",
+                file_count="multiple",
+                type="filepath",
+            )
+            gr.Markdown("_Reference style matching is not implemented yet; uploads are accepted but "
+                        "do not change ranking._")
+            generate_btn = gr.Button("Generate Clips", variant="primary")
+            status_box = gr.Textbox(label="Status", interactive=False)
+
+        with gr.Column(scale=7, elem_id="attentionx-outputs"):
+            with gr.Row():
+                clip1 = gr.Video(label="Clip 1", height=210)
+                clip2 = gr.Video(label="Clip 2", height=210)
+                clip3 = gr.Video(label="Clip 3", height=210)
+            download_files = gr.Files(label="Download All Clips")
+
+    generate_btn.click(
+        fn=run_pipeline,
+        inputs=[long_video, ref_clips_input],
+        outputs=[clip1, clip2, clip3, download_files, status_box],
+        concurrency_limit=1,
+    )
+
+
+def build_demo() -> gr.Blocks:
     with gr.Blocks(title="AttentionX", fill_width=True, css=APP_CSS) as demo:
-        gr.Markdown(
-            "# AttentionX\n"
-            "Upload a long-form video, run the full pipeline, and download up to three 9:16 clips."
-        )
+        gr.Markdown("# AttentionX")
+        with gr.Tabs():
+            with gr.Tab("Library", id="library"):
+                from ui.library import build_library_tab, gallery_items
 
-        with gr.Row(elem_id="attentionx-shell", equal_height=True):
-            with gr.Column(scale=5):
-                long_video = gr.Video(
-                    label="Upload Long-Form Video",
-                    value=default_video,
-                    height=260,
-                )
-                ref_clips_input = gr.File(
-                    label="Reference Shorts (optional — for style matching)",
-                    file_count="multiple",
-                    type="filepath",
-                )
-                generate_btn = gr.Button("Generate Clips", variant="primary")
-                status_box = gr.Textbox(label="Status", interactive=False)
+                lib = get_library()
+                build_library_tab(lib)
+                comps = build_library_tab.components
+            with gr.Tab("Collections", id="collections") as collections_tab:
+                from ui.collections import build_collections_tab
 
-            with gr.Column(scale=7, elem_id="attentionx-outputs"):
-                with gr.Row():
-                    clip1 = gr.Video(label="Clip 1", height=210)
-                    clip2 = gr.Video(label="Clip 2", height=210)
-                    clip3 = gr.Video(label="Clip 3", height=210)
-                download_files = gr.Files(label="Download All Clips")
+                build_collections_tab(lib, collections_tab)
+            with gr.Tab("Generate clips", id="generate"):
+                _build_generate_tab()
 
-        generate_btn.click(
-            fn=run_pipeline,
-            inputs=[long_video, ref_clips_input],
-            outputs=[clip1, clip2, clip3, download_files, status_box],
-        )
+        def _initial():
+            items, ids = gallery_items(lib, 0)
+            return items, ids, f"{lib.count_assets()} image(s) in the library."
+
+        from ui.library import LISTING
+
+        demo.load(_initial, None, [comps["gallery"], comps["ids"], comps["notes"]], **LISTING)
 
     return demo
 
@@ -222,9 +270,17 @@ def launch_demo() -> None:
     server_name = os.getenv("ATTENTIONX_SERVER_NAME", "127.0.0.1")
     server_port = int(os.getenv("ATTENTIONX_SERVER_PORT", "7860"))
     prevent_thread_lock = os.getenv("ATTENTIONX_NO_BLOCK", "0") == "1"
-    demo.queue(default_concurrency_limit=1).launch(
+    lib = get_library()
+    if lib.supervisor is None and os.getenv("ATTENTIONX_WORKER", "process") != "none":
+        from services.library.worker import WorkerSupervisor
+
+        lib.supervisor = WorkerSupervisor(lib.cfg)
+        lib.supervisor.start()
+    demo.queue(default_concurrency_limit=4).launch(
         server_name=server_name,
         server_port=server_port,
+        # Only derived thumbnails/previews and exports are served; originals never are.
+        allowed_paths=[str(lib.cfg.derived_root), str(lib.cfg.exports_root)],
         show_error=True,
         prevent_thread_lock=prevent_thread_lock,
     )

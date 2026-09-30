@@ -94,3 +94,27 @@ def resolve_object_label(cfg: LibraryConfig, value: str) -> str | None:
     if v.endswith("s") and v[:-1] in labels:
         return v[:-1]
     return None
+
+
+THRESHOLDS_PATH = Path(__file__).resolve().parents[1] / "organize" / "decision_thresholds.json"
+
+
+@lru_cache(maxsize=1)
+def _thresholds() -> dict:
+    return json.loads(THRESHOLDS_PATH.read_text(encoding="utf-8")) if THRESHOLDS_PATH.is_file() else {}
+
+
+def decision_threshold(question_id: str, option: str | None = None, purpose: str = "collection") -> float:
+    """Validation-selected threshold for a decision (dev split), else the catalog default.
+
+    ``purpose`` is "collection" (high-trust smart sets) or "filter" (typed search filters).
+    """
+    t = _thresholds().get("thresholds", {})
+    key = f"{purpose}:{question_id}" + (f"={option}" if option else "")
+    if key in t:
+        return float(t[key])
+    return float(catalog()["collection_threshold" if purpose == "collection" else "filter_threshold"])
+
+
+def thresholds_version() -> str | None:
+    return _thresholds().get("version")

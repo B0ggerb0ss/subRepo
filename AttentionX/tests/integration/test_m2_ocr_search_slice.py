@@ -202,3 +202,49 @@ def test_metadata_projects_to_strict_v1(cfg, tmp_path: Path) -> None:
     with pytest.raises(Exception):
         V10.model_validate(json.loads(meta.model_dump_json()))  # 1.1 is not silently accepted by 1.0
     lib.close()
+
+
+def test_exif_rotated_capture_highlights_in_display_coordinates(cfg, tmp_path: Path) -> None:
+    from PIL import Image
+
+    fx = make_text_image(tmp_path / "upright.png", ["rotated capture text"], size=(900, 300))
+    upright = Image.open(fx["path"])
+    stored = upright.transpose(Image.Transpose.ROTATE_90)   # pixels stored sideways
+    exif = Image.Exif()
+    exif[0x0112] = 6                                        # viewers rotate back
+    path = tmp_path / "in" / "IMG_rot.jpg"
+    path.parent.mkdir(exist_ok=True)
+    stored.save(path, format="JPEG", quality=95, exif=exif.tobytes())
+    lib = Library(cfg)
+    aid = lib.import_files([path]).asset_ids[0]
+    _run(lib)
+    meta = lib.asset_detail(aid)["metadata"]
+    assert meta["image"]["exif_orientation"] == 6
+    assert (meta["image"]["display_width"], meta["image"]["display_height"]) == (900, 300)
+    ev = next(e for e in lib.search('text:"rotated capture"').hits[0].reasons if e.reason == "OCR_PHRASE")
+    xs = [p[0] for p in ev.polygons[0]]
+    ys = [p[1] for p in ev.polygons[0]]
+    exp = fx["boxes"][0][1]
+    assert abs(min(xs) - exp[0]) < 0.05 and abs(min(ys) - exp[1]) < 0.1
+    lib.close()
+
+
+def test_animated_image_policy_is_explicit(cfg, tmp_path: Path) -> None:
+    from PIL import Image
+
+    frames = []
+    for word in ("first frame words", "second frame words"):
+        f = make_text_image(tmp_path / f"{word[:5]}.png", [word])
+        frames.append(Image.open(f["path"]).convert("RGB"))
+    path = tmp_path / "in" / "anim.webp"
+    path.parent.mkdir(exist_ok=True)
+    frames[0].save(path, format="WEBP", save_all=True, append_images=frames[1:], duration=500, loop=0)
+    lib = Library(cfg)
+    aid = lib.import_files([path]).asset_ids[0]
+    assert _run(lib) == ["partial"]
+    meta = lib.asset_detail(aid)["metadata"]
+    assert meta["image"]["animated"] and meta["image"]["frame_count"] == 2 and meta["image"]["frames_analyzed"] == [0]
+    assert meta["ocr"]["complete"] is False and "frame 0 of 2" in meta["ocr"]["incomplete_reason"]
+    assert [h.asset_id for h in lib.search('text:"first frame"').hits] == [aid]
+    assert lib.search('text:"second frame"').hits == []      # not analyzed, and not claimed
+    lib.close()

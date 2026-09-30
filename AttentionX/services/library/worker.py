@@ -57,6 +57,12 @@ class Worker:
             log.exception("job %s failed", job.id)
             self.queue.finish(job.id, "error", "exception", f"{type(e).__name__}")
             return "error"
+        if job.kind == "analyze_image":
+            # A shadow namespace (new model/preprocessing) becomes active atomically
+            # once it covers every live asset.
+            from services.analyze.vectors_registry import promote_ready
+
+            promote_ready(self.repo)
         err = None
         if status == "error":
             j = self.queue.get(job.id)

@@ -40,8 +40,10 @@ def commit_metadata(repo: Repository, cfg: LibraryConfig, asset: Asset, meta: Me
             " VALUES (?,?,?,?,?,?)", (asset.id, rev, meta.schema_version, payload, job.id if job else None, now))
         thumb = results.get("pixels").payload.get("thumb_ref") if results.get("pixels") else None
         if meta.image is not None:
-            c.execute("UPDATE assets SET metadata_revision=?, thumb_ref=COALESCE(?, thumb_ref), width=?, height=?"
-                      " WHERE id=?", (rev, thumb, meta.image.display_width, meta.image.display_height, asset.id))
+            c.execute("UPDATE assets SET metadata_revision=?, thumb_ref=COALESCE(?, thumb_ref), width=?, height=?,"
+                      " phash64=?, dhash64=? WHERE id=?",
+                      (rev, thumb, meta.image.display_width, meta.image.display_height,
+                       meta.image.hashes.get("phash64"), meta.image.hashes.get("dhash64"), asset.id))
         else:
             c.execute("UPDATE assets SET metadata_revision=? WHERE id=?", (rev, asset.id))
         _rebuild_derived(c, asset.id, rev, meta, results)
@@ -89,9 +91,10 @@ def _rebuild_derived(c, asset_id: str, rev: int, meta: MediaMetadata, results: d
         if d.status == "complete":
             p_value = d.probs.get(d.value) if isinstance(d.value, str) else float(d.value)
         c.execute(
-            "INSERT INTO decisions(asset_id, revision, question_id, dtype, value, p_value, probs, status, model)"
-            " VALUES (?,?,?,?,?,?,?,?,?)",
-            (asset_id, rev, qid, d.dtype, value, p_value, json.dumps(d.probs, sort_keys=True), d.status, d.model))
+            "INSERT INTO decisions(asset_id, revision, question_id, dtype, value, p_value, probs, status, model,"
+            " prob_kind, calibration_version) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            (asset_id, rev, qid, d.dtype, value, p_value, json.dumps(d.probs, sort_keys=True), d.status, d.model,
+             d.probability_kind, d.calibration_version))
 
     # Vectors: replace this asset's rows in every namespace present in the new
     # metadata. Namespaces absent from this revision keep no stale rows.

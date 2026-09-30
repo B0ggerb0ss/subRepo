@@ -29,6 +29,7 @@ from models.search import (
 from services.analyze.catalog import (
     FILTER_QUESTION,
     catalog,
+    decision_threshold,
     object_labels,
     resolve_object_label,
 )
@@ -54,20 +55,14 @@ class SearchService:
         self._cache: OrderedDict = OrderedDict()
 
     # ------------------------------------------------------------------
-    def state_token(self) -> tuple:
-        r = self.repo.query_one(
-            "SELECT (SELECT COALESCE(MAX(created_at),0) FROM metadata_revisions) m,"
-            " (SELECT COUNT(*) FROM assets WHERE deleted_at IS NOT NULL) d,"
-            " (SELECT COALESCE(MAX(updated_at),0) FROM user_annotations) a,"
-            " (SELECT COALESCE(MAX(updated_at),0) FROM memberships) ms,"
-            " (SELECT COALESCE(MAX(updated_at),0) FROM metadata_overrides) o,"
-            " (SELECT COALESCE(SUM(revision),0) FROM vector_namespaces) v")
-        return tuple(r)
+    def state_token(self) -> int:
+        # Bumped inside every write transaction (UI and worker processes alike).
+        return self.repo.write_seq()
 
     def index_revision(self) -> dict[str, int]:
         rows = self.repo.query("SELECT namespace, revision FROM vector_namespaces WHERE state='active'")
         out = {r["namespace"]: r["revision"] for r in rows}
-        out["metadata_revisions"] = self.repo.query_one("SELECT COUNT(*) n FROM metadata_revisions")["n"]
+        out["write_seq"] = self.repo.write_seq()
         return out
 
     # ------------------------------------------------------------------
@@ -87,39 +82,42 @@ class SearchService:
         degraded: list[str] = list(pq.approximate_notes)
         channels_used: list[str] = []
         ranked: dict[str, list[tuple[str, float]]] = {}
-        evidence: dict[str, list[MatchEvidence]] = {}
+        # Evidence is collected as cheap factories and materialized only for the
+        # page actually returned (a filter can match thousands of assets).
+        evidence: dict[str, list] = {}
 
         # Literal phrases: hard constraints (AND) + ranking by occurrences.
+        occ: dict[str, int] = {}
         for phrase in pq.text_phrases:
             hits = lexical.phrase_search(self.repo, phrase, eligible)
             eligible = eligible & set(hits)
             for aid, matches in hits.items():
-                for m in matches:
-                    evidence.setdefault(aid, []).append(MatchEvidence(
-                        reason="OCR_PHRASE", detail=f'OCR text contains "{phrase}"',
+                # Strict matches outrank spacing-insensitive ones; then occurrence count.
+                occ[aid] = occ.get(aid, 0) + sum(1 if m["spaceless"] else 2 for m in matches)
+                evidence.setdefault(aid, []).append(
+                    lambda aid=aid, matches=matches, phrase=phrase: [MatchEvidence(
+                        reason="OCR_PHRASE",
+                        detail=(f'OCR text contains "{phrase}" when OCR word spacing is ignored' if m["spaceless"]
+                                else f'OCR text contains "{phrase}"'),
                         region_ids=m["region_ids"], polygons=m["polygons"], excerpt=m["excerpt"],
-                        score_kind="literal_match"))
+                        score_kind="literal_match_ignoring_spaces" if m["spaceless"] else "literal_match")
+                        for m in lexical.phrase_evidence(self.repo, aid, matches)])
             channels_used.append("phrase")
         if pq.text_phrases:
-            occ = {aid: sum(1 for e in evidence.get(aid, []) if e.reason == "OCR_PHRASE") for aid in eligible}
-            ranked["phrase"] = sorted(occ.items(), key=lambda kv: (-kv[1], kv[0]))
+            ranked["phrase"] = sorted(((a, occ.get(a, 0)) for a in eligible), key=lambda kv: (-kv[1], kv[0]))
 
         similar_ref = req.similar_to
         if pq.free_text and "lexical" in req.channels:
             res = lexical.word_search(self.repo, pq.free_text, eligible)
-            ranked["lexical"] = [(aid, s) for aid, s, _ in res]
-            for aid, s, ev in res:
-                if ev:
-                    evidence.setdefault(aid, []).append(MatchEvidence(
-                        reason="OCR_LEXICAL",
-                        detail="OCR words: " + ", ".join(sorted({t for e in ev for t in e["terms"]})),
-                        region_ids=[e["region_id"] for e in ev], polygons=[e["polygon"] for e in ev],
-                        excerpt=" / ".join(e["excerpt"] for e in ev[:3]), score=round(s, 4), score_kind="bm25"))
+            ranked["lexical"] = [(aid, sc) for aid, sc, _ in res]
+            for aid, sc, merged in res:
+                evidence.setdefault(aid, []).append(
+                    lambda aid=aid, sc=sc, merged=merged: self._word_ev(aid, pq.free_text, sc, merged))
             ann = lexical.annotation_search(self.repo, pq.free_text, eligible)
             ranked["annotation"] = ann
-            for aid, s in ann:
-                evidence.setdefault(aid, []).append(MatchEvidence(
-                    reason="USER_ANNOTATION", detail="your title/notes/tags match", score=round(s, 4),
+            for aid, sc in ann:
+                evidence.setdefault(aid, []).append(dict(
+                    reason="USER_ANNOTATION", detail="your title/notes/tags match", score=round(sc, 4),
                     score_kind="bm25"))
             channels_used += ["lexical", "annotation"]
 
@@ -149,20 +147,18 @@ class SearchService:
             if aid in eligible:
                 evidence.setdefault(aid, []).extend(evs)
 
-        revs = {}
-        if fused:
-            ids = [a for a, _ in fused]
-            for r in self.repo.query(
-                    f"SELECT id, metadata_revision FROM assets WHERE id IN ({','.join('?' * len(ids))})", tuple(ids)):
-                revs[r["id"]] = r["metadata_revision"]
-        hits = [SearchHit(asset_id=aid, metadata_revision=revs.get(aid, 0), score=round(s, 6),
-                          channel_ranks=ranks.get(aid, {}), channel_scores=scores.get(aid, {}),
-                          reasons=evidence.get(aid, []))
-                for aid, s in fused if aid in revs]
+        live = self._alive({a for a, _ in fused})
+        order = [(a, sc) for a, sc in fused if a in live]
+        dups: dict[str, list[str]] = {}
         if req.collapse_duplicates:
-            hits = _collapse_duplicates(self.repo, hits)
-        total = len(hits)
-        hits = hits[req.offset:req.offset + req.limit]
+            order, dups = _collapse_duplicates(self.repo, order)
+        total = len(order)
+        page = order[req.offset:req.offset + req.limit]
+        hits = [SearchHit(asset_id=aid, metadata_revision=live[aid], score=round(sc, 6),
+                          channel_ranks=ranks.get(aid, {}), channel_scores=scores.get(aid, {}),
+                          reasons=_materialize(evidence.get(aid, [])),
+                          duplicate_count=len(dups.get(aid, [])), duplicate_ids=dups.get(aid, []))
+                for aid, sc in page]
         resp = SearchResponse(query=pq, hits=hits, total_candidates=total, channels_used=channels_used,
                               degraded=degraded, index_revision=self.index_revision(),
                               elapsed_ms=round((time.perf_counter() - t0) * 1000, 2))
@@ -170,6 +166,29 @@ class SearchService:
         while len(self._cache) > 256:
             self._cache.popitem(last=False)
         return resp
+
+    def _alive(self, ids: set[str]) -> dict[str, int]:
+        out: dict[str, int] = {}
+        ids_l = list(ids)
+        for i in range(0, len(ids_l), 900):
+            chunk = ids_l[i:i + 900]
+            for r in self.repo.query(
+                    f"SELECT id, metadata_revision FROM assets WHERE deleted_at IS NULL AND id IN"
+                    f" ({','.join('?' * len(chunk))})", tuple(chunk)):
+                out[r["id"]] = r["metadata_revision"]
+        return out
+
+    def _word_ev(self, aid: str, free_text: str, score: float, merged: bool) -> list[MatchEvidence]:
+        ev = lexical.word_evidence(self.repo, aid, free_text, merged)
+        if not ev:
+            return []
+        return [MatchEvidence(
+            reason="OCR_LEXICAL",
+            detail=("OCR words (inside merged OCR text): " if merged else "OCR words: ")
+            + ", ".join(sorted({t for e in ev for t in e["terms"]})),
+            region_ids=[e["region_id"] for e in ev], polygons=[e["polygon"] for e in ev],
+            excerpt=" / ".join(e["excerpt"] for e in ev[:3]), score=round(score, 4),
+            score_kind="substring_count" if merged else "bm25")]
 
     def find_similar(self, asset_id: str, crop: tuple[float, float, float, float] | None = None,
                      query: str = "", limit: int = 40) -> SearchResponse:
@@ -191,7 +210,7 @@ class SearchService:
         order = sorted(fused.items(), key=lambda kv: (-kv[1], kv[0]))
         return order, ranks, scores
 
-    def _eligible(self, pq: ParsedQuery, library_id: str) -> tuple[set[str], dict[str, list[MatchEvidence]]]:
+    def _eligible(self, pq: ParsedQuery, library_id: str) -> tuple[set[str], dict[str, list[dict]]]:
         status_filters = [f.value for f in pq.filters if f.key == "status"]
         sql = "SELECT id FROM assets WHERE library_id=? AND deleted_at IS NULL"
         params: list = [library_id]
@@ -209,7 +228,7 @@ class SearchService:
                 sql += " AND created_at >= ?" if f.key == "after" else " AND created_at < ?"
                 params.append(ts)
         ids = {r["id"] for r in self.repo.query(sql, tuple(params))}
-        evidence: dict[str, list[MatchEvidence]] = {}
+        evidence: dict[str, list[dict]] = {}
         for f in pq.filters:
             if f.key in {"format", "after", "before"}:
                 continue
@@ -219,8 +238,11 @@ class SearchService:
                 evidence.setdefault(aid, []).extend(e)
         return ids, evidence
 
-    def _apply_filter(self, f: Filter, ids: set[str]) -> tuple[set[str], dict[str, list[MatchEvidence]]]:
-        ev: dict[str, list[MatchEvidence]] = {}
+    def _prob_kind(self, asset_id: str, qid: str) -> str:
+        return _prob_kind_of(self.repo, asset_id, qid)
+
+    def _apply_filter(self, f: Filter, ids: set[str]) -> tuple[set[str], dict[str, list[dict]]]:
+        ev: dict[str, list[dict]] = {}
         if f.key == "status":
             allowed = {"complete", "partial", "error", "pending"}
             if f.value not in allowed:
@@ -237,7 +259,7 @@ class SearchService:
                 (f.value,))
             out = {r["asset_id"] for r in rows} & ids
             for aid in out:
-                ev[aid] = [MatchEvidence(reason="USER_ANNOTATION", detail=f"tagged '{f.value}' by you")]
+                ev[aid] = [dict(reason="USER_ANNOTATION", detail=f"tagged '{f.value}' by you")]
             return out, ev
         if f.key == "object":
             label = resolve_object_label(self.cfg, f.value)
@@ -253,7 +275,7 @@ class SearchService:
             for r in rows:
                 if r["asset_id"] in ids:
                     out.add(r["asset_id"])
-                    ev.setdefault(r["asset_id"], []).append(MatchEvidence(
+                    ev.setdefault(r["asset_id"], []).append(dict(
                         reason="OBJECT_DETECTION", detail=f"detected {label}", box=tuple(json.loads(r["box"])),
                         score=round(r["score"], 4), score_kind="raw_detector"))
             return out, ev
@@ -262,14 +284,14 @@ class SearchService:
 
             out = collection_members_for_filter(self.repo, f.value) & ids
             for aid in out:
-                ev[aid] = [MatchEvidence(reason="COLLECTION", detail=f"member of collection {f.value}")]
+                ev[aid] = [dict(reason="COLLECTION", detail=f"member of collection {f.value}")]
             return out, ev
         # Decision-backed filters.
         qid, value = FILTER_QUESTION(f.key, f.value)
-        thr = catalog()["filter_threshold"]
+        thr = decision_threshold(qid, None if value == "yes" else value, purpose="filter")
         out = set()
-        rows = self.repo.query("SELECT asset_id, dtype, value, p_value, probs, status FROM decisions WHERE question_id=?",
-                               (qid,))
+        rows = self.repo.query("SELECT asset_id, dtype, value, p_value, probs, status, prob_kind, calibration_version"
+                               " FROM decisions WHERE question_id=?", (qid,))
         machine = {r["asset_id"]: r for r in rows}
         overrides = {r["asset_id"]: r["value"] for r in self.repo.query(
             "SELECT asset_id, value FROM metadata_overrides WHERE question_id=?", (qid,))}
@@ -279,24 +301,36 @@ class SearchService:
                 ok = overrides[aid] == value
                 if ok:
                     out.add(aid)
-                    ev[aid] = [MatchEvidence(reason=reason, detail=f"{qid} = {value} (your correction)",
-                                             score_kind="user_override")]
+                    ev[aid] = [dict(reason=reason, detail=f"{qid} = {value} (your correction)",
+                                    score_kind="user_override")]
                 continue
             r = machine.get(aid)
             if r is None or r["status"] != "complete":
                 continue
+            kind = (f"{r['prob_kind']}:{r['calibration_version']}" if r["calibration_version"]
+                    else r["prob_kind"]) if r["prob_kind"] else self._prob_kind(aid, qid)
             if r["dtype"] == "noul":
                 p = float(r["p_value"])
                 if value == "yes" and p >= thr:
                     out.add(aid)
-                    ev[aid] = [MatchEvidence(reason=reason, detail=f"{qid}: P(yes)={p:.2f} (uncalibrated)",
-                                             score=round(p, 4), score_kind="zero_shot_softmax_uncalibrated")]
-            elif r["value"] == value:
+                    ev[aid] = [dict(reason=reason, detail=f"{qid}: P(yes)={p:.2f} ≥ {thr:.2f} ({kind})",
+                                    score=round(p, 4), score_kind=kind)]
+            elif r["value"] == value and float(r["p_value"]) >= min(thr, 0.5):
                 p = float(r["p_value"])
                 out.add(aid)
-                ev[aid] = [MatchEvidence(reason=reason, detail=f"{qid} = {value}, P={p:.2f} (uncalibrated)",
-                                         score=round(p, 4), score_kind="zero_shot_softmax_uncalibrated")]
+                ev[aid] = [dict(reason=reason, detail=f"{qid} = {value}, P={p:.2f} ({kind})",
+                                score=round(p, 4), score_kind=kind)]
         return out, ev
+
+
+def _prob_kind_of(repo: Repository, asset_id: str, qid: str) -> str:
+    m = repo.query_one("SELECT m.payload FROM metadata_revisions m JOIN assets a ON a.id=m.asset_id AND"
+                       " a.metadata_revision=m.revision WHERE a.id=?", (asset_id,))
+    if not m:
+        return "unknown"
+    d = json.loads(m["payload"]).get("decisions", {}).get(qid, {})
+    kind = d.get("probability_kind", "unknown")
+    return f"{kind}:{d['calibration_version']}" if d.get("calibration_version") else kind
 
 
 def asset_status(repo: Repository, asset_id: str) -> str:
@@ -314,25 +348,36 @@ def asset_status(repo: Repository, asset_id: str) -> str:
     return "partial" if m and json.loads(m["payload"]).get("partial") else "complete"
 
 
-def _collapse_duplicates(repo: Repository, hits: list[SearchHit]) -> list[SearchHit]:
+def _materialize(items: list) -> list[MatchEvidence]:
+    out: list[MatchEvidence] = []
+    for it in items:
+        if callable(it):
+            out.extend(it())
+        elif isinstance(it, dict):
+            out.append(MatchEvidence(**it))
+        else:
+            out.append(it)
+    return out
+
+
+def _collapse_duplicates(repo: Repository, order: list[tuple[str, float]]):
+    """Keep the best-ranked member of each duplicate group; report the others as collapsed."""
     rows = repo.query(
         "SELECT m.collection_id, m.asset_id FROM memberships m JOIN collections c ON c.id=m.collection_id"
         " WHERE c.ctype='duplicate' AND c.retired_at IS NULL AND m.state!='excluded'")
     if not rows:
-        return hits
-    group_of: dict[str, str] = {}
-    for r in rows:
-        group_of[r["asset_id"]] = r["collection_id"]
-    out: list[SearchHit] = []
-    leader: dict[str, SearchHit] = {}
-    for h in hits:
-        g = group_of.get(h.asset_id)
+        return order, {}
+    group_of = {r["asset_id"]: r["collection_id"] for r in rows}
+    out: list[tuple[str, float]] = []
+    leader: dict[str, str] = {}
+    dups: dict[str, list[str]] = {}
+    for aid, sc in order:
+        g = group_of.get(aid)
         if g is None:
-            out.append(h)
+            out.append((aid, sc))
         elif g not in leader:
-            leader[g] = h
-            out.append(h)
+            leader[g] = aid
+            out.append((aid, sc))
         else:
-            leader[g].duplicate_count += 1
-            leader[g].duplicate_ids.append(h.asset_id)
-    return out
+            dups.setdefault(leader[g], []).append(aid)
+    return out, dups
