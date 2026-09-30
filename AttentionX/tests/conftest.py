@@ -118,3 +118,11 @@ def scored_segment(candidate_segment: CandidateSegment) -> ScoredSegment:
             "final": 0.88,
         },
     )
+
+
+# Keep app-level Library state out of the repository during tests.
+os.environ.setdefault(
+    "ATTENTIONX_LIBRARY_ROOT",
+    str(Path(os.getenv("TMPDIR", "/tmp")) / f"attentionx-test-library-{os.getpid()}"),
+)
+os.environ.setdefault("ATTENTIONX_WORKER", "none")

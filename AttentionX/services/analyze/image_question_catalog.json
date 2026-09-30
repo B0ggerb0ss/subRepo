@@ -1,0 +1,110 @@
+{
+  "catalog_version": "attentionx-image-questions/1.0",
+  "note": "Separate from the video/editor catalog (docs/reference/implementation_pack/question_catalog.json). Question ids are routing keys, not model context: every instruction names its target and evidence. Observed-content labels describe what is visible (including content inside an embedded image), never verified origin, geography, title or identity.",
+  "target": "target_image: the whole still image identified by asset id, in display orientation (EXIF applied), representative frame 0 for animations",
+  "groups": {
+    "A": {
+      "description": "Capture/source/media-context heads sharing one image encode",
+      "questions": {
+        "capture_type": {
+          "type": "choice",
+          "instructions": "How was target_image produced? Use pixel measurements (flat regions, axis-aligned structure, camera EXIF presence) and the visual encoding. Camera EXIF alone does not prove a photo; missing EXIF does not prove a screenshot.",
+          "options": {
+            "screenshot": "A captured software/device screen: UI chrome, rendered text, flat synthetic regions dominate.",
+            "photo": "A camera photograph of the physical world (including a photo of a screen).",
+            "scanned_document": "A scan or photo-like capture of a paper page dominated by printed text.",
+            "graphic": "A designed illustration, poster, meme, chart or logo that is not a screen capture."
+          },
+          "abstain_below": 0.45,
+          "evidence": ["pixels.metrics", "clip.global"]
+        },
+        "source_app": {
+          "type": "choice",
+          "instructions": "Which app's visible user interface appears in target_image? Only visible supported UI evidence counts (layout plus UI text such as action bars). A brand name inside body text, a slide or a PDF is NOT evidence. This is visible UI, not a verified upload origin.",
+          "options": {
+            "linkedin": "LinkedIn web/mobile UI: post card with reactions/Comment/Repost/Send bar, or job card with Easy Apply/Apply.",
+            "youtube": "YouTube player/watch page UI (subscribe button, views, video controls).",
+            "github": "GitHub UI (repository header, Code/Issues/Pull requests tabs).",
+            "whatsapp": "WhatsApp chat UI (chat bubbles with ticks, header with contact).",
+            "instagram": "Instagram post/feed UI (like/comment/share icons, username header).",
+            "browser": "A generic web browser window or page not matching a supported app.",
+            "other": "Another app's UI."
+          },
+          "requires": {"capture_type": ["screenshot"]},
+          "ui_evidence_required": ["linkedin", "youtube", "github", "whatsapp", "instagram"],
+          "abstain_below": 0.5,
+          "evidence": ["ocr.layout", "clip.global"]
+        },
+        "context.film_tv_frame": {
+          "type": "noul",
+          "instructions": "Is target_image a frame from a film or TV production (cinematic framing, graded footage, possibly subtitles)? Black bars alone are not sufficient. Do not infer the title.",
+          "yes_criteria": "Cinematic/broadcast footage frame is the main content.",
+          "no_criteria": "A photo, UI, document, or graphic; letterboxing without cinematic content.",
+          "evidence": ["clip.global", "pixels.metrics"]
+        },
+        "context.presentation_slide": {
+          "type": "noul",
+          "instructions": "Is target_image (or its main embedded content) a presentation slide?",
+          "yes_criteria": "Slide layout: title plus bullets/figure on a designed background.",
+          "no_criteria": "Not a slide.",
+          "evidence": ["ocr.layout", "clip.global"]
+        },
+        "context.source_code": {
+          "type": "noul",
+          "instructions": "Does target_image mainly show source code (editor, terminal, code block)?",
+          "yes_criteria": "Program text with code syntax is the main content (OCR shows code tokens).",
+          "no_criteria": "Prose, UI or photos without dominant code.",
+          "evidence": ["ocr.text", "clip.global"]
+        },
+        "context.job_posting": {
+          "type": "noul",
+          "instructions": "Does target_image show a job posting or hiring announcement (role, company, apply)?",
+          "yes_criteria": "Visible text advertises a job/role or hiring call.",
+          "no_criteria": "No job advertisement visible.",
+          "evidence": ["ocr.text"]
+        },
+        "context.article": {
+          "type": "noul",
+          "instructions": "Does target_image mainly show an article or long-form text post?",
+          "yes_criteria": "Multi-paragraph prose is the main content.",
+          "no_criteria": "Short UI text, code, photos or slides.",
+          "evidence": ["ocr.layout"]
+        },
+        "context.conversation": {
+          "type": "noul",
+          "instructions": "Does target_image show a chat/messaging conversation?",
+          "yes_criteria": "Message bubbles or alternating chat turns.",
+          "no_criteria": "No chat layout.",
+          "evidence": ["ocr.layout", "clip.global"]
+        },
+        "sufficiency.a": {
+          "type": "noul",
+          "instructions": "Was the evidence for Group A adequate (pixels decoded, OCR coverage complete or not needed, visual encoding available)?",
+          "yes_criteria": "All Group A evidence stages complete.",
+          "no_criteria": "A required stage is missing, partial or failed."
+        }
+      }
+    },
+    "B": {
+      "description": "Scene and topic heads sharing one image encode",
+      "questions": {
+        "scene.beach": {"type": "noul", "instructions": "Does target_image visibly show a beach/seashore scene?", "yes_criteria": "Sand/shoreline with sea or lake water.", "no_criteria": "No shoreline visible.", "evidence": ["clip.global"]},
+        "scene.city_street": {"type": "noul", "instructions": "Does target_image visibly show a city street scene?", "yes_criteria": "Urban street with buildings/road.", "no_criteria": "No street scene.", "evidence": ["clip.global"]},
+        "scene.forest": {"type": "noul", "instructions": "Does target_image visibly show a forest/woodland?", "yes_criteria": "Dense trees dominate.", "no_criteria": "No forest.", "evidence": ["clip.global"]},
+        "scene.mountain": {"type": "noul", "instructions": "Does target_image visibly show mountains?", "yes_criteria": "Mountain landscape visible.", "no_criteria": "No mountains.", "evidence": ["clip.global"]},
+        "scene.office": {"type": "noul", "instructions": "Does target_image visibly show an office interior?", "yes_criteria": "Desks, office furniture, workplace interior.", "no_criteria": "Not an office.", "evidence": ["clip.global"]},
+        "scene.kitchen": {"type": "noul", "instructions": "Does target_image visibly show a kitchen?", "yes_criteria": "Kitchen interior (counters, stove, cabinets).", "no_criteria": "Not a kitchen.", "evidence": ["clip.global"]},
+        "scene.classroom": {"type": "noul", "instructions": "Does target_image visibly show a classroom?", "yes_criteria": "Classroom interior (desks facing a board).", "no_criteria": "Not a classroom.", "evidence": ["clip.global"]},
+        "scene.stadium": {"type": "noul", "instructions": "Does target_image visibly show a stadium/sports arena?", "yes_criteria": "Stadium stands or playing field.", "no_criteria": "Not a stadium.", "evidence": ["clip.global"]},
+        "topic.hiring": {"type": "noul", "instructions": "Is the visible content about hiring, recruiting or job seeking?", "yes_criteria": "OCR/visual content discusses jobs, roles, recruiting.", "no_criteria": "Other topics.", "evidence": ["ocr.text", "clip.global"]},
+        "topic.ai_ml": {"type": "noul", "instructions": "Is the visible content about AI or machine learning?", "yes_criteria": "Discusses AI/ML models, data science, LLMs, training.", "no_criteria": "Other topics.", "evidence": ["ocr.text", "clip.global"]},
+        "topic.software_development": {"type": "noul", "instructions": "Is the visible content about software development?", "yes_criteria": "Programming, code, engineering practices.", "no_criteria": "Other topics.", "evidence": ["ocr.text", "clip.global"]},
+        "topic.education": {"type": "noul", "instructions": "Is the visible content about education or learning?", "yes_criteria": "Courses, teaching, studying.", "no_criteria": "Other topics.", "evidence": ["ocr.text", "clip.global"]},
+        "topic.entertainment": {"type": "noul", "instructions": "Is the visible content about entertainment (film, TV, music, games)?", "yes_criteria": "Entertainment media content.", "no_criteria": "Other topics.", "evidence": ["ocr.text", "clip.global"]},
+        "sufficiency.b": {"type": "noul", "instructions": "Was the evidence for Group B adequate (visual encoding available; OCR available for topic heads)?", "yes_criteria": "Required evidence stages complete.", "no_criteria": "Missing/partial evidence."}
+      }
+    }
+  },
+  "filter_threshold": 0.5,
+  "collection_threshold": 0.8
+}

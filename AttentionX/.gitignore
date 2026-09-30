@@ -217,3 +217,4 @@ data/test/*.mkv
 *.mkv
 .venv/
 reports/tmp/
+data/eval_sources/
