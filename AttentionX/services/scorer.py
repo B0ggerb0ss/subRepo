@@ -71,7 +71,7 @@ def _transcript_score(text: str) -> float:
     filler_count = sum(words.count(f) for f in _FILLER_WORDS)
     if words and filler_count / len(words) <= 0.1:
         score += 0.2
-    if re.search(r"\b[A-Z][a-zA-Z]+\b|\b\d+\b", text):
+    if _has_specifics(text):
         score += 0.2
     return min(1.0, score)
 
@@ -80,3 +80,20 @@ def _style_score(c: CandidateSegment, profile: StyleProfile) -> float:
     dur_delta = abs(c.duration - profile.mean_duration) / max(profile.mean_duration, 1.0)
     face_delta = abs(c.face_score - profile.mean_face_ratio)
     return max(0.0, 1.0 - (dur_delta + face_delta) / 2)
+
+
+_SENTENCE_START = re.compile(r"(?:^|[.!?]\s+)([A-Z][a-zA-Z]+)")
+
+
+def _has_specifics(text: str) -> bool:
+    """Numbers or capitalized words that are not merely sentence-initial.
+
+    Ordinary sentence capitalization is not a named-entity signal.
+    """
+    if re.search(r"\b\d+\b", text):
+        return True
+    initial_spans = {m.span(1) for m in _SENTENCE_START.finditer(text)}
+    return any(
+        m.span() not in initial_spans and m.group() != "I"
+        for m in re.finditer(r"\b[A-Z][a-zA-Z]+\b", text)
+    )

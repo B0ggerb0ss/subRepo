@@ -64,6 +64,21 @@ class FaceTrack:
     centers_y:        list[float]   # normalized [0, 1] vertical face center
     visibility_ratio: float         # fraction of frames with a detected face
     stability_score:  float         # 1 - normalized_variance of centers [0, 1]
+    # Per-sample detection mask. A detected face exactly at (0.5, 0.5) is valid,
+    # so coordinates must never double as an absence sentinel.
+    detected:         list[bool] = field(default_factory=list)
+    detector_status:  str = "unknown"  # "available" | "missing" | "unknown"
+
+    def detection_mask(self) -> list[bool]:
+        if len(self.detected) == len(self.frame_times):
+            return list(self.detected)
+        # Legacy tracks without a mask: only an all-visible track is unambiguous.
+        if self.visibility_ratio >= 1.0:
+            return [True] * len(self.frame_times)
+        return [
+            abs(cx - 0.5) > 1e-6 or abs(cy - 0.5) > 1e-6
+            for cx, cy in zip(self.centers_x, self.centers_y)
+        ]
 
 
 # ---------------------------------------------------------------------------

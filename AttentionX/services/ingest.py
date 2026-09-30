@@ -19,14 +19,16 @@ from utils.ffmpeg_utils import probe_streams, run_ffmpeg
 # F01 — Input Normalization
 # ---------------------------------------------------------------------------
 
-def normalize_video(input_path: str, output_dir: str) -> str:
-    """Transcode input_path to H.264/AAC MP4 in output_dir.
+def normalize_video(input_path: str, output_dir: str, require_audio: bool = False) -> str:
+    """Transcode input_path to H.264 (+AAC when audio exists) MP4 in output_dir.
 
     Returns the absolute path to output_norm.mp4.
     Raises NormalizationError on any failure.
 
-    TC-03 decision: videos with no audio stream raise NormalizationError.
-    Silent-track injection is out of scope for this MVP.
+    Silent sources are valid (the old TC-03 rejection is superseded, see
+    docs/architecture-decisions/ADR-007-legacy-video-fixes.md); callers check
+    ``has_audio_stream`` and skip ASR/energy for silent media. Pass
+    ``require_audio=True`` to restore the strict behavior.
     """
     norm_path = Path(output_dir) / "output_norm.mp4"
     cmd = [
@@ -51,7 +53,7 @@ def normalize_video(input_path: str, output_dir: str) -> str:
 
     if "video" not in codec_types:
         raise NormalizationError("no video stream in normalized output")
-    if "audio" not in codec_types:
+    if require_audio and "audio" not in codec_types:
         raise NormalizationError(
             "no audio stream in normalized output — "
             "input video may have no audio track"
@@ -70,6 +72,11 @@ def normalize_video(input_path: str, output_dir: str) -> str:
         )
 
     return str(norm_path.resolve())
+
+
+def has_audio_stream(path: str) -> bool:
+    streams = probe_streams(path).get("streams", [])
+    return any(s.get("codec_type") == "audio" for s in streams)
 
 
 # ---------------------------------------------------------------------------

@@ -14,18 +14,41 @@ from typing import Any
 import gradio as gr
 
 from models.settings import settings
-from services.audio_features import analyze_audio_energy
 from services.captions import generate_srt
-from services.face_track import track_faces
-from services.ingest import extract_audio, normalize_video
+from services.ingest import extract_audio, has_audio_stream, normalize_video
 from services.render import render_vertical_clip
-from services.scene_detect import detect_scenes
 from services.scorer import score_candidates
 from services.segment_builder import build_candidates
 from services.style_profile import build_style_profile
-from services.transcribe import transcribe
 from utils.ffmpeg_utils import get_duration
 from utils.io_utils import cleanup_temp, make_session_dirs
+
+
+# Heavy optional dependencies (faster-whisper, librosa, mediapipe,
+# scenedetect) are imported on first use so the image library starts without
+# them. The module-level names stay patchable for tests.
+def transcribe(wav_path: str, model_size: str = "base"):
+    from services.transcribe import transcribe as _transcribe
+
+    return _transcribe(wav_path, model_size=model_size)
+
+
+def analyze_audio_energy(wav_path: str, percentile: int = 75, merge_gap: float = 0.5):
+    from services.audio_features import analyze_audio_energy as _analyze
+
+    return _analyze(wav_path, percentile=percentile, merge_gap=merge_gap)
+
+
+def track_faces(norm_path: str, sample_fps: float = 2.0):
+    from services.face_track import track_faces as _track
+
+    return _track(norm_path, sample_fps=sample_fps)
+
+
+def detect_scenes(norm_path: str, threshold: float = 27.0):
+    from services.scene_detect import detect_scenes as _detect
+
+    return _detect(norm_path, threshold=threshold)
 
 Path("data/temp").mkdir(parents=True, exist_ok=True)
 Path("data/outputs").mkdir(parents=True, exist_ok=True)
@@ -78,18 +101,26 @@ def run_pipeline(
         progress(0.05, desc="Normalizing video...")
         norm_path = normalize_video(str(long_video_path), temp_dir)
 
-        progress(0.10, desc="Extracting audio...")
-        wav_path = extract_audio(norm_path, temp_dir)
+        transcript = []
+        energy_peaks = []
+        notes: list[str] = []
+        if has_audio_stream(norm_path):
+            progress(0.10, desc="Extracting audio...")
+            wav_path = extract_audio(norm_path, temp_dir)
 
-        progress(0.20, desc="Transcribing speech...")
-        transcript = transcribe(wav_path, model_size=settings.whisper_model_size)
+            progress(0.20, desc="Transcribing speech...")
+            transcript = transcribe(wav_path, model_size=settings.whisper_model_size)
+            if not transcript:
+                notes.append("no speech detected")
 
-        progress(0.35, desc="Analyzing audio energy...")
-        energy_peaks, _ = analyze_audio_energy(
-            wav_path,
-            percentile=settings.rms_peak_percentile,
-            merge_gap=settings.rms_merge_gap_sec,
-        )
+            progress(0.35, desc="Analyzing audio energy...")
+            energy_peaks, _ = analyze_audio_energy(
+                wav_path,
+                percentile=settings.rms_peak_percentile,
+                merge_gap=settings.rms_merge_gap_sec,
+            )
+        else:
+            notes.append("silent source: ASR and audio energy skipped")
 
         progress(0.50, desc="Tracking faces...")
         face_track = track_faces(norm_path, sample_fps=settings.face_sample_fps)
@@ -137,6 +168,8 @@ def run_pipeline(
         progress(1.0, desc="Done.")
         slots = (clip_paths + [None, None, None])[:3]
         status = f"Generated {len(clip_paths)} clip(s)."
+        if notes:
+            status += " (" + "; ".join(notes) + ")"
         return slots[0], slots[1], slots[2], clip_paths, status
 
     except Exception as e:
@@ -186,7 +219,7 @@ def build_demo() -> gr.Blocks:
 
 
 def launch_demo() -> None:
-    server_name = os.getenv("ATTENTIONX_SERVER_NAME", "0.0.0.0")
+    server_name = os.getenv("ATTENTIONX_SERVER_NAME", "127.0.0.1")
     server_port = int(os.getenv("ATTENTIONX_SERVER_PORT", "7860"))
     prevent_thread_lock = os.getenv("ATTENTIONX_NO_BLOCK", "0") == "1"
     demo.queue(default_concurrency_limit=1).launch(

@@ -1,0 +1,297 @@
+{
+  "catalog_version": "attentionx-questions/1.0",
+  "native_score_levels": "0-based; UI maps expected score to 1..5 by +1",
+  "groups": {
+    "asset": {
+      "kind": {
+        "type": "choice",
+        "instructions": "Classify target_asset from the supplied evidence. This is an editorial content kind, not a codec. If evidence is inadequate use other and mark information_sufficient low.",
+        "criteria": {
+          "footage": "Real-world moving imagery without a dominant interview, screen, slide, or graphics format.",
+          "screen_recording": "A captured software interface, desktop, or device screen is the main content.",
+          "talking_head": "A visible speaker addressing the viewer or interviewer dominates the asset.",
+          "slideshow": "Mostly discrete presentation slides with little live-camera movement.",
+          "motion_graphics": "Designed animation, kinetic typography, or graphic elements dominate.",
+          "photo_sequence": "A sequence of still photographs is presented over time.",
+          "other": "Audio-only, a standalone still, mixed formats without a dominant kind, or insufficient evidence."
+        }
+      },
+      "usable": {
+        "type": "score",
+        "instructions": "Rate technical edit usability of target_asset using measured blur, exposure, clipping, duration, audio, and coverage. Do not infer visual quality from transcript alone.",
+        "criteria": [
+          "1: Unusable for the intended edit; unreadable/corrupt or severe persistent loss of required picture/audio.",
+          "2: Major quality problems; usable only after substantial repair or in a very limited context.",
+          "3: Usable with visible/audible defects or partial coverage; review and ordinary cleanup required.",
+          "4: Good source quality; minor defects and no persistent loss of essential content.",
+          "5: Excellent source quality for this edit; relevant coverage and measurements support clean picture and required audio."
+        ]
+      },
+      "has_on_screen_text": {
+        "type": "noul",
+        "instructions": "Does target_asset contain readable on-screen text, supported by OCR or attached visual evidence? A skipped OCR stage is not negative evidence.",
+        "criteria": {
+          "true": "Readable text is observed in OCR or attached frames.",
+          "false": "Adequate reviewed visual/OCR coverage supports no readable on-screen text."
+        }
+      },
+      "has_speech": {
+        "type": "noul",
+        "instructions": "Does target_asset contain intelligible human speech, supported by local VAD/ASR evidence? Energy alone does not prove speech.",
+        "criteria": {
+          "true": "Intelligible speech is supported by local evidence.",
+          "false": "Adequate local audio evidence supports no intelligible speech."
+        }
+      },
+      "safety_review": {
+        "type": "choice",
+        "instructions": "Choose a coarse editorial review status from the evidence available for target_asset. Missing visual/audio coverage must use needs_review. This is not comprehensive moderation.",
+        "criteria": {
+          "clean": "Adequate reviewed evidence contains no configured coarse editorial concern.",
+          "needs_review": "Evidence is missing, uncertain, sensitive, or plausibly contains a configured concern.",
+          "reject": "Available evidence clearly meets an explicit configured editorial exclusion; never delete the asset automatically."
+        }
+      },
+      "bin_suggestion": {
+        "type": "choice",
+        "instructions": "Suggest one primary editorial bin for target_asset and the supplied focus. Infer no unseen content.",
+        "criteria": {
+          "interviews": "Interview or question-and-answer material.",
+          "broll": "Supporting visual coverage rather than the main narrative.",
+          "aroll": "Primary narrative, demonstration, or presenter material.",
+          "titles": "Title cards, overlays, slides primarily useful for text/introduction.",
+          "music": "Predominantly a music bed with no required spoken narrative.",
+          "sfx": "Short nonverbal sound effects or ambience for supporting an edit.",
+          "unusable": "Evidence supports technical unsuitability; uncertain material is reviewed, not automatically discarded."
+        }
+      },
+      "information_sufficient": {
+        "type": "noul",
+        "instructions": "Is the supplied extraction and modality coverage sufficient for the asset judgments requested? Text paths in frame_manifest are not images.",
+        "criteria": {
+          "true": "Required measurements and modality evidence are available for the requested judgments.",
+          "false": "Missing, failed, sparse, or conflicting evidence prevents a dependable judgment."
+        }
+      },
+      "content_complete": {
+        "type": "noul",
+        "instructions": "Does the observed narrative begin and end as a self-contained thought for the supplied focus? A silent B-roll or music bed can be complete for its intended purpose.",
+        "criteria": {
+          "true": "The material has a usable beginning and ending for its editorial role.",
+          "false": "It cuts off required context, speech, action, or resolution."
+        }
+      },
+      "usable_broll": {
+        "type": "noul",
+        "instructions": "Does the supplied evidence support using target_asset as supplemental visual coverage for focus? No pixels means visual suitability may be unknown.",
+        "criteria": {
+          "true": "Actual visual evidence supports supplemental coverage relevant to focus.",
+          "false": "Adequate visual evidence supports irrelevance or technical unsuitability."
+        }
+      }
+    },
+    "scene": {
+      "shot": {
+        "type": "choice",
+        "instructions": "For state.target_scene only, classify the primary shot scale from attached frames and observed subject extent. Without adequate pixels choose unknown.",
+        "criteria": {
+          "closeup": "A face, object, or small detail fills much of the frame.",
+          "medium": "A subject is shown at roughly waist/torso scale with some environment.",
+          "wide": "Environment dominates or a whole subject is shown with substantial surroundings.",
+          "insert": "A detail shot of an object or action that supports the narrative.",
+          "overhead": "The camera looks mainly downward from above the subject or work surface.",
+          "unknown": "No dependable pixels, ambiguous subject scale, or mixed framing."
+        }
+      },
+      "motion": {
+        "type": "choice",
+        "instructions": "For state.target_scene only, use timestamped motion measurements and consecutive attached frames. cutty describes frequent edits; do not confuse one still with motion evidence.",
+        "criteria": {
+          "static": "Little camera movement after excluding subject-only movement.",
+          "handheld": "Irregular camera shake or unstable framing dominates.",
+          "tracking": "Coherent following, panning, tilting, or camera travel dominates.",
+          "cutty": "Frequent shot changes dominate the supplied local scene group."
+        }
+      },
+      "highlight_value": {
+        "type": "score",
+        "instructions": "For target_scene and focus, rate editorial value using observed action, transcript, completeness, and technical usability. No promise of popularity.",
+        "criteria": [
+          "1: Irrelevant, unusable, or lacks the essential context for focus.",
+          "2: Weak supporting material, repetitive setup, or unresolved content.",
+          "3: Relevant and usable but routine; a possible supporting moment.",
+          "4: Clear, useful, engaging moment with enough context and a discernible point.",
+          "5: Strong self-contained payoff, insight, demonstration, or moment directly serving focus."
+        ]
+      },
+      "keep_in_rough_cut": {
+        "type": "noul",
+        "instructions": "Should target_scene be proposed for a human-reviewed rough cut given focus, repetition, completeness, and technical evidence?",
+        "criteria": {
+          "true": "Useful and sufficiently complete material merits proposing a keep.",
+          "false": "Irrelevant, redundant, or clearly unsuitable material merits a drop proposal."
+        }
+      },
+      "information_sufficient": {
+        "type": "noul",
+        "instructions": "Is evidence for target_scene adequate for the requested visual and editorial judgments?",
+        "criteria": {
+          "true": "Timestamped required visual/text/audio evidence exists.",
+          "false": "Sparse frames, no text/audio, or failed extraction leaves relevant uncertainty."
+        }
+      },
+      "content_complete": {
+        "type": "noul",
+        "instructions": "Is the target_scene narrative/action internally complete for focus?",
+        "criteria": {
+          "true": "The point or action is understandable without a missing lead-in or ending.",
+          "false": "It starts mid-thought/action or omits necessary resolution."
+        }
+      },
+      "caption_matches_frame": {
+        "type": "noul",
+        "instructions": "Do the supplied caption/OCR or ASR excerpts actually refer to the visible content at matching timestamps? Only evaluate if both text and pixels exist.",
+        "criteria": {
+          "true": "Matched timestamped text is consistent with visible content.",
+          "false": "Matched timestamped text conflicts with visible content."
+        }
+      },
+      "visually_salient": {
+        "type": "noul",
+        "instructions": "Does target_scene contain a visually distinct, useful moment for focus, based on actual attached frames?",
+        "criteria": {
+          "true": "An observed subject/action provides distinct visual value.",
+          "false": "Adequate visual evidence shows no distinct value for this focus."
+        }
+      }
+    },
+    "text": {
+      "is_filler": {
+        "type": "noul",
+        "instructions": "For target_window only, is the observed text mainly nonessential disfluency, repetition, or setup relative to focus?",
+        "criteria": {
+          "true": "Mostly nonessential filler for this edit.",
+          "false": "Substantive material or necessary context."
+        }
+      },
+      "is_hook": {
+        "type": "noul",
+        "instructions": "For target_window only, does observed text provide a concrete opening reason to keep watching, without inventing a headline?",
+        "criteria": {
+          "true": "A relevant question, surprising fact, payoff preview, or clear stakes occurs.",
+          "false": "No useful opening hook is present."
+        }
+      },
+      "topic_label": {
+        "type": "choice",
+        "instructions": "For target_window only, choose one closed editorial topic-role label.",
+        "criteria": {
+          "introduction": "Sets context or introduces the main subject.",
+          "explanation": "Explains a principle, cause, or procedure.",
+          "demonstration": "Shows or walks through an example/action.",
+          "comparison": "Compares alternatives or cases.",
+          "conclusion": "Resolves, summarizes, or closes a point.",
+          "promotion": "Primarily advertises or asks for a conversion.",
+          "off_topic": "Material is unrelated to supplied focus.",
+          "other": "None of the above or insufficient evidence."
+        }
+      },
+      "keep": {
+        "type": "noul",
+        "instructions": "For target_window only, should this observed content be proposed for the rough cut?",
+        "criteria": {
+          "true": "Relevant and substantive content merits a keep proposal.",
+          "false": "Unnecessary repetition, irrelevance, or unusable context merits a drop proposal."
+        }
+      },
+      "chapter_boundary": {
+        "type": "noul",
+        "instructions": "At the start of target_window, does the observed text begin a new substantive topic compared with previous_window?",
+        "criteria": {
+          "true": "A topic transition is evidenced.",
+          "false": "The same topic continues or context is insufficient."
+        }
+      }
+    },
+    "project": {
+      "structure_guess": {
+        "type": "choice",
+        "instructions": "Classify the observed clip sequence in target_project, using clip order, evidence coverage, and focus.",
+        "criteria": {
+          "tutorial": "Ordered teaching or procedural explanation.",
+          "vlog": "Personal narrative or observational diary.",
+          "ad": "Promotional sequence with a conversion goal.",
+          "documentary_short": "A factual narrative combining contextual coverage or interviews.",
+          "raw_dump": "No dependable structure or insufficient sequencing evidence."
+        }
+      },
+      "needs_wide": {
+        "type": "noul",
+        "instructions": "Does target_project lack wide coverage needed for its declared focus and edit intent?",
+        "criteria": {
+          "true": "A needed establishing/wide view is absent.",
+          "false": "Wide coverage is present or not needed."
+        }
+      },
+      "needs_closeup": {
+        "type": "noul",
+        "instructions": "Does target_project lack closeup/detail coverage needed for its declared focus and edit intent?",
+        "criteria": {
+          "true": "A needed detail view is absent.",
+          "false": "Closeup/detail coverage is present or not needed."
+        }
+      },
+      "needs_broll": {
+        "type": "noul",
+        "instructions": "Does target_project lack supplemental B-roll needed for its declared focus and edit intent?",
+        "criteria": {
+          "true": "Needed supplemental coverage is absent.",
+          "false": "Supporting footage is present or not needed."
+        }
+      },
+      "needs_title": {
+        "type": "noul",
+        "instructions": "Does target_project lack a title/context card needed for its declared focus and audience?",
+        "criteria": {
+          "true": "A needed context/title element is absent.",
+          "false": "Required context is already clear or a title is unnecessary."
+        }
+      },
+      "has_opening_hook": {
+        "type": "noul",
+        "instructions": "Does the observed opening of target_project give a concrete reason to keep watching?",
+        "criteria": {
+          "true": "The opening establishes relevant stakes, question, or payoff.",
+          "false": "No useful opening motivation is evidenced."
+        }
+      },
+      "narrative_coherence": {
+        "type": "score",
+        "instructions": "Rate coherence of the observed ordered clip sequence, accounting for intentional genre and missing evidence.",
+        "criteria": [
+          "1: Incoherent or essential context is absent.",
+          "2: Some relation among clips but major unexplained jumps.",
+          "3: Understandable with noticeable ordering/context problems.",
+          "4: Clear sequence with minor transitions to improve.",
+          "5: Strongly coherent sequence serving the stated focus."
+        ]
+      },
+      "information_sufficient": {
+        "type": "noul",
+        "instructions": "Is the supplied ordered clip evidence sufficient to assess project structure and coverage?",
+        "criteria": {
+          "true": "All relevant active clip ranges and expected modalities are represented.",
+          "false": "Missing clips, failed extraction, or sparse evidence blocks judgment."
+        }
+      }
+    }
+  },
+  "dispatch": {
+    "asset_questions": 9,
+    "scene_group": "two scenes x 8 explicitly targeted questions = 16",
+    "text_group": "two 15-45s windows x 5 explicitly targeted questions = 10",
+    "project_questions": 8,
+    "maximum_questions_per_call": 20,
+    "pixel_question_gate": "Require actual attached pixels; frame paths alone never satisfy this gate."
+  }
+}

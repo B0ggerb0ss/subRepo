@@ -1,0 +1,117 @@
+{
+  "manifest_version": "attentionx-models/1",
+  "note": "Explicit, pinned provisioning. scripts/provision_models.py downloads each artifact once, verifies sha256 (and upstream md5 where published), and writes data/models/<model>/PROVISIONED.json. Analysis and search never download. Hosts reachable from the 2026-09-30 build environment are recorded; Hugging Face and download.pytorch.org were blocked there (HTTP 403).",
+  "models": {
+    "clip_vit_b32_laion2b_s34b_b79k": {
+      "role": "image_text_embedding",
+      "capability": "embeddings",
+      "architecture": "OpenCLIP ViT-B-32",
+      "pretrained": "laion2b_s34b_b79k",
+      "export": "ONNX export published by Jina clip-as-service (clip_server 0.8.3 model table: 'ViT-B-32::laion2b-s34b-b79k')",
+      "embedding_dim": 512,
+      "normalization": "l2",
+      "preprocessing": "RGB, bicubic resize, 224x224, mean=(0.48145466,0.4578275,0.40821073) std=(0.26862954,0.26130258,0.27577711); views defined in services/analyze/embeddings.py (PREPROCESS_VERSION)",
+      "tokenizer": "OpenAI CLIP byte-level BPE (bpe_simple_vocab_16e6), context length 77",
+      "license": "OpenCLIP code MIT; LAION-2B-trained weights released by LAION/OpenCLIP under MIT. LAION-2B is web-scraped; review dataset terms before commercial use.",
+      "language_scope": "English-first; other languages untested",
+      "files": {
+        "visual.onnx": {
+          "url": "https://clip-as-service.s3.us-east-2.amazonaws.com/models-436c69702d61732d53657276696365/onnx/ViT-B-32-laion2b-s34b-b79k/visual.onnx",
+          "size": 351534028,
+          "md5_upstream": "a2d4cbd1cf2632cd09ffce9b40bfd8bd",
+          "sha256": "87f8c86517852321654a20652edd8e12524c5ac4d95ac2b34b7ecc9e895c8211"
+        },
+        "textual.onnx": {
+          "url": "https://clip-as-service.s3.us-east-2.amazonaws.com/models-436c69702d61732d53657276696365/onnx/ViT-B-32-laion2b-s34b-b79k/textual.onnx",
+          "size": 253873313,
+          "md5_upstream": "84af5ae53da56464c76e67fe50fddbe9",
+          "sha256": "fc165a1458d398a241f7f01519d70f854ef0ec7a9685a54648ca9f829b9cb80e"
+        },
+        "bpe_simple_vocab_16e6.txt.gz": {
+          "url": "https://files.pythonhosted.org/packages/37/b5/41c315ccd94ca332ead3e832e83eee343ab245005c3e43d9d3e75eae34eb/open_clip_torch-3.3.0-py3-none-any.whl",
+          "extract_from_zip": "open_clip/bpe_simple_vocab_16e6.txt.gz",
+          "archive_sha256": "c549ad5ed6bfc119cc11105033c0a2b9d7a2a4afeb40a58a09aab3da1a0043ce",
+          "size": 1356917,
+          "sha256": "924691ac288e54409236115652ad4aa250f48203de50a9e4722a6ecd48d6804a"
+        }
+      }
+    },
+    "minilm_l6_v2": {
+      "role": "ocr_text_embedding",
+      "capability": "ocr_text_embeddings",
+      "architecture": "sentence-transformers/all-MiniLM-L6-v2 (BERT, 6 layers)",
+      "export": "ONNX export published by Qdrant fastembed (GCS bucket qdrant-fastembed)",
+      "embedding_dim": 384,
+      "normalization": "mean pooling over attention mask, then l2",
+      "max_tokens": 256,
+      "license": "Apache-2.0",
+      "language_scope": "English only; do not rely on it for Hindi/Arabic queries",
+      "archive": {
+        "url": "https://storage.googleapis.com/qdrant-fastembed/sentence-transformers-all-MiniLM-L6-v2.tar.gz",
+        "size": 83180180,
+        "md5_upstream": "112d6b874f7492e87f9e103229d08ed0",
+        "sha256": "2735afe656e156af64ed603dbb1c96f3cae7f937286a8feb27fff7fa979f6a77",
+        "strip_prefix": "fast-all-MiniLM-L6-v2/"
+      },
+      "files": {
+        "model.onnx": {"sha256": "bbd7b466f6d58e646fdc2bd5fd67b2f5e93c0b687011bd4548c420f7bd46f0c5"},
+        "tokenizer.json": {"sha256": "da0e79933b9ed51798a3ae27893d3c5fa4a201126cef75586296df9b4d2c62a0"},
+        "config.json": {"sha256": "1b4d8e2a3988377ed8b519a31d8d31025a25f1c5f8606998e8014111438efcd7"}
+      }
+    },
+    "efficientdet_lite0": {
+      "role": "object_detection",
+      "capability": "objects",
+      "architecture": "EfficientDet-Lite0 (MediaPipe Tasks ObjectDetector), float32, 320x320",
+      "ontology": "COCO 2017 detection labels embedded in the TFLite metadata (read at load time, never assumed dense 0..79)",
+      "substitution_note": "Replaces the prompt's torchvision ssdlite320_mobilenet_v3_large suggestion: download.pytorch.org was blocked (403) in the build environment. Same role: one small fixed-taxonomy COCO baseline.",
+      "license": "Apache-2.0 (MediaPipe model card)",
+      "files": {
+        "efficientdet_lite0.tflite": {
+          "url": "https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float32/1/efficientdet_lite0.tflite",
+          "size": 13836895,
+          "sha256": "40338edf5ec70d43e318b0a716a84d4564cd1802759a7a07170c7e43796dbf58"
+        }
+      }
+    },
+    "blaze_face_short_range": {
+      "role": "face_location (legacy video crop anchor)",
+      "capability": "faces",
+      "architecture": "BlazeFace short range (MediaPipe Tasks FaceDetector), float16",
+      "license": "Apache-2.0 (MediaPipe model card)",
+      "files": {
+        "blaze_face_short_range.tflite": {
+          "url": "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite",
+          "size": 229746,
+          "sha256": "b4578f35940bf5a1a655214a1cce5cab13eba73c1297cd78e1a04c2380b0152f"
+        }
+      }
+    }
+  },
+  "bundled": {
+    "rapidocr_onnxruntime": {
+      "role": "ocr",
+      "capability": "ocr",
+      "package": "rapidocr_onnxruntime==1.4.4 (PyPI wheel; models ship inside the wheel)",
+      "models": {
+        "ch_PP-OCRv4_det_infer.onnx": "d2a7720d45a54257208b1e13e36a8479894cb74155a5efe29462512d42f49da9",
+        "ch_PP-OCRv4_rec_infer.onnx": "48fc40f24f6d2a207a2b1091d3437eb3cc3eb6b676dc3ef9c37384005483683b",
+        "ch_ppocr_mobile_v2.0_cls_infer.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c"
+      },
+      "language_scope": "PP-OCRv4 'ch' recognizer: Simplified Chinese + Latin/English. Not Arabic/Devanagari.",
+      "license": "Apache-2.0"
+    },
+    "tesseract_eng": {
+      "role": "ocr_fallback",
+      "capability": "ocr_fallback",
+      "package": "Ubuntu 24.04 apt: tesseract-ocr 5.3.4, tesseract-ocr-eng 1:4.1.0-2",
+      "language_scope": "English",
+      "license": "Apache-2.0"
+    }
+  },
+  "unavailable": {
+    "onejev": "OmniJev/OneJev weights and server not provisionable: github.com and huggingface.co blocked (403) in the build environment. Typed context decisions use the documented CLIP zero-shot decision backend instead; see docs/architecture-decisions/ADR-005-context-decisions.md.",
+    "faster_whisper_weights": "Whisper CTranslate2 weights are fetched from Hugging Face by faster-whisper; blocked. The library installs, ASR stays unavailable until weights are provisioned elsewhere.",
+    "multilingual_ocr": "Arabic/Devanagari PP-OCRv5 recognizers not provisioned; those scripts are unsupported and shown as such."
+  }
+}

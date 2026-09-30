@@ -51,5 +51,7 @@ def test_generate_srt_wraps_lines_to_42_characters(tmp_path: Path) -> None:
     srt_path = generate_srt(scored, 1, str(tmp_path))
     blocks = parse_srt(srt_path)
 
-    assert len(blocks) == 1
-    assert max(len(line) for line in blocks[0]["lines"]) <= 42
+    # 98 characters need three 42-char lines: two cues, no dropped tokens.
+    assert len(blocks) == 2
+    assert all(len(line) <= 42 for block in blocks for line in block["lines"])
+    assert " ".join(line for b in blocks for line in b["lines"]).split() == long_text.split()

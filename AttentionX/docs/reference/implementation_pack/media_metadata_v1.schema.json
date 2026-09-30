@@ -1,0 +1,1037 @@
+{
+  "$defs": {
+    "AudioMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "loudness": {
+          "$ref": "#/$defs/Observation_dict_str__Union_float__NoneType___"
+        },
+        "silence_ranges": {
+          "$ref": "#/$defs/Observation_list_TimeRange__"
+        },
+        "speech_prior": {
+          "$ref": "#/$defs/Observation_Union_float__NoneType__"
+        },
+        "transcript_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Transcript Ref"
+        },
+        "transcript": {
+          "$ref": "#/$defs/Observation_list_TextLayer__"
+        }
+      },
+      "required": [
+        "loudness",
+        "silence_ranges",
+        "speech_prior",
+        "transcript_ref",
+        "transcript"
+      ],
+      "title": "AudioMetadata",
+      "type": "object"
+    },
+    "ClipBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "title": "Project Id",
+          "type": "string"
+        },
+        "clip_id": {
+          "title": "Clip Id",
+          "type": "string"
+        },
+        "source_in": {
+          "minimum": 0,
+          "title": "Source In",
+          "type": "number"
+        },
+        "source_out": {
+          "exclusiveMinimum": 0,
+          "title": "Source Out",
+          "type": "number"
+        },
+        "timeline_start": {
+          "minimum": 0,
+          "title": "Timeline Start",
+          "type": "number"
+        },
+        "playback_rate": {
+          "default": 1,
+          "exclusiveMinimum": 0,
+          "title": "Playback Rate",
+          "type": "number"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "project_id",
+        "clip_id",
+        "source_in",
+        "source_out",
+        "timeline_start",
+        "provenance"
+      ],
+      "title": "ClipBinding",
+      "type": "object"
+    },
+    "Decision": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "noul",
+            "choice",
+            "score"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Value"
+        },
+        "probs": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Probs",
+          "type": "object"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "confidence_kind": {
+          "enum": [
+            "vendor_statistic",
+            "derived_margin"
+          ],
+          "title": "Confidence Kind",
+          "type": "string"
+        },
+        "raw_model_score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Model Score"
+        },
+        "legend": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Legend"
+        },
+        "latency_ms": {
+          "minimum": 0,
+          "title": "Latency Ms",
+          "type": "number"
+        },
+        "request_id": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "question_catalog_version": {
+          "title": "Question Catalog Version",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "skipped",
+            "missing",
+            "error",
+            "not_applicable",
+            "partial"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "type",
+        "value",
+        "probs",
+        "model",
+        "confidence_kind",
+        "latency_ms",
+        "request_id",
+        "question_catalog_version",
+        "evidence_refs",
+        "status",
+        "provenance"
+      ],
+      "title": "Decision",
+      "type": "object"
+    },
+    "FrameRef": {
+      "additionalProperties": false,
+      "properties": {
+        "frame_id": {
+          "title": "Frame Id",
+          "type": "string"
+        },
+        "scene_id": {
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "t": {
+          "minimum": 0,
+          "title": "T",
+          "type": "number"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "why_sampled": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Why Sampled",
+          "type": "array"
+        },
+        "width": {
+          "exclusiveMinimum": 0,
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "exclusiveMinimum": 0,
+          "title": "Height",
+          "type": "integer"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "frame_id",
+        "scene_id",
+        "t",
+        "path",
+        "why_sampled",
+        "width",
+        "height",
+        "provenance"
+      ],
+      "title": "FrameRef",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "OCRRegion": {
+      "additionalProperties": false,
+      "properties": {
+        "region_id": {
+          "title": "Region Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "polygon": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "maxItems": 4,
+          "minItems": 4,
+          "title": "Polygon",
+          "type": "array"
+        },
+        "reading_order": {
+          "minimum": 0,
+          "title": "Reading Order",
+          "type": "integer"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language"
+        },
+        "granularity": {
+          "default": "line",
+          "enum": [
+            "line",
+            "word"
+          ],
+          "title": "Granularity",
+          "type": "string"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "region_id",
+        "text",
+        "polygon",
+        "reading_order",
+        "provenance"
+      ],
+      "title": "OCRRegion",
+      "type": "object"
+    },
+    "Observation_JsonValue_": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "value",
+        "provenance"
+      ],
+      "title": "Observation[JsonValue]",
+      "type": "object"
+    },
+    "Observation_Union_float__NoneType__": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "value",
+        "provenance"
+      ],
+      "title": "Observation[Union[float, NoneType]]",
+      "type": "object"
+    },
+    "Observation_dict_str__JsonValue__": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Value",
+          "type": "object"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "value",
+        "provenance"
+      ],
+      "title": "Observation[dict[str, JsonValue]]",
+      "type": "object"
+    },
+    "Observation_dict_str__Union_float__NoneType___": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Value",
+          "type": "object"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "value",
+        "provenance"
+      ],
+      "title": "Observation[dict[str, Union[float, NoneType]]]",
+      "type": "object"
+    },
+    "Observation_list_OCRRegion__": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "items": {
+            "$ref": "#/$defs/OCRRegion"
+          },
+          "title": "Value",
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "value",
+        "provenance"
+      ],
+      "title": "Observation[list[OCRRegion]]",
+      "type": "object"
+    },
+    "Observation_list_TextLayer__": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "items": {
+            "$ref": "#/$defs/TextLayer"
+          },
+          "title": "Value",
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "value",
+        "provenance"
+      ],
+      "title": "Observation[list[TextLayer]]",
+      "type": "object"
+    },
+    "Observation_list_TimeRange__": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "items": {
+            "$ref": "#/$defs/TimeRange"
+          },
+          "title": "Value",
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "value",
+        "provenance"
+      ],
+      "title": "Observation[list[TimeRange]]",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "source_modality": {
+          "enum": [
+            "bytes",
+            "video",
+            "audio",
+            "image",
+            "text",
+            "timeline",
+            "mixed"
+          ],
+          "title": "Source Modality",
+          "type": "string"
+        },
+        "source_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "extractor": {
+          "title": "Extractor",
+          "type": "string"
+        },
+        "extractor_version": {
+          "title": "Extractor Version",
+          "type": "string"
+        },
+        "decision_model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decision Model"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "confidence_kind": {
+          "enum": [
+            "deterministic_parse",
+            "raw_recognizer",
+            "heuristic",
+            "model_probability",
+            "vendor_statistic",
+            "derived_margin",
+            "unavailable"
+          ],
+          "title": "Confidence Kind",
+          "type": "string"
+        },
+        "calibration_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Calibration Version"
+        },
+        "cost_class": {
+          "enum": [
+            "cached",
+            "cpu_probe",
+            "cpu_pixels",
+            "cpu_decode",
+            "cpu_ocr",
+            "cpu_asr",
+            "local_vision",
+            "cloud_decision",
+            "control"
+          ],
+          "title": "Cost Class",
+          "type": "string"
+        },
+        "cache_key": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Cache Key",
+          "type": "string"
+        },
+        "failure_modes": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Failure Modes",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "skipped",
+            "missing",
+            "error",
+            "not_applicable",
+            "partial"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_modality",
+        "source_refs",
+        "extractor",
+        "extractor_version",
+        "confidence_kind",
+        "cost_class",
+        "cache_key",
+        "failure_modes",
+        "status"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Scene": {
+      "additionalProperties": false,
+      "properties": {
+        "t0": {
+          "minimum": 0,
+          "title": "T0",
+          "type": "number"
+        },
+        "t1": {
+          "minimum": 0,
+          "title": "T1",
+          "type": "number"
+        },
+        "scene_id": {
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "keyframe": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FrameRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "additional_keyframes": {
+          "items": {
+            "$ref": "#/$defs/FrameRef"
+          },
+          "title": "Additional Keyframes",
+          "type": "array"
+        },
+        "metrics": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Observation_JsonValue_"
+          },
+          "title": "Metrics",
+          "type": "object"
+        },
+        "ocr": {
+          "$ref": "#/$defs/Observation_list_OCRRegion__"
+        },
+        "decisions": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Decision"
+          },
+          "title": "Decisions",
+          "type": "object"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "t0",
+        "t1",
+        "scene_id",
+        "keyframe",
+        "metrics",
+        "ocr",
+        "decisions",
+        "provenance"
+      ],
+      "title": "Scene",
+      "type": "object"
+    },
+    "SearchTag": {
+      "additionalProperties": false,
+      "properties": {
+        "tag": {
+          "title": "Tag",
+          "type": "string"
+        },
+        "probability": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Probability",
+          "type": "number"
+        },
+        "decision_ref": {
+          "title": "Decision Ref",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "tag",
+        "probability",
+        "decision_ref",
+        "provenance"
+      ],
+      "title": "SearchTag",
+      "type": "object"
+    },
+    "StageError": {
+      "additionalProperties": false,
+      "properties": {
+        "stage": {
+          "title": "Stage",
+          "type": "string"
+        },
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "retryable": {
+          "title": "Retryable",
+          "type": "boolean"
+        },
+        "source_ref": {
+          "title": "Source Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "stage",
+        "code",
+        "message",
+        "retryable",
+        "source_ref"
+      ],
+      "title": "StageError",
+      "type": "object"
+    },
+    "TextLayer": {
+      "additionalProperties": false,
+      "properties": {
+        "layer_id": {
+          "title": "Layer Id",
+          "type": "string"
+        },
+        "t_start": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "T Start"
+        },
+        "t_end": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "T End"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "ocr",
+            "asr",
+            "srt",
+            "vtt",
+            "project_title",
+            "user_text"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "conf": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Conf"
+        },
+        "source_ref": {
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "layer_id",
+        "text",
+        "source",
+        "source_ref",
+        "provenance"
+      ],
+      "title": "TextLayer",
+      "type": "object"
+    },
+    "TimeRange": {
+      "additionalProperties": false,
+      "properties": {
+        "t0": {
+          "minimum": 0,
+          "title": "T0",
+          "type": "number"
+        },
+        "t1": {
+          "minimum": 0,
+          "title": "T1",
+          "type": "number"
+        }
+      },
+      "required": [
+        "t0",
+        "t1"
+      ],
+      "title": "TimeRange",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "MediaMetadata/1.0",
+      "default": "MediaMetadata/1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "asset_id": {
+      "title": "Asset Id",
+      "type": "string"
+    },
+    "content_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Content Hash",
+      "type": "string"
+    },
+    "analyzer_version": {
+      "title": "Analyzer Version",
+      "type": "string"
+    },
+    "analyzed_at": {
+      "format": "date-time",
+      "title": "Analyzed At",
+      "type": "string"
+    },
+    "asset_kind": {
+      "enum": [
+        "video",
+        "audio",
+        "image",
+        "text"
+      ],
+      "title": "Asset Kind",
+      "type": "string"
+    },
+    "illustrative": {
+      "default": false,
+      "title": "Illustrative",
+      "type": "boolean"
+    },
+    "technical": {
+      "$ref": "#/$defs/Observation_dict_str__JsonValue__"
+    },
+    "timeline": {
+      "items": {
+        "$ref": "#/$defs/ClipBinding"
+      },
+      "title": "Timeline",
+      "type": "array"
+    },
+    "video_scenes": {
+      "items": {
+        "$ref": "#/$defs/Scene"
+      },
+      "title": "Video Scenes",
+      "type": "array"
+    },
+    "audio": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AudioMetadata"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "image": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Observation_dict_str__JsonValue__"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "text_layers": {
+      "items": {
+        "$ref": "#/$defs/TextLayer"
+      },
+      "title": "Text Layers",
+      "type": "array"
+    },
+    "decisions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Decision"
+      },
+      "title": "Decisions",
+      "type": "object"
+    },
+    "search_tags": {
+      "items": {
+        "$ref": "#/$defs/SearchTag"
+      },
+      "title": "Search Tags",
+      "type": "array"
+    },
+    "coverage": {
+      "$ref": "#/$defs/Observation_dict_str__JsonValue__"
+    },
+    "stage_status": {
+      "additionalProperties": {
+        "enum": [
+          "complete",
+          "skipped",
+          "missing",
+          "error",
+          "not_applicable",
+          "partial"
+        ],
+        "type": "string"
+      },
+      "title": "Stage Status",
+      "type": "object"
+    },
+    "errors": {
+      "items": {
+        "$ref": "#/$defs/StageError"
+      },
+      "title": "Errors",
+      "type": "array"
+    },
+    "partial": {
+      "title": "Partial",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "asset_id",
+    "content_hash",
+    "analyzer_version",
+    "analyzed_at",
+    "asset_kind",
+    "technical",
+    "timeline",
+    "video_scenes",
+    "audio",
+    "image",
+    "text_layers",
+    "decisions",
+    "search_tags",
+    "coverage",
+    "stage_status",
+    "errors",
+    "partial"
+  ],
+  "title": "MediaMetadata",
+  "type": "object"
+}

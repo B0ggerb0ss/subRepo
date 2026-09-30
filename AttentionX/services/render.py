@@ -1,9 +1,15 @@
 """F10 — Vertical Crop and Render
 
 Spec reference: Features/F10-vertical-render/SPEC.md
+
+Range contract: the output covers exactly [start, end) of the source. Trim,
+crop and caption burn-in happen in one re-encoding pass with input seeking, so
+the subtitle clock starts at 0 together with the clip (no keyframe-aligned
+stream copy that can start early or run long).
 """
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -15,6 +21,45 @@ OUTPUT_WIDTH = 720
 OUTPUT_HEIGHT = 1280
 
 
+@dataclass(frozen=True)
+class VerticalGeometry:
+    mode: str      # "crop" when the source is wider than 9:16, else "pad"
+    crop_w: int
+    crop_h: int
+    crop_x: int
+    filter: str    # ffmpeg filter chain producing OUTPUT_WIDTH x OUTPUT_HEIGHT
+
+
+def plan_vertical_geometry(width: int, height: int, face_cx: float) -> VerticalGeometry:
+    """Aspect-fit a source frame into 9:16.
+
+    Wider sources get a face-anchored 9:16 crop. Sources that are already
+    narrower than 9:16 cannot be cropped to that ratio; they are scaled to fit
+    and padded instead (the audit reproduced a crash here).
+    """
+    if width <= 0 or height <= 0:
+        raise RenderError(f"invalid source dimensions {width}x{height}")
+    crop_w = (int(height * 9 / 16) // 2) * 2
+    if crop_w >= 2 and crop_w <= width:
+        cx_px = min(max(face_cx, 0.0), 1.0) * width
+        crop_x = int(max(0, min(cx_px - crop_w / 2, width - crop_w)))
+        chain = f"crop={crop_w}:{height}:{crop_x}:0,scale={OUTPUT_WIDTH}:{OUTPUT_HEIGHT}"
+        return VerticalGeometry("crop", crop_w, height, crop_x, chain)
+    chain = (
+        f"scale={OUTPUT_WIDTH}:{OUTPUT_HEIGHT}:force_original_aspect_ratio=decrease,"
+        f"pad={OUTPUT_WIDTH}:{OUTPUT_HEIGHT}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1"
+    )
+    return VerticalGeometry("pad", width, height, 0, chain)
+
+
+def _escape_filter_path(path: Path) -> str:
+    # Escape characters that are special inside an ffmpeg filter argument.
+    s = str(path)
+    for ch in ("\\", ":", "'", ",", "[", "]", ";"):
+        s = s.replace(ch, "\\" + ch)
+    return s
+
+
 def render_vertical_clip(
     norm_path: str,
     scored_seg: ScoredSegment,
@@ -24,64 +69,58 @@ def render_vertical_clip(
     temp_dir: str,
     output_dir: str,
 ) -> str:
-    """Trim, crop to 9:16, burn captions, export H.264 MP4.
+    """Trim, crop/pad to 9:16, burn captions, export H.264 MP4.
 
     Returns path to the final clip. Raises RenderError on failure.
     """
     c = scored_seg.candidate
-    temp_seg = Path(temp_dir) / f"seg_{clip_index}.mp4"
+    if not c.end > c.start >= 0:
+        raise RenderError(f"invalid clip range [{c.start}, {c.end})")
     output = Path(output_dir) / f"clip_{clip_index}.mp4"
 
-    # Step 1: Trim segment from normalized source
-    run_ffmpeg([
-        "-ss", str(c.start), "-to", str(c.end),
-        "-i", norm_path,
-        "-c", "copy", "-y", str(temp_seg),
-    ])
-
-    # Step 2: Compute face-aware crop rectangle
     W, H = get_video_dimensions(norm_path)
-    crop_w = max(2, (int(H * 9 / 16) // 2) * 2)
-    crop_h = H
-    cx = _mean_face_cx(face_track, c.start, c.end)
-    cx_px = cx * W
-    crop_x = int(max(0, min(cx_px - crop_w / 2, W - crop_w)))
+    geometry = plan_vertical_geometry(W, H, _mean_face_cx(face_track, c.start, c.end))
+    has_audio = _has_audio(norm_path)
 
-    # Step 3: Crop + burn captions + transcode to final output
+    vf = geometry.filter
     srt_abs = Path(srt_path).resolve()
-    vf = (
-        f"crop={crop_w}:{crop_h}:{crop_x}:0,"
-        f"scale={OUTPUT_WIDTH}:{OUTPUT_HEIGHT},"
-        f"subtitles={srt_abs}"
-    )
-    run_ffmpeg([
-        "-i", str(temp_seg),
+    if srt_abs.exists() and srt_abs.stat().st_size > 0:
+        vf += f",subtitles={_escape_filter_path(srt_abs)}"
+
+    args = [
+        "-ss", f"{c.start:.3f}",
+        "-i", norm_path,
+        "-t", f"{c.end - c.start:.3f}",
         "-vf", vf,
         "-c:v", "libx264", "-preset", "fast", "-crf", "23",
         "-pix_fmt", "yuv420p",
-        "-c:a", "aac", "-b:a", "128k",
-        "-movflags", "+faststart",
-        "-y", str(output),
-    ])
+    ]
+    args += ["-c:a", "aac", "-b:a", "128k"] if has_audio else ["-an"]
+    args += ["-movflags", "+faststart", "-y", str(output)]
+    run_ffmpeg(args)
 
-    _verify_output(str(output), OUTPUT_WIDTH, OUTPUT_HEIGHT)
+    _verify_output(str(output), OUTPUT_WIDTH, OUTPUT_HEIGHT, require_audio=has_audio)
     return str(output.resolve())
 
 
+def _has_audio(path: str) -> bool:
+    streams = probe_streams(path).get("streams", [])
+    return any(s.get("codec_type") == "audio" for s in streams)
+
+
 def _mean_face_cx(face_track: FaceTrack, start: float, end: float) -> float:
-    in_window = [
+    mask = face_track.detection_mask()
+    visible = [
         cx
-        for t, cx in zip(face_track.frame_times, face_track.centers_x)
-        if start <= t <= end
+        for t, cx, detected in zip(face_track.frame_times, face_track.centers_x, mask)
+        if detected and start <= t <= end
     ]
-    # Filter out fallback center values (0.5) to avoid biasing the crop
-    visible = [cx for cx in in_window if abs(cx - 0.5) > 1e-6]
     if visible:
         return float(np.mean(visible))
     return 0.5
 
 
-def _verify_output(path: str, expected_w: int, expected_h: int) -> None:
+def _verify_output(path: str, expected_w: int, expected_h: int, require_audio: bool = True) -> None:
     streams = probe_streams(path)
     video = next(
         (s for s in streams.get("streams", []) if s["codec_type"] == "video"), None
@@ -91,7 +130,7 @@ def _verify_output(path: str, expected_w: int, expected_h: int) -> None:
     )
     if not video:
         raise RenderError(f"no video stream in rendered output: {path}")
-    if audio is None:
+    if require_audio and audio is None:
         raise RenderError(f"no audio stream in rendered output: {path}")
     if video.get("codec_name") != "h264":
         raise RenderError(
@@ -99,8 +138,7 @@ def _verify_output(path: str, expected_w: int, expected_h: int) -> None:
         )
     w = int(video["width"])
     h = int(video["height"])
-    if w * 16 != h * 9:
+    if (w, h) != (expected_w, expected_h):
         raise RenderError(
-            f"output aspect ratio is not 9:16 — got {w}x{h} "
-            f"(expected {expected_w}x{expected_h})"
+            f"output size is not {expected_w}x{expected_h} 9:16 — got {w}x{h}"
         )

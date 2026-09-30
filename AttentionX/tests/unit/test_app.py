@@ -60,6 +60,7 @@ def test_run_pipeline_success_with_mocks(
         lambda path: cleanup_calls.append(path) or __import__("shutil").rmtree(path, ignore_errors=True),
     )
     monkeypatch.setattr("app.normalize_video", lambda path, out: str(tmp_path / "norm.mp4"))
+    monkeypatch.setattr("app.has_audio_stream", lambda path: True)
     monkeypatch.setattr("app.extract_audio", lambda path, out: str(tmp_path / "audio.wav"))
     monkeypatch.setattr(
         "app.transcribe",

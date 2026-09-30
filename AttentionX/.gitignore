@@ -209,3 +209,11 @@ __marimo__/
 # AttentionX runtime artifacts
 data/temp/
 data/outputs/
+data/library/
+data/models/*
+!data/models/.gitkeep
+data/test/*.mp4
+data/test/*.mkv
+*.mkv
+.venv/
+reports/tmp/
