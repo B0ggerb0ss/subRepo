@@ -18,7 +18,9 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-SCHEMA_VERSION = "MediaMetadata/1.1"
+SCHEMA_VERSION = "MediaMetadata/1.1"          # images
+VIDEO_SCHEMA_VERSION = "MediaMetadata/1.2"    # adds video/speech records and frame anchors
+SUPPORTED_VERSIONS = (SCHEMA_VERSION, VIDEO_SCHEMA_VERSION)
 
 StageStatus = Literal[
     "complete", "cached", "skipped", "disabled", "missing", "partial", "error",
@@ -98,6 +100,9 @@ class OCRRegion(StrictModel):
     granularity: Literal["line", "word"] = "line"
     recognizer_score: float | None = Field(default=None, ge=0, le=1)
     tile_ids: list[str]
+    # 1.2 (video): the keyframe this line was read from; polygon is normalized to that frame.
+    frame_id: str | None = None
+    t_s: float | None = Field(default=None, ge=0)
 
     @model_validator(mode="after")
     def _geometry(self):
@@ -137,6 +142,8 @@ class ObjectObservation(StrictModel):
     class_id: int | None
     box: tuple[float, float, float, float]   # normalized display x0,y0,x1,y1
     detector_score: float = Field(ge=0, le=1)
+    frame_id: str | None = None                # 1.2 (video): source keyframe
+    t_s: float | None = Field(default=None, ge=0)
 
     @model_validator(mode="after")
     def _box(self):
@@ -205,11 +212,68 @@ class EmbeddingRecord(StrictModel):
     dim: int = Field(gt=0)
     normalization: Literal["l2"]
     preprocess_version: str
-    view_kind: Literal["global_letterbox", "region", "ocr_chunk", "ocr_body"]
+    view_kind: Literal["global_letterbox", "region", "ocr_chunk", "ocr_body", "frame_global"]
     view_id: str
     region: tuple[float, float, float, float] | None = None
     source_refs: list[str] = Field(default_factory=list)
     storage_ref: str
+    frame_id: str | None = None                # 1.2 (video): source keyframe
+    t_s: float | None = Field(default=None, ge=0)
+
+
+class Keyframe(StrictModel):
+    """A sampled video frame that was analyzed. ``t_s``..``t_end_s`` is the span it stands for."""
+    frame_id: str
+    t_s: float = Field(ge=0)
+    t_end_s: float = Field(ge=0)
+    frame_ref: str                              # managed derived/ path (never a host path)
+    width: int = Field(gt=0)
+    height: int = Field(gt=0)
+    reason: Literal["first", "content_change", "max_gap"]
+
+
+class VideoObservation(StrictModel):
+    container: str
+    mime: str
+    duration_s: float = Field(gt=0)
+    fps: float | None = None
+    width: int = Field(gt=0)                    # display size (rotation applied)
+    height: int = Field(gt=0)
+    rotation: int = 0
+    video_codec: str | None = None
+    has_audio: bool
+    audio_codec: str | None = None
+    sample_fps: float = Field(gt=0)             # decode rate for keyframe selection
+    keyframe_policy: str
+    min_gap_s: float | None = Field(default=None, gt=0)   # effective spacing (budget spread over the video)
+    max_gap_s: float | None = Field(default=None, gt=0)
+    keyframes: list[Keyframe]
+    poster_ref: str | None = None
+    coverage_complete: bool                     # False when the keyframe cap stopped sampling
+    coverage_end_s: float = Field(ge=0)
+    incomplete_reason: str | None = None
+    provenance: Provenance
+
+    @model_validator(mode="after")
+    def _frames(self):
+        if len({k.frame_id for k in self.keyframes}) != len(self.keyframes):
+            raise ValueError("duplicate keyframe ids")
+        if not self.coverage_complete and not self.incomplete_reason:
+            raise ValueError("incomplete keyframe coverage needs a reason")
+        return self
+
+
+class SpeechSegment(StrictModel):
+    start_s: float = Field(ge=0)
+    end_s: float = Field(ge=0)
+    text: str                                   # verbatim ASR output
+
+
+class SpeechResult(StrictModel):
+    engine: str
+    model: str
+    segments: list[SpeechSegment]
+    provenance: Provenance
 
 
 class StageError(StrictModel):
@@ -220,7 +284,7 @@ class StageError(StrictModel):
 
 
 class MediaMetadata(StrictModel):
-    schema_version: Literal["MediaMetadata/1.1"] = SCHEMA_VERSION
+    schema_version: Literal["MediaMetadata/1.1", "MediaMetadata/1.2"] = SCHEMA_VERSION
     asset_id: str
     content_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
     asset_kind: Literal["image", "video"]
@@ -228,6 +292,8 @@ class MediaMetadata(StrictModel):
     analyzed_at: datetime
     illustrative: bool = False
     image: ImageObservation | None = None
+    video: VideoObservation | None = None       # 1.2
+    speech: SpeechResult | None = None          # 1.2
     ocr: OCRResult | None = None
     objects: ObjectResult | None = None
     decisions: dict[str, Decision] = Field(default_factory=dict)
@@ -251,6 +317,13 @@ class MediaMetadata(StrictModel):
                 raise ValueError(f"decision key {qid} != question_id {d.question_id}")
         if self.ocr and self.stage_status.get("ocr") not in {"complete", "cached", "partial"}:
             raise ValueError("OCR payload present but ocr stage not complete/partial")
+        anchored = (self.video is not None or self.speech is not None
+                    or any(r.frame_id for r in (self.ocr.regions if self.ocr else []))
+                    or any(e.frame_id for e in self.embeddings))
+        if anchored and self.schema_version != VIDEO_SCHEMA_VERSION:
+            raise ValueError("video/speech records and frame anchors require MediaMetadata/1.2")
+        if self.video is not None and self.asset_kind != "video":
+            raise ValueError("video record on a non-video asset")
         return self
 
 
@@ -259,12 +332,12 @@ class MediaMetadata(StrictModel):
 # ---------------------------------------------------------------------------
 
 def load_metadata(payload: dict | str) -> MediaMetadata:
-    """Load 1.1 directly, or migrate a 1.0 document (see docs/metadata.md)."""
+    """Load 1.1/1.2 directly, or migrate a 1.0 document (see docs/metadata.md)."""
     import json
 
     data = json.loads(payload) if isinstance(payload, str) else payload
     version = data.get("schema_version")
-    if version == SCHEMA_VERSION:
+    if version in SUPPORTED_VERSIONS:
         return MediaMetadata.model_validate(data)
     if version == "MediaMetadata/1.0":
         return _migrate_v10(data)
@@ -308,7 +381,7 @@ def project_to_v1(meta: MediaMetadata) -> dict:
     def prov(stage: str, kind: str = "deterministic_parse") -> dict:
         p = meta.stage_provenance.get(stage)
         return {
-            "source_modality": "image",
+            "source_modality": p.source_modality if p and p.source_modality in {"image", "video", "text"} else "image",
             "source_refs": [f"asset:{meta.asset_id}"],
             "extractor": p.extractor if p else stage,
             "extractor_version": p.extractor_version if p else "unknown",
@@ -323,19 +396,36 @@ def project_to_v1(meta: MediaMetadata) -> dict:
         }
 
     img = meta.image
+    vid = meta.video
     technical = {
-        "format": img.format if img else None,
-        "width": img.display_width if img else None,
-        "height": img.display_height if img else None,
+        "format": img.format if img else (vid.container if vid else None),
+        "width": img.display_width if img else (vid.width if vid else None),
+        "height": img.display_height if img else (vid.height if vid else None),
     }
+    if vid:
+        technical["duration_s"] = vid.duration_s
+    spans = {k.frame_id: (k.t_s, k.t_end_s) for k in vid.keyframes} if vid else {}
+    tech_stage = "pixels" if img else "keyframes"
     text_layers = []
     if meta.ocr:
         for r in sorted(meta.ocr.regions, key=lambda r: r.reading_order):
+            t0, t1 = spans.get(r.frame_id, (None, None))
+            if t0 is not None and t1 <= t0:
+                t0 = t1 = None
             text_layers.append({
-                "layer_id": r.region_id, "t_start": None, "t_end": None,
+                "layer_id": r.region_id, "t_start": t0, "t_end": t1,
                 "text": r.raw_text, "source": "ocr", "conf": r.recognizer_score,
                 "source_ref": f"asset:{meta.asset_id}#ocr/{r.region_id}",
                 "provenance": prov("ocr", "raw_recognizer"),
+            })
+    if meta.speech:
+        for i, seg in enumerate(meta.speech.segments):
+            if seg.end_s <= seg.start_s:
+                continue
+            text_layers.append({
+                "layer_id": f"asr{i:04d}", "t_start": seg.start_s, "t_end": seg.end_s, "text": seg.text,
+                "source": "asr", "conf": None, "source_ref": f"asset:{meta.asset_id}#asr/{i}",
+                "provenance": prov("transcript", "raw_recognizer"),
             })
     decisions = {}
     for qid, d in meta.decisions.items():
@@ -364,7 +454,7 @@ def project_to_v1(meta: MediaMetadata) -> dict:
         "analyzed_at": meta.analyzed_at.isoformat(),
         "asset_kind": meta.asset_kind,
         "illustrative": meta.illustrative,
-        "technical": {"value": technical, "provenance": prov("pixels")},
+        "technical": {"value": technical, "provenance": prov(tech_stage)},
         "timeline": [],
         "video_scenes": [],
         "audio": None,

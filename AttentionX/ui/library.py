@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw
 
 from models.search import SearchHit
 from services.search.service import SearchError
-from ui.inspector import evidence_markdown, render_inspector_image
+from ui.inspector import clock, evidence_markdown, render_inspector_image, video_frame_for
 
 PAGE = 40
 # Listing events share one ordered queue slot: a slow earlier listing (e.g. the
@@ -59,15 +59,21 @@ def fresh(items):
 
 def gallery_items(lib, offset: int = 0):
     assets = lib.list_assets(offset=offset, limit=PAGE)
-    items = [(_thumb(lib, a), f"{STATUS_BADGE.get(a['status'], '')} {a['filename'] or a['id']}") for a in assets]
+    items = [(_thumb(lib, a), f"{STATUS_BADGE.get(a['status'], '')} {_kind_badge(a)}{a['filename'] or a['id']}")
+             for a in assets]
     ids = [a["id"] for a in assets]
     return items, ids
 
 
-def _caption(lib, hit: SearchHit, names: dict[str, str]) -> str:
+def _kind_badge(a: dict) -> str:
+    return f"▶ {clock(a.get('duration_s'))} · " if a.get("kind") == "video" else ""
+
+
+def _caption(lib, hit: SearchHit, names: dict[str, str], asset: dict | None = None) -> str:
     codes = sorted({e.reason for e in hit.reasons})
     dup = f" (+{hit.duplicate_count} dup)" if hit.duplicate_count else ""
-    return f"{names.get(hit.asset_id, hit.asset_id)} · {', '.join(codes)}{dup}"
+    at = next((f" @ {clock(e.t_s)}" for e in hit.reasons if e.t_s is not None), "")
+    return f"{_kind_badge(asset or {})}{names.get(hit.asset_id, hit.asset_id)}{at} · {', '.join(codes)}{dup}"
 
 
 def run_search(lib, query: str, collapse: bool, offset: int):
@@ -83,8 +89,8 @@ def run_search(lib, query: str, collapse: bool, offset: int):
         names[aid] = d["original_filename"] if d else aid
     items = []
     for h in resp.hits:
-        a = lib.get_asset(h.asset_id)
-        items.append((_thumb(lib, a.model_dump()), _caption(lib, h, names)))
+        a = lib.get_asset(h.asset_id).model_dump()
+        items.append((_thumb(lib, a), _caption(lib, h, names, a)))
     notes = [f"Search #{next(_SEARCH_SEQ)} · **{resp.total_candidates}** result(s) · channels: "
              f"{', '.join(resp.channels_used) or 'filters only'} · {resp.elapsed_ms:.0f} ms"]
     notes += [f"⚠️ {d}" for d in resp.degraded]
@@ -95,13 +101,15 @@ def run_search(lib, query: str, collapse: bool, offset: int):
 
 def inspector_outputs(lib, asset_id: str | None, hit_json: dict | None, show_all_ocr: bool = False):
     if not asset_id:
-        return None, "", "", {}, [], "", "", "", 0, ""
+        return None, "", "", {}, [], "", "", "", 0, "", None
     hit = SearchHit.model_validate(hit_json) if hit_json else None
-    image = render_inspector_image(lib, asset_id, hit, show_all_ocr=show_all_ocr)
     detail = lib.asset_detail(asset_id)
     meta = detail["metadata"] or {}
+    frame = video_frame_for(meta, hit) if detail["asset"]["kind"] == "video" else None
+    image = render_inspector_image(lib, asset_id, hit, show_all_ocr=show_all_ocr, frame=frame)
     ocr = meta.get("ocr") or {}
-    ocr_lines = "\n".join(r["raw_text"] for r in sorted(ocr.get("regions", []), key=lambda r: r["reading_order"]))
+    ocr_lines = "\n".join((f"[{clock(r['t_s'])}] " if r.get("t_s") is not None else "") + r["raw_text"]
+                          for r in sorted(ocr.get("regions", []), key=lambda r: r["reading_order"]))
     if ocr and not ocr.get("complete"):
         ocr_lines = f"[incomplete OCR coverage: {ocr.get('incomplete_reason')}]\n" + ocr_lines
     if not ocr:
@@ -113,6 +121,17 @@ def inspector_outputs(lib, asset_id: str | None, hit_json: dict | None, show_all
     names = ", ".join(i["original_filename"] for i in detail["imports"])
     head = (f"**{names}** · `{asset_id}` · status {STATUS_BADGE.get(detail['status'], '')} {detail['status']}"
             f" · revision {detail['asset']['metadata_revision']}")
+    video = meta.get("video")
+    if detail["asset"]["kind"] == "video":
+        head += f"\n\n▶ **Video** {clock(detail['asset'].get('duration_s'))}"
+        if video:
+            head += f" · {len(video['keyframes'])} analyzed keyframe(s)"
+            if not video["coverage_complete"]:
+                head += f" · ⚠️ {video['incomplete_reason']}"
+        if frame:
+            head += (f" · showing keyframe `{frame['frame_id']}` at **{clock(frame['t_s'])}**"
+                     f" (stands for {clock(frame['t_s'])}–{clock(frame['t_end_s'])})")
+        head += " · usable in the **Generate clips** tab"
     decisions = meta.get("decisions") or {}
     dec_lines = []
     for qid, d in sorted(decisions.items()):
@@ -127,7 +146,7 @@ def inspector_outputs(lib, asset_id: str | None, hit_json: dict | None, show_all
     if dec_lines:
         ev += "\n\n**Typed decisions** (uncalibrated unless stated)\n" + "\n".join(dec_lines)
     return (image, head, ev, meta, stages, ann["title"], ann["notes"], ", ".join(ann["tags"]), ann["revision"],
-            ocr_lines)
+            ocr_lines, frame["frame_id"] if frame else None)
 
 
 def build_library_tab(lib) -> None:
@@ -136,13 +155,16 @@ def build_library_tab(lib) -> None:
     selected = gr.State(None)
     selected_hit = gr.State(None)
     offset_state = gr.State(0)
+    frame_state = gr.State(None)   # keyframe shown in the inspector (videos)
 
     caps = gr.Markdown(capability_markdown(lib), elem_id="ax-capabilities")
     with gr.Row():
         with gr.Column(scale=4):
             with gr.Accordion("Import", open=True):
-                upload = gr.File(label="Images (JPEG, PNG, WebP)", file_count="multiple",
-                                 file_types=[".jpg", ".jpeg", ".png", ".webp"], elem_id="ax-upload")
+                upload = gr.File(label="Images (JPEG, PNG, WebP) or videos (MP4, MOV, WebM, MKV)",
+                                 file_count="multiple",
+                                 file_types=[".jpg", ".jpeg", ".png", ".webp", ".mp4", ".m4v", ".mov", ".webm",
+                                             ".mkv"], elem_id="ax-upload")
                 import_btn = gr.Button("Import files", variant="primary", elem_id="ax-import")
                 folder = gr.Textbox(label="Or import an explicitly selected local folder", placeholder="/path/to/folder",
                                     elem_id="ax-folder")
@@ -160,7 +182,7 @@ def build_library_tab(lib) -> None:
             notes = gr.Markdown(elem_id="ax-search-notes")
             gallery = gr.Gallery(label="Library", columns=5, height=520, allow_preview=False, elem_id="ax-gallery")
         with gr.Column(scale=5):
-            head = gr.Markdown("_Select an image to inspect it._", elem_id="ax-inspector-head")
+            head = gr.Markdown("_Select an item to inspect it._", elem_id="ax-inspector-head")
             with gr.Row():
                 show_all = gr.Checkbox(label="Show all OCR boxes", value=False, elem_id="ax-show-all-ocr")
             inspector_img = gr.Image(label="Inspector", interactive=False, height=460, elem_id="ax-inspector")
@@ -187,7 +209,8 @@ def build_library_tab(lib) -> None:
                     save_btn = gr.Button("Save annotations", elem_id="ax-save-ann")
                     save_msg = gr.Markdown(elem_id="ax-save-msg")
                 with gr.Tab("Metadata"):
-                    meta_json = gr.JSON(label="Active metadata revision (MediaMetadata/1.1)", elem_id="ax-meta")
+                    meta_json = gr.JSON(label="Active metadata revision (MediaMetadata/1.1 images, 1.2 videos)",
+                                        elem_id="ax-meta")
                 with gr.Tab("Similar"):
                     gr.Markdown("Find visually similar images. Optionally restrict to a region "
                                 "(normalized 0–1 box on the displayed image). Similarity is ranked, not a "
@@ -200,7 +223,8 @@ def build_library_tab(lib) -> None:
                     similar_btn = gr.Button("Find similar", elem_id="ax-similar")
     timer = gr.Timer(3.0)
 
-    inspector_out = [inspector_img, head, evidence, meta_json, stages, title, note, tags, ann_rev, ocr_text]
+    inspector_out = [inspector_img, head, evidence, meta_json, stages, title, note, tags, ann_rev, ocr_text,
+                     frame_state]
 
     def _inspect_first(listing, show=False):
         """(gallery, ids, hits, notes, offset) -> + (selected, selected_hit, *inspector) for the first item."""
@@ -213,7 +237,7 @@ def build_library_tab(lib) -> None:
 
     def _browse(offset=0):
         items, ids = gallery_items(lib, offset)
-        return fresh(items), ids, [], f"{lib.count_assets()} image(s) in the library.", offset
+        return fresh(items), ids, [], f"{lib.count_assets()} item(s) in the library.", offset
 
     def _import(files):
         if not files:
@@ -234,7 +258,7 @@ def build_library_tab(lib) -> None:
 
     def _batch_md(batch):
         md = (f"Imported batch `{batch.id}`: **{batch.admitted} new**, {batch.reused} already in library, "
-              f"{batch.rejected} rejected. Analysis queued for {len(batch.job_ids)} image(s).")
+              f"{batch.rejected} rejected. Analysis queued for {len(batch.job_ids)} item(s).")
         if batch.rejections:
             md += "\n" + "\n".join(f"- `{r.filename}`: {r.code} — {r.message}" for r in batch.rejections[:20])
         return md
@@ -261,7 +285,7 @@ def build_library_tab(lib) -> None:
 
     def _save(aid, t, n, tg, rev, hit, show):
         if not aid:
-            return "Select an image first.", *inspector_outputs(lib, None, None)
+            return "Select an item first.", *inspector_outputs(lib, None, None)
         from services.library.repository import StaleRevisionError
 
         try:
@@ -273,13 +297,13 @@ def build_library_tab(lib) -> None:
 
     def _retry(aid):
         if not aid:
-            return "Select an image first."
+            return "Select an item first."
         job = lib.retry_asset(aid)
         return f"Queued job `{job}`; unchanged stages will be served from cache."
 
     def _cancel(aid):
         if not aid:
-            return "Select an image first."
+            return "Select an item first."
         jobs = [j for j in lib.jobs_for(aid) if j.status in {"queued", "running"}]
         if not jobs:
             return "No queued or running job for this image."
@@ -288,14 +312,14 @@ def build_library_tab(lib) -> None:
 
     def _delete(aid):
         if not aid:
-            return "Select an image first.", *_browse()[:4]
+            return "Select an item first.", *_browse()[:4]
         lib.delete_asset(aid)
         return ("Removed from the library (search excludes it now). Your original file was not touched; "
                 "the managed copy is kept until purged."), *_browse()[:4]
 
-    def _similar(aid, x0, y0, x1, y1, coll):
+    def _similar(aid, x0, y0, x1, y1, coll, frame_id):
         if not aid:
-            return gr.update(), gr.update(), gr.update(), "Select an image first.", 0
+            return gr.update(), gr.update(), gr.update(), "Select an item first.", 0
         crop = None
         box = tuple(float(v or 0) for v in (x0, y0, x1, y1))
         if box != (0.0, 0.0, 1.0, 1.0):
@@ -303,8 +327,8 @@ def build_library_tab(lib) -> None:
                 return gr.update(), gr.update(), gr.update(), "⚠️ Crop must satisfy 0 ≤ x0 < x1 ≤ 1 and 0 ≤ y0 < y1 ≤ 1.", 0
             crop = box
         try:
-            resp = lib.find_similar(aid, crop=crop, limit=PAGE)
-        except SearchError as e:
+            resp = lib.find_similar(aid, crop=crop, limit=PAGE, frame_id=frame_id)
+        except (SearchError, ValueError) as e:
             return gr.update(), gr.update(), gr.update(), f"⚠️ {e}", 0
         items = [(_thumb(lib, lib.get_asset(h.asset_id).model_dump()),
                   ", ".join(sorted({e.reason for e in h.reasons}))) for h in resp.hits]
@@ -349,8 +373,8 @@ def build_library_tab(lib) -> None:
     delete_btn.click(_with_msg(_delete), [selected],
                      [stage_msg, gallery, ids_state, hits_state, notes, selected, selected_hit] + inspector_out,
                      **LISTING)
-    similar_btn.click(lambda *a: first(_similar(*a)), [selected, cx0, cy0, cx1, cy1, collapse], list_out,
-                      **LISTING)
+    similar_btn.click(lambda *a: first(_similar(*a)), [selected, cx0, cy0, cx1, cy1, collapse, frame_state],
+                      list_out, **LISTING)
     timer.tick(_tick, [selected, selected_hit, show_all], [caps])
 
     # Expose a few components for other tabs (collections) to reuse.

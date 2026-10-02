@@ -20,7 +20,7 @@ from typing import Callable
 from services.analyze.catalog import decision_threshold
 from services.library.repository import Repository
 
-TAXONOMY_VERSION = "smart-collections/1.0"
+TAXONOMY_VERSION = "smart-collections/1.1"
 
 
 @dataclass(frozen=True)
@@ -95,7 +95,15 @@ _jobs = _any(_noul("context.job_posting"), _noul("topic.hiring"))
 _tech = _any(_noul("topic.ai_ml"), _noul("topic.software_development"))
 
 
+def _is_video(dv: dict):
+    if dv.get("_kind") == "video":
+        return True, None, {"asset_kind": "video"}
+    return False, None, {}
+
+
 def _needs_review(dv: dict):
+    if dv.get("_kind") == "video":
+        return False, None, {}  # image context questions are not asked of videos
     cap = dv.get("capture_type")
     if cap is None:
         return True, None, {"capture_type": "not decided"}
@@ -121,6 +129,7 @@ SMART_RULES: list[SmartRule] = [
     SmartRule("conversations", "Conversations", None, _noul("context.conversation")),
     SmartRule("screenshots", "All screenshots", None, _choice("capture_type", "screenshot")),
     SmartRule("photos", "Photos", None, _choice("capture_type", "photo")),
+    SmartRule("videos", "Videos", None, _is_video),
     SmartRule("needs_review", "Needs review (unclassified)", None, _needs_review),
 ]
 RULES_BY_KEY = {r.key: r for r in SMART_RULES}
@@ -162,8 +171,10 @@ def refresh_smart_memberships(repo: Repository, library_id: str, asset_ids: list
     added = removed = 0
     now = time.time()
     for aid in asset_ids:
-        alive = repo.query_one("SELECT deleted_at, metadata_revision FROM assets WHERE id=?", (aid,))
+        alive = repo.query_one("SELECT deleted_at, metadata_revision, kind FROM assets WHERE id=?", (aid,))
         dv = decisions_view(repo, aid) if alive and alive["deleted_at"] is None and alive["metadata_revision"] else None
+        if dv is not None:
+            dv["_kind"] = alive["kind"]
         with repo.write() as c:
             for r in SMART_RULES:
                 cid = smart_collection_id(library_id, r.key)

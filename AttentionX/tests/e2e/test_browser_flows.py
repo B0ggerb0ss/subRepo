@@ -158,6 +158,18 @@ def pick_collection(page, text: str, attempts: int = 6) -> None:
     raise AssertionError(f"collection option containing {text!r} never appeared")
 
 
+def fill_stable(page, sel: str, value: str, attempts: int = 10) -> None:
+    """Fill a textbox and make sure no late UI update (e.g. a collection view
+    re-rendering its label box) overwrote it before the next click sends it."""
+    box = page.locator(sel)
+    for _ in range(attempts):
+        box.fill(value)
+        time.sleep(0.8)
+        if box.input_value() == value:
+            return
+    raise AssertionError(f"{sel} kept being overwritten")
+
+
 def _wait_analyzed(page, n: int, timeout: float = 600) -> None:
     deadline = time.time() + timeout
     while time.time() < deadline:
@@ -273,11 +285,11 @@ def test_08_collections_rename_exclude_export(setup):
     page = setup["page"]
     page.get_by_role("tab", name="Collections").click()
     pick_collection(page, "LinkedIn screenshots")
-    page.locator("#ax-col-label textarea").fill("My LinkedIn saves")
+    fill_stable(page, "#ax-col-label textarea", "My LinkedIn saves")
     page.locator("#ax-col-rename").click()
     page.wait_for_function("document.querySelector('#ax-col-head').innerText.includes('My LinkedIn saves')")
     member = page.locator("#ax-col-members tbody tr").first.locator("td").first.inner_text().strip()
-    page.locator("#ax-col-assets textarea").fill(member)
+    fill_stable(page, "#ax-col-assets textarea", member)
     page.locator("#ax-col-exclude").click()
     page.wait_for_function("document.querySelector('#ax-col-msg').innerText.includes('exclude applied')")
     assert "excluded" in page.locator("#ax-col-members").inner_text()
@@ -300,3 +312,63 @@ def test_09_restart_recovers_library_and_corrections(setup):
     page.get_by_role("tab", name="Collections").click()
     pick_collection(page, "My LinkedIn saves")
     assert "excluded" in page.locator("#ax-col-members").inner_text()
+
+
+def test_10_video_import_timed_text_search_and_generate(setup):
+    """M8 in the browser: import a video, find its on-screen text at the right time,
+    inspect the keyframe highlight, then generate clips from the library copy."""
+    from tests.support.video_factory import make_text_video
+
+    page, base = setup["page"], setup["base"]
+    vid = make_text_video(base / "vidup" / "MVI_0042.mp4",
+                          [{"text": "quarterly roadmap review", "start": 4, "end": 8, "x": 120, "y": 220}],
+                          duration=12.0, audio=True)
+    page.goto(setup["app"].url)
+    page.get_by_role("tab", name="Library").click()
+    page.locator("#ax-upload input[type=file]").set_input_files([str(vid["path"])])
+    page.wait_for_timeout(1500)
+    page.locator("#ax-import").click()
+    page.wait_for_function("document.querySelector('#ax-import-result').innerText.includes('1 new')")
+    deadline = time.time() + 600
+    while time.time() < deadline:
+        _search(page, 'type:video text:"roadmap review"')
+        caps = _captions(page)
+        if caps:
+            break
+        time.sleep(3)
+    assert len(caps) == 1 and "▶ 0:12" in caps[0] and "MVI_0042.mp4 @ 0:0" in caps[0], caps
+    page.locator("#ax-gallery .thumbnail-item").first.click()
+    page.wait_for_function("document.querySelector('#ax-evidence').innerText.includes('▶ at')")
+    # The evidence text can arrive before the browser has fetched the inspector image (Gradio
+    # serves an identical render under the same URL, so wait for "loaded", not for a new src).
+    page.wait_for_function("() => { const i = document.querySelector('#ax-inspector img');"
+                           " return i && i.complete && i.naturalWidth > 0; }")
+    time.sleep(1.0)
+    head = _text(page, "#ax-inspector-head")
+    assert "showing keyframe" in head and "Video" in head, head
+    t = re.search(r"▶ at (\d+):(\d\d)", _text(page, "#ax-evidence"))
+    assert t and 3 <= int(t.group(1)) * 60 + int(t.group(2)) <= 8, _text(page, "#ax-evidence")
+    img = page.locator("#ax-inspector img").first
+    img.wait_for()
+    a = np.asarray(Image.open(io.BytesIO(img.screenshot())).convert("RGB")).astype(int)
+    # Highlight outline on a dark frame: strongly yellow pixels (the source frame has none).
+    outline = ((a[..., 0] > 180) & (a[..., 1] > 120) & (a[..., 2] < 100) & (a[..., 0] - a[..., 2] > 120)).sum()
+    assert outline > 50, outline
+
+    page.get_by_role("tab", name="Generate clips").click()
+    for _ in range(6):
+        page.locator("#ax-gen-library input").click()
+        time.sleep(0.5)
+        opts = [o for o in page.get_by_role("option").all_inner_texts() if "MVI_0042.mp4" in o]
+        if opts:
+            page.get_by_role("option").filter(has_text="MVI_0042.mp4").first.click()
+            break
+        page.keyboard.press("Escape")
+        page.get_by_role("tab", name="Library").click()
+        page.get_by_role("tab", name="Generate clips").click()
+    else:
+        raise AssertionError("library video never offered in Generate")
+    page.locator("#ax-gen-run").click()
+    page.wait_for_function("document.querySelector('#ax-gen-status textarea').value.length > 0", timeout=600000)
+    status = page.locator("#ax-gen-status textarea").input_value()
+    assert status.startswith("Generated") and "clip(s)" in status, status

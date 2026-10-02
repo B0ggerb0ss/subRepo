@@ -32,10 +32,10 @@ def collection_choices(lib, ctype: str | None):
 
 def collection_view(lib, cid: str | None):
     if not cid:
-        return [], "_Choose a collection._", [], 0, ""
+        return [], "_Choose a collection._", [], 0
     c = lib.collection(cid)
     if c is None:
-        return [], "_Collection not found (merged or retired)._", [], 0, ""
+        return [], "_Collection not found (merged or retired)._", [], 0
     items, rows = [], []
     for m in c.members:
         t = _thumb(lib, m.asset_id)
@@ -58,7 +58,7 @@ def collection_view(lib, cid: str | None):
                  "probability kind is listed below (zero-shot or dev-calibrated — neither is a guarantee).")
     elif c.ctype == "duplicate":
         head += "\n\nCandidates only — nothing is deleted. Verify and exclude false matches."
-    return items, head, rows, c.revision, c.label
+    return items, head, rows, c.revision
 
 
 def build_collections_tab(lib, tab=None) -> None:
@@ -114,7 +114,9 @@ def build_collections_tab(lib, tab=None) -> None:
             exp_file = gr.File(label="Snapshot", elem_id="ax-export-file")
             exp_md = gr.Markdown(elem_id="ax-export-msg")
 
-    view_out = [gallery, head, members, rev, new_label]
+    # The "Rename to" box is never written by view refreshes: a late refresh (e.g. after the
+    # collection list reloads) must not overwrite a name the user is typing.
+    view_out = [gallery, head, members, rev]
 
     def _choices(t):
         ch = collection_choices(lib, t)

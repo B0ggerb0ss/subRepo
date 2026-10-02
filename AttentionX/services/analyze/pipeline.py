@@ -24,13 +24,18 @@ from typing import Callable
 from models.asset import Asset, Job
 from models.media_metadata import (
     SCHEMA_VERSION,
+    VIDEO_SCHEMA_VERSION,
     ImageObservation,
+    Keyframe,
     MediaMetadata,
     OCRRegion,
     OCRResult,
     OCRTile,
     Provenance,
+    SpeechResult,
+    SpeechSegment,
     StageError,
+    VideoObservation,
 )
 from services.analyze import pixels as px
 from services.analyze.cache import StageCache, stage_key
@@ -41,7 +46,7 @@ from services.analyze.ocr import (
     reading_order,
     run_ocr,
 )
-from services.analyze.providers import ProviderUnavailable, Providers
+from services.analyze.providers import Providers, ProviderUnavailable
 from services.library.config import LibraryConfig
 from services.library.jobs import JobCancelled, JobQueue
 from services.library.repository import Repository
@@ -215,9 +220,17 @@ def register_post_commit(name: str, fn: Callable[[Ctx], StageResult]) -> None:
     POST_COMMIT[name] = fn
 
 
-def planned_stages() -> list[str]:
+def stages_for(kind: str) -> dict[str, Stage]:
     _load_optional_stages()
-    return list(STAGES) + ["index"] + list(POST_COMMIT)
+    if kind == "video":
+        from services.analyze.video import VIDEO_STAGES
+
+        return VIDEO_STAGES
+    return STAGES
+
+
+def planned_stages(kind: str = "image") -> list[str]:
+    return list(stages_for(kind)) + ["index"] + list(POST_COMMIT)
 
 
 _OPTIONAL_LOADED = False
@@ -286,6 +299,7 @@ def run_stage(ctx: Ctx, cache: StageCache, stage: Stage) -> StageResult:
 def _prov(ctx: Ctx, stage: str, kind: str, modality: str, extractor: str, version: str,
           failure_modes: list[str]) -> Provenance:
     r = ctx.results[stage]
+    stages = stages_for(ctx.asset.kind)
     return Provenance(
         producer=f"services.analyze.{stage}",
         source_modality=modality,
@@ -294,7 +308,7 @@ def _prov(ctx: Ctx, stage: str, kind: str, modality: str, extractor: str, versio
         extractor_version=version,
         model_digest=r.payload.get("_prepared", {}).get("model_digest"),
         confidence_kind=kind,
-        cost_class="cached" if r.status == "cached" else STAGES[stage].cost_class,
+        cost_class="cached" if r.status == "cached" else stages[stage].cost_class,
         cache_key=r.payload["_cache_key"],
         failure_modes=failure_modes,
         status=r.status,
@@ -329,7 +343,8 @@ def assemble_metadata(ctx: Ctx) -> MediaMetadata:
     orr = ctx.results.get("ocr")
     if orr and orr.status in {"complete", "cached", "partial"}:
         p = orr.payload
-        prov["ocr"] = _prov(ctx, "ocr", "raw_recognizer", "image", p["engine"], p["engine_version"],
+        prov["ocr"] = _prov(ctx, "ocr", "raw_recognizer", "video" if ctx.asset.kind == "video" else "image",
+                            p["engine"], p["engine_version"],
                             ["small_or_low_contrast_text_missed", "unsupported_script", "tile_cap_truncation",
                              "reading_order_multicolumn"])
         ocr = OCRResult(
@@ -345,14 +360,16 @@ def assemble_metadata(ctx: Ctx) -> MediaMetadata:
     extra = {}
     for hook in _ASSEMBLE_HOOKS:
         extra.update(hook(ctx, prov))
+    if ctx.asset.kind == "video":
+        extra.update(_assemble_video(ctx, prov, status))
 
     status["index"] = "complete"
     partial = bool(errors) or any(s in {"missing", "partial", "error", "cancelled"} for s in status.values())
     return MediaMetadata(
-        schema_version=SCHEMA_VERSION,
+        schema_version=VIDEO_SCHEMA_VERSION if ctx.asset.kind == "video" else SCHEMA_VERSION,
         asset_id=ctx.asset.id,
         content_hash=ctx.asset.content_hash,
-        asset_kind="image",
+        asset_kind=ctx.asset.kind,
         analyzer_version=ANALYZER_VERSION,
         analyzed_at=datetime.now(timezone.utc),
         image=image,
@@ -368,6 +385,44 @@ def assemble_metadata(ctx: Ctx) -> MediaMetadata:
 _ASSEMBLE_HOOKS: list[Callable[[Ctx, dict], dict]] = []
 
 
+def _assemble_video(ctx: Ctx, prov: dict, status: dict) -> dict:
+    from services.analyze.video import (
+        KEYFRAME_POLICY,
+        KEYFRAMES_VERSION,
+        TRANSCRIPT_VERSION,
+    )
+
+    out: dict = {}
+    # Typed context/source/scene decisions are image questions; not asked of videos (yet).
+    status.setdefault("context", "not_applicable")
+    kr = ctx.results.get("keyframes")
+    if kr and kr.status in {"complete", "cached", "partial"}:
+        p = kr.payload
+        pr = p["probe"]
+        prov["keyframes"] = _prov(ctx, "keyframes", "deterministic_parse", "video", "ffmpeg+opencv",
+                                  KEYFRAMES_VERSION, ["text_shorter_than_sample_interval_missed",
+                                                      "keyframe_cap_truncation", "gradual_change_undersampled"])
+        out["video"] = VideoObservation(
+            container=pr["container"], mime=pr["mime"], duration_s=pr["duration_s"], fps=pr["fps"],
+            width=pr["width"], height=pr["height"], rotation=pr["rotation"], video_codec=pr["video_codec"],
+            has_audio=pr["has_audio"], audio_codec=pr["audio_codec"],
+            sample_fps=kr.payload["_prepared"]["params"]["sample_fps"], keyframe_policy=KEYFRAME_POLICY,
+            min_gap_s=p.get("min_gap_s"), max_gap_s=p.get("max_gap_s"),
+            keyframes=[Keyframe(frame_id=k["frame_id"], t_s=k["t_s"], t_end_s=k["t_end_s"], frame_ref=k["frame_ref"],
+                                width=k["width"], height=k["height"], reason=k["reason"]) for k in p["keyframes"]],
+            poster_ref=p["poster_ref"], coverage_complete=p["complete"], coverage_end_s=p["coverage_end_s"],
+            incomplete_reason=p["incomplete_reason"], provenance=prov["keyframes"])
+    tr = ctx.results.get("transcript")
+    if tr and tr.status in {"complete", "cached"} and tr.payload.get("segments") is not None \
+            and tr.payload.get("engine"):
+        prov["transcript"] = _prov(ctx, "transcript", "raw_recognizer", "video", "faster-whisper",
+                                   TRANSCRIPT_VERSION, ["background_noise", "non_english_speech", "hallucinated_text"])
+        out["speech"] = SpeechResult(engine=tr.payload["engine"], model=tr.payload["model"],
+                                     segments=[SpeechSegment(**s) for s in tr.payload["segments"]],
+                                     provenance=prov["transcript"])
+    return out
+
+
 def register_assemble_hook(fn: Callable[[Ctx, dict], dict]) -> None:
     _ASSEMBLE_HOOKS.append(fn)
 
@@ -376,11 +431,10 @@ def analyze_asset(ctx: Ctx) -> tuple[str, MediaMetadata | None]:
     """Run all stages for one asset; commit if still current. Returns (job_status, metadata)."""
     from services.library.metadata import commit_metadata
 
-    _load_optional_stages()
     cache = StageCache(ctx.repo)
     q = ctx.queue
     job_id = ctx.job.id if ctx.job else None
-    for name, stage in STAGES.items():
+    for name, stage in stages_for(ctx.asset.kind).items():
         ctx.check_cancel()
         if q and job_id:
             q.set_stage(job_id, name, "running")
@@ -418,6 +472,7 @@ def analyze_asset(ctx: Ctx) -> tuple[str, MediaMetadata | None]:
         if q and job_id:
             q.set_stage(job_id, name, res.status, detail=res.detail)
 
-    if ctx.results.get("pixels") and ctx.results["pixels"].status == "error":
+    first = ctx.results.get("pixels") or ctx.results.get("keyframes")
+    if first and first.status == "error":
         return "error", meta
     return ("partial" if meta.partial or post_failed else "complete"), meta

@@ -209,7 +209,8 @@ def build_scaled(src_db: Path, dst_root: Path, target: int) -> Path:
             v = v + rng.normal(0, 0.01, v.shape).astype(np.float32) if k else v
             v = (v / np.linalg.norm(v)).astype(np.float32)
             batch.append((ns, aid + suf, view, kind, region, refs, v.tobytes(), rev))
-        dst.executemany("INSERT INTO vectors VALUES (?,?,?,?,?,?,?,?)", batch)
+        dst.executemany("INSERT INTO vectors(namespace, asset_id, view_id, view_kind, region, source_refs, vector,"
+                        " metadata_revision) VALUES (?,?,?,?,?,?,?,?)", batch)
     dst.execute("INSERT OR REPLACE INTO vector_namespaces SELECT * FROM src.vector_namespaces")
     dst.execute("UPDATE vector_namespaces SET revision = revision + 1")
     dst.execute("INSERT OR IGNORE INTO libraries SELECT * FROM src.libraries")

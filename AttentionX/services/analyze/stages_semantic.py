@@ -155,6 +155,8 @@ register_stage(Stage("context", ctxmod.CONTEXT_VERSION, ("pixels", "ocr", "image
 def _prov(ctx: Ctx, stage: str, kind: str, extractor: str, version: str, modes: list[str],
           modality: str = "image") -> Provenance:
     r = ctx.results[stage]
+    if ctx.asset.kind == "video" and modality == "image":
+        modality = "video"
     return Provenance(
         producer=f"services.analyze.{stage}", source_modality=modality, source_refs=[f"asset:{ctx.asset.id}"],
         extractor=extractor, extractor_version=version,
@@ -181,7 +183,8 @@ def _assemble(ctx: Ctx, prov: dict) -> dict:
                 preprocess_version=CLIP_PREPROCESS if kind == "image" else OCR_CHUNK_PREPROCESS,
                 view_kind=v["view_kind"], view_id=v["view_id"],
                 region=tuple(v["region"]) if v["region"] else None, source_refs=v["source_refs"],
-                storage_ref=f"sqlite:vectors/{v['namespace']}/{ctx.asset.id}/{v['view_id']}"))
+                storage_ref=f"sqlite:vectors/{v['namespace']}/{ctx.asset.id}/{v['view_id']}",
+                frame_id=v.get("frame_id"), t_s=v.get("t_s")))
     r = ctx.results.get("objects")
     if r and r.status in {"complete", "cached"}:
         prov["objects"] = _prov(ctx, "objects", "raw_detector", "mediapipe-tasks", OBJECTS_VERSION,

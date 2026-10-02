@@ -28,10 +28,12 @@ class Asset(_Rec):
     deleted_at: float | None
     metadata_revision: int
     analysis_generation: int
+    duration_s: float | None = None    # videos only
 
     @classmethod
     def from_row(cls, row) -> "Asset":
-        return cls(**{k: row[k] for k in cls.model_fields})
+        keys = row.keys()
+        return cls(**{k: row[k] for k in cls.model_fields if k in keys})
 
 
 class ImportInstance(_Rec):

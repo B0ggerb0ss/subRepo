@@ -1,9 +1,14 @@
-# MediaMetadata/1.1 (image/search extension)
+# MediaMetadata/1.1 (images) and 1.2 (videos)
 
 Code: `models/media_metadata.py` (strict Pydantic v2, `extra="forbid"`, no NaN/inf).
 The audit's 1.0 contract is vendored unchanged in `models/media_metadata_v1.py`.
 
 ## Versioning
+
+- **1.2** (2026-10-02, ADR-011) is written for **video** assets only. It adds the optional `video` and `speech`
+  records and optional `frame_id`/`t_s` anchors on OCR regions, object observations and embedding views (new
+  view kind `frame_global`). The model rejects these fields in a document that declares 1.1, so a 1.1 reader is
+  never handed data it cannot interpret. Image documents are still written as 1.1, unchanged.
 
 - 1.1 is a **new version**, not a loosened 1.0: the strict 1.0 model rejects 1.1 documents
   (tested: `test_metadata_projects_to_strict_v1`).
@@ -27,10 +32,16 @@ The audit's 1.0 contract is vendored unchanged in `models/media_metadata_v1.py`.
 | `embeddings` | namespace, space, model digest, dim, `l2`, preprocessing version, view (`global_letterbox`, `region`, `ocr_chunk`, `ocr_body`), region box or OCR region refs, storage ref (`sqlite:vectors/...`). Representations, never confidences. |
 | `stage_status` / `stage_provenance` | per stage: status and provenance (producer, extractor + version, model digest, confidence kind, cost class, cache key, failure modes) |
 | `errors`, `partial` | sanitized stage errors; `partial` must be true iff any stage failed/missed/was partial |
+| `video` (1.2) | container, mime, duration, fps, display size (rotation applied), codecs, `has_audio`, `sample_fps`, `keyframe_policy`, `keyframes` (`frame_id`, `t_s`..`t_end_s` span it stands for, managed `frame_ref`, size, `reason` first/content_change/max_gap), `poster_ref`, `coverage_complete` + `coverage_end_s` + `incomplete_reason` |
+| `speech` (1.2) | ASR engine/model and verbatim timed segments; present only when local ASR ran (default off) |
+| frame anchors (1.2) | `frame_id` + `t_s` on OCR regions, detections and embedding views; polygons/boxes are normalized to **that keyframe** |
 
 Coordinates: normalized to the **display** image (EXIF orientation applied); tiles are in display
 pixels before OCR scaling. User annotations, overrides and collection memberships are *not* part of
 machine metadata; they live in their own tables and appear in exports.
+
+Video projection to 1.0: keyframe spans become `t_start`/`t_end` of OCR text layers, speech segments become
+`asr` text layers, and `technical` carries `duration_s` (tested in `test_m8_video_library.py`).
 
 A real (measured) document from the evaluation library: `docs/examples/metadata_linkedin_post.json`;
 a search response: `docs/examples/search_response.json`; an export: `docs/examples/export_snapshot_excerpt.json`.

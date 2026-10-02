@@ -1,4 +1,4 @@
-# AttentionX image library — runbook
+# AttentionX media library — runbook
 
 All commands run from `AttentionX/`.
 
@@ -43,6 +43,12 @@ python app.py                     # http://127.0.0.1:7860 — Library, Collectio
 | `ANALYSIS_LOCAL_ONLY` | `1` | forbids any cloud adapter; `ANALYSIS_ALLOW_CLOUD_*` must stay `0` with it |
 | `ANALYSIS_OCR_LANGUAGES` | `en` | `en`/`ch` via RapidOCR; others only via Tesseract language data if installed |
 | `LIBRARY_MAX_IMAGE_MB`, `LIBRARY_MAX_IMAGE_MEGAPIXELS`, `LIBRARY_OCR_MAX_TILES` | 50, 40, 24 | admission and OCR bounds |
+| `LIBRARY_MAX_VIDEO_MB`, `LIBRARY_MAX_VIDEO_MINUTES`, `LIBRARY_VIDEO_MAX_KEYFRAMES` | 4096, 180, 120 | video admission and keyframe budget (spread over the whole duration; the effective spacing is recorded as `video.min_gap_s`) |
+| `ANALYSIS_ASR` | `0` | speech transcription for library videos; needs locally provisioned Whisper weights (`ATTENTIONX_WHISPER_DIR`), never downloads |
+
+Videos (MP4/MOV/M4V/WebM/MKV) are imported through the same Import box or folder import. They are analyzed
+via sampled keyframes (ADR-011), and their text is searchable with a timestamp. The **Generate clips** tab can
+use a library video directly; its normalized proxy is cached under `derived/normalized/`.
 
 ## 4. CLI
 
@@ -61,7 +67,7 @@ python scripts/library_cli.py status
 ## 5. Query grammar
 
 `text:"exact phrase"`, `source:linkedin`, `object:car`, `scene:beach`, `tag:mine`,
-`collection:<key|id|label>`, `format:png`, `capture:screenshot`, `context:source_code`,
+`collection:<key|id|label>`, `format:png|mp4|webm`, `type:image|video`, `capture:screenshot`, `context:source_code`,
 `topic:ai_ml`, `after:2026-01-01`, `before:…`, `status:partial`; everything else is free-text intent
 (lexical + OCR meaning + visual). Filters combine with AND. Unknown filters, unsupported object
 labels and negated filters return an explanatory error.
@@ -78,6 +84,8 @@ labels and negated filters return an explanatory error.
 | Late/stale job | cannot activate metadata (generation fencing) → `superseded` |
 | Delete | tombstone: immediately ineligible for every search channel; the managed copy stays until purged; your source file is never touched |
 | Disk/DB write failure | nothing reports success before the authoritative commit; stage cache rows are idempotent |
+| Video too long/large, no video stream, unreadable container | rejected at admission (`too_long`, `too_large`, `no_video_stream`, `corrupt_video`) |
+| Long or busy video | the keyframe budget is spread over the whole video (sparser sampling, complete coverage); if the cap is still hit, `coverage_complete=false` with the reason and the asset is `partial` |
 | Cloud | none. There is no hidden cloud fallback. |
 
 Logs contain job/stage ids and exception types, not OCR text, keys or filenames.
@@ -94,7 +102,15 @@ python scripts/eval_image_library.py             # test split -> reports/evaluat
 python scripts/benchmark_image_library.py        # -> reports/benchmark.json
 ```
 
-## 8. Tests
+## 8. Upgrades and migrations
+
+The database schema is migrated forward automatically on open (`PRAGMA user_version`; v6 adds the video columns:
+`assets.duration_s`, and `frame_id`/`t_s` on `ocr_regions`, `object_observations`, `vectors`). Migrations only
+add columns or tables. Back up `library.sqlite3` (plus `-wal`) before upgrading. A database newer than the
+build is refused, never down-migrated. Existing image metadata revisions (1.1) are read unchanged; no
+re-analysis is needed.
+
+## 9. Tests
 
 ```bash
 bash run_tests.sh all     # unit + integration (real FFmpeg, RapidOCR, ONNX models)

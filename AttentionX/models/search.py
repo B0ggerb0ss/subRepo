@@ -42,6 +42,7 @@ class SearchRequest(_M):
     channels: list[Literal["lexical", "ocr_semantic", "visual"]] = ["lexical", "ocr_semantic", "visual"]
     similar_to: str | None = None                      # asset id for reference-image search
     crop: tuple[float, float, float, float] | None = None  # normalized display box on similar_to
+    similar_frame: str | None = None                   # keyframe id when similar_to is a video
     collapse_duplicates: bool = True
 
 
@@ -54,6 +55,8 @@ class MatchEvidence(_M):
     score: float | None = None
     score_kind: str | None = None      # bm25 | cosine | raw_detector | decision_prob | ...
     excerpt: str | None = None         # verbatim OCR text (raw), never generated
+    frame_id: str | None = None        # video: keyframe the evidence comes from (geometry is on that frame)
+    t_s: float | None = None           # video: keyframe time in seconds
 
 
 class SearchHit(_M):

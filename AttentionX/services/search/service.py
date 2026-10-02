@@ -100,7 +100,8 @@ class SearchService:
                         detail=(f'OCR text contains "{phrase}" when OCR word spacing is ignored' if m["spaceless"]
                                 else f'OCR text contains "{phrase}"'),
                         region_ids=m["region_ids"], polygons=m["polygons"], excerpt=m["excerpt"],
-                        score_kind="literal_match_ignoring_spaces" if m["spaceless"] else "literal_match")
+                        score_kind="literal_match_ignoring_spaces" if m["spaceless"] else "literal_match",
+                        frame_id=m.get("frame_id"), t_s=m.get("t_s"))
                         for m in lexical.phrase_evidence(self.repo, aid, matches)])
             channels_used.append("phrase")
         if pq.text_phrases:
@@ -188,12 +189,13 @@ class SearchService:
             + ", ".join(sorted({t for e in ev for t in e["terms"]})),
             region_ids=[e["region_id"] for e in ev], polygons=[e["polygon"] for e in ev],
             excerpt=" / ".join(e["excerpt"] for e in ev[:3]), score=round(score, 4),
-            score_kind="substring_count" if merged else "bm25")]
+            score_kind="substring_count" if merged else "bm25", frame_id=ev[0].get("frame_id"), t_s=ev[0].get("t_s"))]
 
     def find_similar(self, asset_id: str, crop: tuple[float, float, float, float] | None = None,
-                     query: str = "", limit: int = 40) -> SearchResponse:
+                     query: str = "", limit: int = 40, frame_id: str | None = None) -> SearchResponse:
         return self.search(SearchRequest(query=query, library_id=self.cfg.library_id, limit=limit,
-                                         similar_to=asset_id, crop=crop, channels=["visual"]))
+                                         similar_to=asset_id, crop=crop, channels=["visual"],
+                                         similar_frame=frame_id))
 
     # ------------------------------------------------------------------
     def _fuse(self, ranked: dict[str, list[tuple[str, float]]]):
@@ -218,11 +220,17 @@ class SearchService:
             sql += " AND metadata_revision > 0"
         for f in pq.filters:
             if f.key == "format":
-                mime = {"jpeg": "image/jpeg", "jpg": "image/jpeg", "png": "image/png", "webp": "image/webp"}.get(f.value)
+                mime = {"jpeg": "image/jpeg", "jpg": "image/jpeg", "png": "image/png", "webp": "image/webp",
+                        "mp4": "video/mp4", "mov": "video/mp4", "webm": "video/webm"}.get(f.value)
                 if mime is None:
-                    raise SearchError("format: must be jpeg, png or webp")
+                    raise SearchError("format: must be jpeg, png, webp, mp4 or webm")
                 sql += " AND mime=?"
                 params.append(mime)
+            elif f.key == "type":
+                if f.value not in {"image", "video"}:
+                    raise SearchError("type: must be image or video")
+                sql += " AND kind=?"
+                params.append(f.value)
             elif f.key in {"after", "before"}:
                 ts = datetime.combine(date.fromisoformat(f.value), datetime.min.time()).timestamp()
                 sql += " AND created_at >= ?" if f.key == "after" else " AND created_at < ?"
@@ -230,7 +238,7 @@ class SearchService:
         ids = {r["id"] for r in self.repo.query(sql, tuple(params))}
         evidence: dict[str, list[dict]] = {}
         for f in pq.filters:
-            if f.key in {"format", "after", "before"}:
+            if f.key in {"format", "type", "after", "before"}:
                 continue
             matched, ev = self._apply_filter(f, ids)
             ids &= matched
@@ -269,15 +277,18 @@ class SearchService:
                     f"object:{f.value} is not in the detector's supported vocabulary (COCO labels such as {sup}, ...). "
                     f"Search '{f.value}' as free text for an approximate visual match instead.")
             thr = catalog()["object_threshold"]
-            rows = self.repo.query("SELECT asset_id, obs_id, score, box FROM object_observations WHERE label=? AND score>=?"
-                                   " ORDER BY score DESC", (label, thr))
+            rows = self.repo.query("SELECT asset_id, obs_id, score, box, frame_id, t_s FROM object_observations"
+                                   " WHERE label=? AND score>=? ORDER BY score DESC", (label, thr))
             out = set()
             for r in rows:
                 if r["asset_id"] in ids:
                     out.add(r["asset_id"])
-                    ev.setdefault(r["asset_id"], []).append(dict(
+                    lst = ev.setdefault(r["asset_id"], [])
+                    if len(lst) >= 3:
+                        continue  # a video can hold many detections; show the strongest few
+                    lst.append(dict(
                         reason="OBJECT_DETECTION", detail=f"detected {label}", box=tuple(json.loads(r["box"])),
-                        score=round(r["score"], 4), score_kind="raw_detector"))
+                        score=round(r["score"], 4), score_kind="raw_detector", frame_id=r["frame_id"], t_s=r["t_s"]))
             return out, ev
         if f.key == "collection":
             from services.organize.overrides import collection_members_for_filter

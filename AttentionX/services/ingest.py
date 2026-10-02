@@ -19,6 +19,10 @@ from utils.ffmpeg_utils import probe_streams, run_ffmpeg
 # F01 — Input Normalization
 # ---------------------------------------------------------------------------
 
+# Identifies the normalization recipe below; part of the library's cached-proxy key.
+NORMALIZE_VERSION = "normalize/1.0-h264-crf23-yuv420p-aac128"
+
+
 def normalize_video(input_path: str, output_dir: str, require_audio: bool = False) -> str:
     """Transcode input_path to H.264 (+AAC when audio exists) MP4 in output_dir.
 

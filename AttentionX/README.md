@@ -8,12 +8,12 @@ sdk_version: 5.50.0
 app_file: app.py
 pinned: false
 license: mit
-short_description: Local image library searchable by its contents, plus long-video to 9:16 clips.
+short_description: Local image/video library searchable by its contents, plus long-video to 9:16 clips.
 ---
 
 # AttentionX
 
-A local, offline-capable **media library that makes images and screenshots searchable by what
+A local, offline-capable **media library that makes images, screenshots and videos searchable by what
 they actually contain**, next to the original **long-video → captioned 9:16 clips** generator.
 
 - Find an image by text *inside* it (`text:"feature store"`), even with a meaningless filename —
@@ -26,6 +26,9 @@ they actually contain**, next to the original **long-video → captioned 9:16 cl
   near-duplicate candidates (never auto-deleted).
 - Correct anything — rename/merge/split/pin groups, move/exclude members, override a decision — and
   the correction survives re-analysis, reclustering and restarts. Export versioned snapshots.
+- Import videos too: on-screen text is found with its timestamp (`type:video text:"roadmap"` → `@ 0:04`,
+  highlighted on that keyframe), and a library video goes straight into **Generate clips** with its
+  normalized source reused.
 - Every stage says honestly whether it is complete, cached, partial, missing, disabled or failed.
 
 Status, evidence and known gaps: [`docs/feature-status.md`](docs/feature-status.md).
@@ -55,9 +58,10 @@ bash run_tests.sh e2e    # real Chromium against the running app
 
 ```
 app.py                      Gradio entry: Library, Collections, Generate clips tabs
-models/                     media_metadata (1.1 + 1.0 loader/projection), asset, search, collections
+models/                     media_metadata (1.1 images, 1.2 videos, 1.0 loader/projection), asset, search, collections
 services/library/           config, repository (SQLite), ingest, jobs, worker, metadata, registry, export
-services/analyze/           pixels, ocr, embeddings, objects, context, pipeline, cache, providers, catalog
+services/analyze/           pixels, ocr, embeddings, objects, context, pipeline, cache, providers, catalog,
+                            videoio + video (keyframe sampling and per-keyframe analysis)
 services/search/            parser, lexical (FTS5), vectors, service (fusion + evidence)
 services/organize/          collections (smart sets), clustering, duplicates, overrides, service
 services/*.py               legacy video pipeline (ingest, transcribe, render, captions, ...)

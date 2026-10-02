@@ -22,6 +22,8 @@ from services.analyze.cache import decode_vector
 from services.library.config import LibraryConfig
 from services.library.repository import Repository
 
+FRAME_SEPARATOR = "\u241e"  # SYMBOL FOR RECORD SEPARATOR: not a word character, never in OCR output
+
 
 def commit_metadata(repo: Repository, cfg: LibraryConfig, asset: Asset, meta: MediaMetadata,
                     results: dict, job: Job | None) -> int | None:
@@ -38,8 +40,13 @@ def commit_metadata(repo: Repository, cfg: LibraryConfig, asset: Asset, meta: Me
         c.execute(
             "INSERT INTO metadata_revisions(asset_id, revision, schema_version, payload, job_id, created_at)"
             " VALUES (?,?,?,?,?,?)", (asset.id, rev, meta.schema_version, payload, job.id if job else None, now))
-        thumb = results.get("pixels").payload.get("thumb_ref") if results.get("pixels") else None
-        if meta.image is not None:
+        first = results.get("pixels") or results.get("keyframes")
+        thumb = first.payload.get("thumb_ref") if first else None
+        if meta.video is not None:
+            c.execute("UPDATE assets SET metadata_revision=?, thumb_ref=COALESCE(?, thumb_ref), width=?, height=?,"
+                      " duration_s=? WHERE id=?",
+                      (rev, thumb, meta.video.width, meta.video.height, meta.video.duration_s, asset.id))
+        elif meta.image is not None:
             c.execute("UPDATE assets SET metadata_revision=?, thumb_ref=COALESCE(?, thumb_ref), width=?, height=?,"
                       " phash64=?, dhash64=? WHERE id=?",
                       (rev, thumb, meta.image.display_width, meta.image.display_height,
@@ -60,17 +67,24 @@ def _rebuild_derived(c, asset_id: str, rev: int, meta: MediaMetadata, results: d
         parts = []
         offset = 0
         rows = []
+        prev_frame = None
         for r in sorted(meta.ocr.regions, key=lambda r: r.reading_order):
+            if parts and r.frame_id != prev_frame:
+                # Between video keyframes: a non-word separator line, so a phrase can
+                # never be matched across two different frames.
+                parts.append(FRAME_SEPARATOR)
+                offset += len(FRAME_SEPARATOR) + 1
+            prev_frame = r.frame_id
             start = offset
             end = start + len(r.norm_text)
             rows.append((asset_id, rev, r.region_id, r.reading_order, r.raw_text, r.norm_text, start, end,
-                         json.dumps(r.polygon), r.recognizer_score))
+                         json.dumps(r.polygon), r.recognizer_score, r.frame_id, r.t_s))
             parts.append(r.norm_text)
             offset = end + 1  # "\n" separator (one char, so offsets survive "\n" -> " ")
         doc = "\n".join(parts)
         c.executemany(
             "INSERT INTO ocr_regions(asset_id, revision, region_id, order_idx, raw_text, norm_text,"
-            " char_start, char_end, polygon, score) VALUES (?,?,?,?,?,?,?,?,?,?)", rows)
+            " char_start, char_end, polygon, score, frame_id, t_s) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", rows)
         c.execute("INSERT INTO ocr_docs(asset_id, revision, norm_text) VALUES (?,?,?)", (asset_id, rev, doc))
         # FTS sees line breaks as spaces so phrases spanning OCR lines match;
         # the replacement is length-preserving, so char offsets stay valid.
@@ -80,10 +94,10 @@ def _rebuild_derived(c, asset_id: str, rev: int, meta: MediaMetadata, results: d
 
     if meta.objects is not None:
         c.executemany(
-            "INSERT INTO object_observations(asset_id, revision, obs_id, label, score, box, model)"
-            " VALUES (?,?,?,?,?,?,?)",
-            [(asset_id, rev, o.obs_id, o.label, o.detector_score, json.dumps(o.box), meta.objects.model)
-             for o in meta.objects.observations])
+            "INSERT INTO object_observations(asset_id, revision, obs_id, label, score, box, model, frame_id, t_s)"
+            " VALUES (?,?,?,?,?,?,?,?,?)",
+            [(asset_id, rev, o.obs_id, o.label, o.detector_score, json.dumps(o.box), meta.objects.model,
+              o.frame_id, o.t_s) for o in meta.objects.observations])
 
     for qid, d in meta.decisions.items():
         value = None if d.value is None else (d.value if isinstance(d.value, str) else f"{d.value:.6f}")
@@ -115,9 +129,9 @@ def _rebuild_derived(c, asset_id: str, rev: int, meta: MediaMetadata, results: d
             raise ValueError(f"invalid vector for {e.namespace}/{e.view_id}")
         c.execute(
             "INSERT INTO vectors(namespace, asset_id, view_id, view_kind, region, source_refs, vector,"
-            " metadata_revision) VALUES (?,?,?,?,?,?,?,?)",
+            " metadata_revision, frame_id, t_s) VALUES (?,?,?,?,?,?,?,?,?,?)",
             (e.namespace, asset_id, e.view_id, e.view_kind, json.dumps(e.region) if e.region else None,
-             json.dumps(e.source_refs), vec.astype(np.float32).tobytes(), rev))
+             json.dumps(e.source_refs), vec.astype(np.float32).tobytes(), rev, e.frame_id, e.t_s))
         c.execute("UPDATE vector_namespaces SET revision = revision + 1 WHERE namespace=?", (e.namespace,))
 
 

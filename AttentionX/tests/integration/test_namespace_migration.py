@@ -25,17 +25,20 @@ def test_shadow_namespace_is_promoted_only_when_complete(tmp_path: Path) -> None
     with lib.repo.write() as c:
         for aid in ("a1", "a2"):
             _asset(c, aid)
-            c.execute("INSERT INTO vectors VALUES (?,?,?,?,?,?,?,?)",
+            c.execute("INSERT INTO vectors(namespace, asset_id, view_id, view_kind, region, source_refs, vector,"
+                      " metadata_revision) VALUES (?,?,?,?,?,?,?,?)",
                       (old["namespace"], aid, "global", "global_letterbox", None, "[]", vec.tobytes(), 1))
         c.execute("INSERT INTO vector_namespaces(namespace, space, model, model_digest, preprocess_version, dim,"
                   " normalization, kind, state, created_at) VALUES ('clip-new:x','clip-new','m','d','v2',512,'l2',"
                   "'image','building',?)", (time.time(),))
-        c.execute("INSERT INTO vectors VALUES ('clip-new:x','a1','global','global_letterbox',NULL,'[]',?,1)",
+        c.execute("INSERT INTO vectors(namespace, asset_id, view_id, view_kind, region, source_refs, vector,"
+                  " metadata_revision) VALUES ('clip-new:x','a1','global','global_letterbox',NULL,'[]',?,1)",
                   (vec.tobytes(),))
     assert promote_ready(lib.repo) == []                       # a2 not covered yet: old stays active
     assert active_namespace(lib.repo, "image")["namespace"] == old["namespace"]
     with lib.repo.write() as c:
-        c.execute("INSERT INTO vectors VALUES ('clip-new:x','a2','global','global_letterbox',NULL,'[]',?,1)",
+        c.execute("INSERT INTO vectors(namespace, asset_id, view_id, view_kind, region, source_refs, vector,"
+                  " metadata_revision) VALUES ('clip-new:x','a2','global','global_letterbox',NULL,'[]',?,1)",
                   (vec.tobytes(),))
     assert promote_ready(lib.repo) == ["clip-new:x"]
     assert active_namespace(lib.repo, "image")["namespace"] == "clip-new:x"

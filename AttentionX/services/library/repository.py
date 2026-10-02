@@ -18,7 +18,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
 
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 
 _MIGRATIONS: dict[int, str] = {
     1: """
@@ -325,6 +325,16 @@ ALTER TABLE decisions ADD COLUMN calibration_version TEXT;
     5: """
 ALTER TABLE assets ADD COLUMN phash64 TEXT;
 ALTER TABLE assets ADD COLUMN dhash64 TEXT;
+""",
+    # 6: video assets. Frame anchors on derived rows (NULL for images).
+    6: """
+ALTER TABLE assets ADD COLUMN duration_s REAL;
+ALTER TABLE ocr_regions ADD COLUMN frame_id TEXT;
+ALTER TABLE ocr_regions ADD COLUMN t_s REAL;
+ALTER TABLE object_observations ADD COLUMN frame_id TEXT;
+ALTER TABLE object_observations ADD COLUMN t_s REAL;
+ALTER TABLE vectors ADD COLUMN frame_id TEXT;
+ALTER TABLE vectors ADD COLUMN t_s REAL;
 """,
 }
 

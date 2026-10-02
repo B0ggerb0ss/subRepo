@@ -4,6 +4,8 @@
 - Object filters: only the detection box that matched.
 - Visual-semantic matches: no box and no percentage; the whole image is the
   evidence. A selected query crop is drawn as a dashed-style rectangle.
+- Videos: the inspector shows one analyzed keyframe — the one the strongest
+  evidence came from (else the first) — and draws only that frame's geometry.
 """
 from __future__ import annotations
 
@@ -52,7 +54,7 @@ def draw_overlays(base: Image.Image, polygons: list[tuple[str, list]], boxes: li
     overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
     d = ImageDraw.Draw(overlay)
     W, H = img.size
-    lw = max(2, round(max(W, H) / 400))
+    lw = max(3, round(max(W, H) / 350))  # stays visible after the browser downscales the preview
     for kind, poly in polygons:
         color = COLORS.get(kind, (255, 196, 0))
         pts = [(x * W, y * H) for x, y in poly]
@@ -70,12 +72,40 @@ def draw_overlays(base: Image.Image, polygons: list[tuple[str, list]], boxes: li
     return Image.alpha_composite(img, overlay).convert("RGB")
 
 
+def clock(t: float | None) -> str:
+    if t is None:
+        return "?"
+    m, s = divmod(int(t), 60)
+    h, m = divmod(m, 60)
+    return f"{h}:{m:02d}:{s:02d}" if h else f"{m}:{s:02d}"
+
+
+def video_frame_for(meta: dict | None, hit=None) -> dict | None:
+    """The keyframe the inspector shows for a video: the first evidence frame, else the first keyframe."""
+    video = (meta or {}).get("video") or {}
+    frames = {k["frame_id"]: k for k in video.get("keyframes", [])}
+    if not frames:
+        return None
+    if hit is not None:
+        for ev in hit.reasons:
+            if ev.frame_id in frames:
+                return frames[ev.frame_id]
+    return video["keyframes"][0]
+
+
 def render_inspector_image(library, asset_id: str, hit=None, show_all_ocr: bool = False,
-                           crop: tuple | None = None) -> np.ndarray | None:
+                           crop: tuple | None = None, frame: dict | None = None) -> np.ndarray | None:
     asset = library.get_asset(asset_id)
     if asset is None:
         return None
-    p = preview_path(library, asset)
+    fid = None
+    if asset.kind == "video":
+        if frame is None:
+            return None
+        p = library.path_of(frame["frame_ref"])
+        fid = frame["frame_id"]
+    else:
+        p = preview_path(library, asset)
     if p is None:
         return None
     base = Image.open(p)
@@ -84,9 +114,11 @@ def render_inspector_image(library, asset_id: str, hit=None, show_all_ocr: bool 
     if show_all_ocr:
         detail = library.asset_detail(asset_id)
         ocr = (detail.get("metadata") or {}).get("ocr") or {}
-        polygons += [("ALL_OCR", r["polygon"]) for r in ocr.get("regions", [])]
+        polygons += [("ALL_OCR", r["polygon"]) for r in ocr.get("regions", []) if r.get("frame_id") == fid]
     if hit is not None:
         for ev in hit.reasons:
+            if ev.frame_id != fid:
+                continue  # geometry from another keyframe would land on the wrong picture
             if ev.reason in {"OCR_PHRASE", "OCR_LEXICAL", "OCR_SEMANTIC"}:
                 polygons += [(ev.reason, poly) for poly in ev.polygons]
             elif ev.reason == "OBJECT_DETECTION" and ev.box is not None:
@@ -99,7 +131,8 @@ def evidence_markdown(hit) -> str:
         return ""
     lines = []
     for ev in hit.reasons:
-        line = f"- **{ev.reason}** — {ev.detail}"
+        at = f" · ▶ at **{clock(ev.t_s)}** (keyframe `{ev.frame_id}`)" if ev.frame_id else ""
+        line = f"- **{ev.reason}** — {ev.detail}{at}"
         if ev.score is not None and ev.score_kind:
             line += f"  \n  `{ev.score_kind}={ev.score}`"
         if ev.excerpt:

@@ -189,7 +189,11 @@ class Library:
         active = self.queue.active_job_for(asset_id)
         if active:
             return active
-        return self.queue.enqueue("analyze_image", asset_id, planned_stages(), {"reset_providers": True})
+        row = self.repo.query_one("SELECT kind FROM assets WHERE id=?", (asset_id,))
+        kind = row["kind"] if row else "image"
+        # "analyze_image" is the per-asset analysis job kind (kept for queue compatibility); it
+        # runs the stage plan of the asset's kind (image or video).
+        return self.queue.enqueue("analyze_image", asset_id, planned_stages(kind), {"reset_providers": True})
 
     def retry_failed(self) -> list[str]:
         from services.search.service import asset_status
@@ -229,8 +233,8 @@ class Library:
                             **({"channels": channels} if channels else {}))
         return self.search_service.search(req)
 
-    def find_similar(self, asset_id: str, crop=None, query: str = "", limit: int = 40):
-        return self.search_service.find_similar(asset_id, crop=crop, query=query, limit=limit)
+    def find_similar(self, asset_id: str, crop=None, query: str = "", limit: int = 40, frame_id: str | None = None):
+        return self.search_service.find_similar(asset_id, crop=crop, query=query, limit=limit, frame_id=frame_id)
 
     def capabilities(self) -> list[dict]:
         from services.analyze.providers import get_providers

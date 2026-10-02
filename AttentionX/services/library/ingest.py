@@ -9,6 +9,9 @@
   batch continues.
 - Folder import walks only an explicitly chosen directory, never follows
   symlinks (so no escapes or loops) and enforces a depth/file limit.
+- Videos (mp4/mov/m4v/webm/mkv) are admitted after an ffprobe check (video
+  stream present, duration and size limits) and become ``kind='video'`` assets
+  analyzed through sampled keyframes (services/analyze/video.py).
 """
 from __future__ import annotations
 
@@ -22,6 +25,7 @@ from pathlib import Path
 
 from models.asset import ImportBatch, Rejection
 from services.analyze.pixels import ImageAdmissionError, probe_image
+from services.analyze.videoio import VIDEO_SUFFIXES, probe_video
 from services.library.config import LibraryConfig
 from services.library.jobs import JobQueue
 from services.library.repository import Repository
@@ -72,7 +76,7 @@ def _walk_folder(root: Path, cfg: LibraryConfig, rejections: list[Rejection]) ->
                 rejections.append(Rejection(filename=fn, code="symlink_skipped",
                                             message="symbolic links are not followed"))
                 continue
-            if fn.startswith(".") or p.suffix.lower() not in IMAGE_SUFFIXES:
+            if fn.startswith(".") or p.suffix.lower() not in IMAGE_SUFFIXES | VIDEO_SUFFIXES:
                 continue
             files.append(p)
             if len(files) >= cfg.limits.max_batch_files:
@@ -122,7 +126,12 @@ def import_assets(
         try:
             if src.is_symlink() or not src.is_file():
                 raise ImageAdmissionError("not_a_file", "not a regular file")
-            info = probe_image(src, cfg.limits.max_image_bytes, cfg.limits.max_image_pixels)
+            if src.suffix.lower() in VIDEO_SUFFIXES:
+                kind = "video"
+                info = probe_video(src, cfg.limits.max_video_bytes, cfg.limits.max_video_seconds)
+            else:
+                kind = "image"
+                info = probe_image(src, cfg.limits.max_image_bytes, cfg.limits.max_image_pixels)
             tmp, digest, nbytes = _copy_and_hash(src, cfg.temp_root)
         except ImageAdmissionError as e:
             rejections.append(Rejection(filename=name, code=e.code, message=str(e)))
@@ -132,7 +141,7 @@ def import_assets(
             continue
 
         aid = asset_id_for(cfg.library_id, digest)
-        ext = EXTENSIONS[info["format"]]
+        ext = EXTENSIONS[info["format"]] if kind == "image" else info["ext"]
         rel = f"originals/{digest[:2]}/{digest}.{ext}"
         dest = cfg.library_root / rel
         try:
@@ -160,9 +169,9 @@ def import_assets(
             if existing is None:
                 c.execute(
                     "INSERT INTO assets(id, library_id, content_hash, kind, mime, byte_size, width, height,"
-                    " original_ref, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
-                    (aid, cfg.library_id, digest, "image", info["mime"], nbytes, info["width"],
-                     info["height"], rel, time.time()))
+                    " original_ref, created_at, duration_s) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                    (aid, cfg.library_id, digest, kind, info["mime"], nbytes, info["width"],
+                     info["height"], rel, time.time(), info.get("duration_s")))
                 admitted += 1
                 needs_analysis = True
             else:
@@ -183,7 +192,7 @@ def import_assets(
                 if active is None:
                     from services.analyze.pipeline import planned_stages
 
-                    job_ids.append(queue.enqueue("analyze_image", aid, planned_stages(), conn=c))
+                    job_ids.append(queue.enqueue("analyze_image", aid, planned_stages(kind), conn=c))
                 else:
                     job_ids.append(active["id"])
         asset_ids.append(aid)

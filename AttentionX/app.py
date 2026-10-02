@@ -91,38 +91,61 @@ def run_pipeline(
     long_video_path: str | None,
     ref_clips: list[Any] | None,
     progress: gr.Progress = gr.Progress(),
+    normalized_cache: str | None = None,
+    known_transcript: list | None = None,
 ) -> tuple[str | None, str | None, str | None, list[str], str]:
     """Execute the full AttentionX pipeline.
 
     Returns (clip1, clip2, clip3, download_files, status_message).
     Unused clip slots return None (Gradio hides empty Video components).
+
+    ``normalized_cache``: managed path of this source's normalized proxy; reused
+    when present, written (atomically) when absent. ``known_transcript``: speech
+    segments already extracted by the library for this exact source; ASR is
+    then not run again.
     """
     if not long_video_path:
         return None, None, None, [], "Error: no video uploaded."
 
     temp_dir, output_dir = make_session_dirs()
     ref_clip_paths = _coerce_file_paths(ref_clips)
+    notes: list[str] = []
 
     try:
-        progress(0.05, desc="Normalizing video...")
-        norm_path = normalize_video(str(long_video_path), temp_dir)
+        cache = Path(normalized_cache) if normalized_cache else None
+        if cache is not None and cache.is_file():
+            notes.append("reused the library's normalized source")
+            norm_path = str(cache)
+        else:
+            progress(0.05, desc="Normalizing video...")
+            norm_path = normalize_video(str(long_video_path), temp_dir)
+            if cache is not None:
+                import shutil
+
+                cache.parent.mkdir(parents=True, exist_ok=True)
+                tmp = cache.with_suffix(".part")
+                shutil.copyfile(norm_path, tmp)
+                tmp.replace(cache)
 
         transcript = []
         energy_peaks = []
-        notes: list[str] = []
         if has_audio_stream(norm_path):
             progress(0.10, desc="Extracting audio...")
             wav_path = extract_audio(norm_path, temp_dir)
 
-            progress(0.20, desc="Transcribing speech...")
-            try:
-                transcript = transcribe(wav_path, model_size=settings.whisper_model_size)
-                if not transcript:
-                    notes.append("no speech detected")
-            except TranscriptionError as e:
-                # Degrade visibly: clips are chosen from audio/scene/face signals only.
-                transcript = []
-                notes.append(f"{e}; clips chosen without transcript, no captions")
+            if known_transcript is not None:
+                transcript = list(known_transcript)
+                notes.append(f"reused the library transcript ({len(transcript)} segment(s))")
+            else:
+                progress(0.20, desc="Transcribing speech...")
+                try:
+                    transcript = transcribe(wav_path, model_size=settings.whisper_model_size)
+                    if not transcript:
+                        notes.append("no speech detected")
+                except TranscriptionError as e:
+                    # Degrade visibly: clips are chosen from audio/scene/face signals only.
+                    transcript = []
+                    notes.append(f"{e}; clips chosen without transcript, no captions")
 
             progress(0.35, desc="Analyzing audio energy...")
             energy_peaks, _ = analyze_audio_energy(
@@ -191,6 +214,47 @@ def run_pipeline(
 _LIBRARY = None
 
 
+def library_video_choices(lib) -> list[tuple[str, str]]:
+    """(label, asset_id) for analyzed-or-pending library videos, newest first."""
+    from ui.inspector import clock
+
+    rows = lib.repo.query(
+        "SELECT a.id, a.duration_s, (SELECT original_filename FROM import_instances i WHERE i.asset_id=a.id"
+        " ORDER BY imported_at LIMIT 1) AS name FROM assets a WHERE a.library_id=? AND a.kind='video'"
+        " AND a.deleted_at IS NULL ORDER BY a.created_at DESC, a.id", (lib.cfg.library_id,))
+    return [(f"{r['name'] or r['id']} · {clock(r['duration_s'])}", r["id"]) for r in rows]
+
+
+def generate_from_library(lib, asset_id: str, ref_clips, progress=None):
+    """Generate clips from a library video: same five outputs as ``run_pipeline``.
+
+    The managed original is read (never modified); the normalized proxy is cached
+    under derived/normalized/ keyed by content hash + normalization recipe, and a
+    library transcript of the same bytes is reused instead of re-running ASR.
+    """
+    from models.schemas import TranscriptSegment
+    from services.ingest import NORMALIZE_VERSION
+    from services.library.metadata import active_metadata
+
+    asset = lib.get_asset(asset_id)
+    if asset is None or asset.kind != "video" or asset.deleted_at is not None:
+        return None, None, None, [], "Error: that library video is not available."
+    src = lib.path_of(asset.original_ref)
+    if src is None:
+        return None, None, None, [], "Error: the managed copy of that video is missing."
+    import hashlib
+
+    tag = hashlib.sha256(NORMALIZE_VERSION.encode()).hexdigest()[:10]
+    h = asset.content_hash
+    cache = lib.cfg.derived_root / "normalized" / h[:2] / f"{h}_{tag}.mp4"
+    meta = active_metadata(lib.repo, asset_id)
+    known = None
+    if meta is not None and meta.speech is not None:
+        known = [TranscriptSegment(start=s.start_s, end=s.end_s, text=s.text) for s in meta.speech.segments]
+    return run_pipeline(str(src), ref_clips, progress=progress or gr.Progress(), normalized_cache=str(cache),
+                        known_transcript=known)
+
+
 def get_library():
     """Process-wide Library (created lazily so importing app has no side effects)."""
     global _LIBRARY
@@ -213,6 +277,8 @@ def _build_generate_tab() -> None:
                 value=default_video,
                 height=260,
             )
+            library_pick = gr.Dropdown(label="…or use a video from your library", choices=[], value=None,
+                                       allow_custom_value=False, elem_id="ax-gen-library")
             ref_clips_input = gr.File(
                 label="Reference Shorts (optional — for style matching)",
                 file_count="multiple",
@@ -220,8 +286,8 @@ def _build_generate_tab() -> None:
             )
             gr.Markdown("_Reference style matching is not implemented yet; uploads are accepted but "
                         "do not change ranking._")
-            generate_btn = gr.Button("Generate Clips", variant="primary")
-            status_box = gr.Textbox(label="Status", interactive=False)
+            generate_btn = gr.Button("Generate Clips", variant="primary", elem_id="ax-gen-run")
+            status_box = gr.Textbox(label="Status", interactive=False, elem_id="ax-gen-status")
 
         with gr.Column(scale=7, elem_id="attentionx-outputs"):
             with gr.Row():
@@ -230,12 +296,18 @@ def _build_generate_tab() -> None:
                 clip3 = gr.Video(label="Clip 3", height=210)
             download_files = gr.Files(label="Download All Clips")
 
+    def _generate(video, refs, pick, progress=gr.Progress()):
+        if pick:
+            return generate_from_library(get_library(), pick, refs, progress)
+        return run_pipeline(video, refs, progress)
+
     generate_btn.click(
-        fn=run_pipeline,
-        inputs=[long_video, ref_clips_input],
+        fn=_generate,
+        inputs=[long_video, ref_clips_input, library_pick],
         outputs=[clip1, clip2, clip3, download_files, status_box],
         concurrency_limit=1,
     )
+    return library_pick
 
 
 def build_demo() -> gr.Blocks:
@@ -252,12 +324,13 @@ def build_demo() -> gr.Blocks:
                 from ui.collections import build_collections_tab
 
                 build_collections_tab(lib, collections_tab)
-            with gr.Tab("Generate clips", id="generate"):
-                _build_generate_tab()
+            with gr.Tab("Generate clips", id="generate") as generate_tab:
+                library_pick = _build_generate_tab()
+            generate_tab.select(lambda: gr.update(choices=library_video_choices(lib)), None, [library_pick])
 
         def _initial():
             items, ids = gallery_items(lib, 0)
-            return items, ids, f"{lib.count_assets()} image(s) in the library."
+            return items, ids, f"{lib.count_assets()} item(s) in the library."
 
         from ui.library import LISTING
 

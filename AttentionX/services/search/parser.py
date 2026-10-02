@@ -5,7 +5,7 @@ Grammar (whitespace separated terms):
     filter     := KEY ":" (WORD | '"' ... '"')
     phrase     := '"' ... '"'            -> same as text:"..."
     KEY        := text | source | object | scene | tag | collection | format
-                | capture | context | topic | after | before | status
+                | type | capture | context | topic | after | before | status
 
 Typed filters are hard constraints combined with AND. Everything else is
 free-text intent searched approximately (lexical + semantic channels).
@@ -26,7 +26,8 @@ KEYS = {
     "scene": "scene label: beach, city_street, forest, mountain, office, kitchen, classroom, stadium",
     "tag": "your own tag",
     "collection": "collection key or id",
-    "format": "jpeg, png or webp",
+    "format": "jpeg, png, webp, mp4 or webm",
+    "type": "asset type: image or video",
     "capture": "capture type: screenshot, photo, scanned_document, graphic",
     "context": "film_tv_frame, presentation_slide, source_code, job_posting, article, conversation",
     "topic": "hiring, ai_ml, software_development, education, entertainment",
@@ -34,7 +35,7 @@ KEYS = {
     "before": "imported before YYYY-MM-DD",
     "status": "analysis status: complete, partial, error, pending",
 }
-_ALIASES = {"ocr": "text", "app": "source", "obj": "object", "fmt": "format", "col": "collection"}
+_ALIASES = {"ocr": "text", "app": "source", "obj": "object", "fmt": "format", "col": "collection", "kind": "type"}
 _TOKEN = re.compile(r'\s*(?:(-?)([A-Za-z_]+):"((?:[^"\\]|\\.)*)"|(-?)([A-Za-z_]+):(\S+)|"((?:[^"\\]|\\.)*)"|(\S+))')
 
 

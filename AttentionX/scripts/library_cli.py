@@ -4,7 +4,7 @@
   python scripts/library_cli.py import FILE...          python scripts/library_cli.py import-folder DIR
   python scripts/library_cli.py analyze                 python scripts/library_cli.py status
   python scripts/library_cli.py search QUERY [--limit N] [--json]
-  python scripts/library_cli.py similar ASSET_ID [--crop x0,y0,x1,y1]
+  python scripts/library_cli.py similar ASSET_ID [--crop x0,y0,x1,y1] [--frame f0003]   (frame: video keyframe)
   python scripts/library_cli.py collections             python scripts/library_cli.py refresh
   python scripts/library_cli.py export [--collection KEY] [--v1] [--filenames]
   python scripts/library_cli.py retry-failed
@@ -28,7 +28,8 @@ def _print_hits(resp, as_json: bool) -> None:
         print(f"! {d}")
     print(f"{resp.total_candidates} result(s), channels={resp.channels_used}, {resp.elapsed_ms:.0f} ms")
     for i, h in enumerate(resp.hits, 1):
-        reasons = "; ".join(f"{e.reason}: {e.detail}" + (f" [{e.excerpt[:80]}]" if e.excerpt else "")
+        reasons = "; ".join(f"{e.reason}: {e.detail}" + (f" @{e.t_s:.1f}s" if e.t_s is not None else "")
+                            + (f" [{e.excerpt[:80]}]" if e.excerpt else "")
                             for e in h.reasons[:3])
         dup = f" (+{h.duplicate_count} near-dup)" if h.duplicate_count else ""
         print(f"{i:3d}. {h.asset_id}{dup}  {reasons}")
@@ -52,6 +53,7 @@ def main() -> int:
     p = sub.add_parser("similar")
     p.add_argument("asset_id")
     p.add_argument("--crop")
+    p.add_argument("--frame", help="keyframe id when ASSET_ID is a video (default: first keyframe)")
     p.add_argument("--json", action="store_true")
     sub.add_parser("collections")
     sub.add_parser("refresh")
@@ -89,7 +91,7 @@ def main() -> int:
                 return 2
         elif args.cmd == "similar":
             crop = tuple(float(x) for x in args.crop.split(",")) if args.crop else None
-            _print_hits(lib.find_similar(args.asset_id, crop=crop), args.json)
+            _print_hits(lib.find_similar(args.asset_id, crop=crop, frame_id=args.frame), args.json)
         elif args.cmd == "collections":
             for c in lib.collections():
                 print(f"{c.ctype:10s} {c.member_count:4d}  {c.label}  ({c.id})")

@@ -50,3 +50,35 @@ latency budget, so no ANN backend was introduced (ADR-004).
 - Evidence (pydantic objects, region lookups) built for every candidate → only for the returned page.
 - Filter evidence parsed metadata JSON per asset → `prob_kind` columns (schema v4).
 - Per-asset duplicate check parsed every asset's metadata (3.0 s at 10k) → hash columns (schema v5): 0.04 s.
+
+## Video in the library (M8) — 2026-10-02
+
+Raw data: `reports/benchmark_video.json` (`scripts/benchmark_video_library.py`). Same 4-CPU container, warm providers.
+Inputs are FFmpeg-rendered 1280×720 `testsrc2` (a full-frame moving pattern, the worst case for change detection)
+with a new boxed text line every 5 s and a sine audio track. They show cost and plumbing, **not** real-footage
+OCR quality.
+
+| | 60 s video (18 MB) | 300 s video (91 MB) |
+|---|---|---|
+| admission (ffprobe + copy + hash + enqueue) | 125 ms | 265 ms |
+| keyframes (one streaming 1 fps decode) | 60 · 1.8 s | 100 · 7.8 s |
+| OCR over keyframes | 54.6 s | 91.8 s |
+| CLIP / MiniLM / detector | 4.9 / 2.5 / 2.8 s | 5.7 / 3.6 / 3.6 s |
+| total analysis | 66.8 s (1.11× realtime) | 112.5 s (0.38× realtime) |
+| keyframe disk (JPEG q92, ≤1280 px) | 5.4 MB | 8.9 MB |
+| timed literal recall of rendered lines | 9/12 | 56/60 |
+| max timestamp error of found lines | 1.0 s | 4.0 s |
+| `text:"…"` search p50 / p95 | 1.0 / 1.2 ms | 1.5 / 2.4 ms |
+
+- **Driven by this measurement.** The first policy (change detection plus a fixed 120-keyframe cap) spent the
+  whole budget in the first 120 s of the 300 s video. Coverage was then reported incomplete, and recall was
+  21/60. The keyframe budget is now spread over the whole duration (`min_gap = duration / (cap − 1)`, here
+  3 s; `keyframes/1.1`). Coverage became complete and recall went to 56/60. The trade-off is documented: text
+  visible for less than the effective spacing can be missed, and the spacing is recorded in the metadata
+  (`video.min_gap_s`).
+- Misses are OCR errors on the busy background (`0`→`o`, `1`→`l`, dropped trailing digits), not
+  indexing.
+- OCR is about 80 % of video analysis cost (≈0.9 s per 720p keyframe). Static footage (talks, screen
+  recordings) produces far fewer keyframes, because only content changes and the 10 s max gap add one.
+- **Generate from a library video** (60 s source): the first run took 19.8 s including normalization. The
+  second took 7.7 s, reusing the cached normalized proxy (`derived/normalized/`).

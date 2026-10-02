@@ -42,6 +42,7 @@ class _Matrix:
     keys: list[tuple[str, str, str, str | None, str]]   # asset, view, kind, region json, source_refs json
     mat: np.ndarray
     asset_rows: dict[str, list[int]] = field(default_factory=dict)
+    anchors: dict[int, tuple[str, float]] = field(default_factory=dict)  # row -> (frame_id, t_s) for video views
 
 
 _MATS: dict[tuple[str, str], _Matrix] = {}
@@ -57,18 +58,22 @@ def load_matrix(repo: Repository, namespace: str) -> _Matrix | None:
         cached = _MATS.get(key)
         if cached is not None and cached.revision == ns["revision"]:
             return cached
-        rows = repo.query("SELECT v.asset_id, v.view_id, v.view_kind, v.region, v.source_refs, v.vector FROM vectors v"
+        rows = repo.query("SELECT v.asset_id, v.view_id, v.view_kind, v.region, v.source_refs, v.vector, v.frame_id,"
+                          " v.t_s FROM vectors v"
                           " JOIN assets a ON a.id=v.asset_id WHERE v.namespace=? AND a.deleted_at IS NULL"
                           " ORDER BY v.asset_id, v.view_id", (namespace,))
         dim = ns["dim"]
         mat = np.zeros((len(rows), dim), dtype=np.float32)
         keys = []
         asset_rows: dict[str, list[int]] = {}
+        anchors: dict[int, tuple[str, float]] = {}
         for i, r in enumerate(rows):
             mat[i] = np.frombuffer(r["vector"], dtype=np.float32)
             keys.append((r["asset_id"], r["view_id"], r["view_kind"], r["region"], r["source_refs"]))
             asset_rows.setdefault(r["asset_id"], []).append(i)
-        m = _Matrix(namespace, ns["revision"], keys, mat, asset_rows)
+            if r["frame_id"]:
+                anchors[i] = (r["frame_id"], r["t_s"])
+        m = _Matrix(namespace, ns["revision"], keys, mat, asset_rows, anchors)
         _MATS[key] = m
         return m
 
@@ -103,26 +108,63 @@ class SemanticResult:
     degraded: list[str] = field(default_factory=list)
 
 
-def _crop_vector(repo: Repository, cfg: LibraryConfig, asset_id: str, crop: tuple) -> np.ndarray:
+def _frame_ref(repo: Repository, asset_id: str, frame_id: str | None) -> str | None:
+    from services.library.metadata import active_metadata
+
+    meta = active_metadata(repo, asset_id)
+    if meta is None or meta.video is None or not meta.video.keyframes:
+        return None
+    frames = {k.frame_id: k.frame_ref for k in meta.video.keyframes}
+    return frames.get(frame_id) if frame_id else meta.video.keyframes[0].frame_ref
+
+
+def _crop_vector(repo: Repository, cfg: LibraryConfig, asset_id: str, crop: tuple,
+                 frame_id: str | None = None) -> np.ndarray:
     from services.analyze.embeddings import crop_normalized
     from services.analyze.pixels import decode_image
 
-    row = repo.query_one("SELECT original_ref FROM assets WHERE id=?", (asset_id,))
-    rgb = decode_image(cfg.library_root / row["original_ref"], cfg.limits.max_image_pixels).rgb
+    row = repo.query_one("SELECT original_ref, kind FROM assets WHERE id=?", (asset_id,))
+    if row["kind"] == "video":
+        ref = _frame_ref(repo, asset_id, frame_id)
+        if ref is None:
+            raise ValueError("this video has no analyzed keyframe to crop from")
+        rgb = decode_image(cfg.library_root / ref, cfg.limits.max_image_pixels).rgb
+    else:
+        rgb = decode_image(cfg.library_root / row["original_ref"], cfg.limits.max_image_pixels).rgb
     region = crop_normalized(rgb, crop)
     if region.shape[0] < 8 or region.shape[1] < 8:
         raise ValueError("crop is too small (needs at least 8x8 pixels)")
     return get_providers(cfg).clip().encode_images([region])[0]
 
 
+def _clock(t: float | None) -> str:
+    if t is None:
+        return "?"
+    m, s = divmod(int(t), 60)
+    h, m = divmod(m, 60)
+    return f"{h}:{m:02d}:{s:02d}" if h else f"{m}:{s:02d}"
+
+
+def _visual_ev(m: _Matrix, i: int, detail: str, score: float, label: str) -> MatchEvidence:
+    view = m.keys[i][1]
+    anchor = m.anchors.get(i)
+    if anchor is not None:
+        detail += f" (best keyframe at {_clock(anchor[1])})"
+    elif view != "global":
+        detail += f" ({label}: {view})"
+    return MatchEvidence(reason="VISUAL_SIMILARITY", detail=detail, score=round(score, 4), score_kind="cosine",
+                         frame_id=anchor[0] if anchor else None, t_s=anchor[1] if anchor else None)
+
+
 def _ocr_semantic_evidence(repo: Repository, asset_id: str, region_ids: list[str], score: float) -> MatchEvidence:
     regs = repo.query(
-        f"SELECT region_id, raw_text, polygon FROM ocr_regions WHERE asset_id=? AND region_id IN "
+        f"SELECT region_id, raw_text, polygon, frame_id, t_s FROM ocr_regions WHERE asset_id=? AND region_id IN "
         f"({','.join('?' * len(region_ids))}) ORDER BY order_idx", (asset_id, *region_ids)) if region_ids else []
     return MatchEvidence(
         reason="OCR_SEMANTIC", detail="OCR passage is semantically related (similarity, not a quote match)",
         region_ids=[r["region_id"] for r in regs], polygons=[json.loads(r["polygon"]) for r in regs],
-        excerpt=" / ".join(r["raw_text"] for r in regs)[:600], score=round(score, 4), score_kind="cosine")
+        excerpt=" / ".join(r["raw_text"] for r in regs)[:600], score=round(score, 4), score_kind="cosine",
+        frame_id=regs[0]["frame_id"] if regs else None, t_s=regs[0]["t_s"] if regs else None)
 
 
 def semantic_channels(repo: Repository, cfg: LibraryConfig, free_text: str, eligible: set[str],
@@ -138,24 +180,28 @@ def semantic_channels(repo: Repository, cfg: LibraryConfig, free_text: str, elig
             return out
         if req.crop is not None:
             try:
-                q = _crop_vector(repo, cfg, similar_ref, req.crop)
+                q = _crop_vector(repo, cfg, similar_ref, req.crop, req.similar_frame)
             except ProviderUnavailable as e:
                 out.degraded.append(f"crop similarity unavailable: {e}")
                 return out
             detail = f"visually similar to the selected crop {tuple(round(v, 3) for v in req.crop)}"
             exclude: set[str] = set()
         else:
-            gi = next(i for i in m.asset_rows[similar_ref] if m.keys[i][1] == "global")
+            rows = m.asset_rows[similar_ref]
+            want = req.similar_frame
+            gi = next((i for i in rows if m.keys[i][1] == "global"), None)
+            if gi is None:  # video: the requested keyframe, else the first one
+                gi = next((i for i in rows if m.keys[i][2] == "frame_global" and (want is None or m.keys[i][1] == want)),
+                          next((i for i in rows if m.keys[i][2] == "frame_global"), rows[0]))
             q = m.mat[gi]
-            detail = "visually similar to the reference image"
+            anchor = m.anchors.get(gi)
+            detail = ("visually similar to the reference image" if anchor is None
+                      else f"visually similar to the reference video frame at {_clock(anchor[1])}")
             exclude = {similar_ref}
         res = rank_assets(m, q, eligible, CHANNEL_PARAMS["similar"], exclude=exclude)
         out.ranked["visual"] = [(a, s) for a, s, _ in res]
         for a, s, i in res:
-            view = m.keys[i][1]
-            out.evidence.setdefault(a, []).append(MatchEvidence(
-                reason="VISUAL_SIMILARITY", detail=detail + ("" if view == "global" else f" (best view: {view})"),
-                score=round(s, 4), score_kind="cosine"))
+            out.evidence.setdefault(a, []).append(_visual_ev(m, i, detail, s, "best view"))
         return out
 
     if not free_text:
@@ -172,11 +218,8 @@ def semantic_channels(repo: Repository, cfg: LibraryConfig, free_text: str, elig
             res = rank_assets(m, q, eligible, CHANNEL_PARAMS["visual"])
             out.ranked["visual"] = [(a, s) for a, s, _ in res]
             for a, s, i in res:
-                view = m.keys[i][1]
-                out.evidence.setdefault(a, []).append(MatchEvidence(
-                    reason="VISUAL_SIMILARITY",
-                    detail="image content resembles the description" + ("" if view == "global" else f" (best: {view})"),
-                    score=round(s, 4), score_kind="cosine"))
+                out.evidence.setdefault(a, []).append(
+                    _visual_ev(m, i, "image content resembles the description", s, "best"))
         except ProviderUnavailable as e:
             out.degraded.append(f"visual search unavailable: {e}")
 

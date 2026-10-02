@@ -47,7 +47,7 @@ def find_occurrences(doc_flat: str, phrase_norm: str) -> list[tuple[int, int]]:
 
 def _regions_for_spans(repo: Repository, asset_id: str, spans: list[tuple[int, int]]) -> list[dict]:
     rows = repo.query(
-        "SELECT region_id, raw_text, char_start, char_end, polygon FROM ocr_regions WHERE asset_id=?"
+        "SELECT region_id, raw_text, char_start, char_end, polygon, frame_id, t_s FROM ocr_regions WHERE asset_id=?"
         " ORDER BY order_idx", (asset_id,))
     matches = []
     for s, e in spans:
@@ -57,6 +57,9 @@ def _regions_for_spans(repo: Repository, asset_id: str, spans: list[tuple[int, i
             "region_ids": [r["region_id"] for r in regs],
             "polygons": [json.loads(r["polygon"]) for r in regs],
             "excerpt": " / ".join(r["raw_text"] for r in regs),
+            # Video: a span never crosses keyframes (a separator line sits between frames).
+            "frame_id": regs[0]["frame_id"] if regs else None,
+            "t_s": regs[0]["t_s"] if regs else None,
         })
     return matches
 
@@ -188,14 +191,21 @@ def word_evidence(repo: Repository, asset_id: str, free_text: str, merged: bool)
     toks = tokens(free_text)
     if merged:
         toks = [t for t in toks if len(t) >= 4]
-    regs = repo.query("SELECT region_id, raw_text, norm_text, polygon FROM ocr_regions WHERE asset_id=?"
-                      " ORDER BY order_idx", (asset_id,))
+    regs = repo.query("SELECT region_id, raw_text, norm_text, polygon, frame_id, t_s FROM ocr_regions"
+                      " WHERE asset_id=? ORDER BY order_idx", (asset_id,))
     ev = []
     for g in regs:
         hit = [t for t in toks if (t in g["norm_text"] if merged else find_occurrences(g["norm_text"], t))]
         if hit:
             ev.append({"region_id": g["region_id"], "polygon": json.loads(g["polygon"]), "excerpt": g["raw_text"],
-                       "terms": hit, "merged": merged})
+                       "terms": hit, "merged": merged, "frame_id": g["frame_id"], "t_s": g["t_s"]})
+    if any(e["frame_id"] for e in ev):
+        # Video: geometry belongs to one keyframe; keep the frame with the most distinct query terms.
+        by_frame: dict[str, list[dict]] = {}
+        for e in ev:
+            by_frame.setdefault(e["frame_id"], []).append(e)
+        best = max(by_frame.values(), key=lambda es: (len({t for e in es for t in e["terms"]}), -es[0]["t_s"]))
+        ev = best
     return ev[:5]
 
 

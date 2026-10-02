@@ -54,6 +54,13 @@ class Limits:
     job_max_attempts: int = 3
     job_lease_seconds: int = 300
     search_max_limit: int = 200
+    # Video (M8): admission and bounded keyframe sampling.
+    max_video_bytes: int = 4 * 1024 * 1024 * 1024
+    max_video_seconds: float = 3 * 3600.0
+    video_sample_fps: float = 1.0          # decode rate for keyframe selection (one streaming pass)
+    video_max_gap_s: float = 10.0          # a keyframe at least this often, even without change
+    video_max_keyframes: int = 120         # cap; coverage is reported incomplete when it stops sampling
+    video_frame_long_edge: int = 1280      # analysis resolution of keyframes
 
 
 @dataclass(frozen=True)
@@ -168,6 +175,9 @@ def config_from_env(library_root: str | Path | None = None) -> LibraryConfig:
         max_image_bytes=_int("LIBRARY_MAX_IMAGE_MB", 50, 1, 1024) * 1024 * 1024,
         max_image_pixels=_int("LIBRARY_MAX_IMAGE_MEGAPIXELS", 40, 1, 400) * 1_000_000,
         ocr_max_tiles=_int("LIBRARY_OCR_MAX_TILES", 24, 1, 400),
+        max_video_bytes=_int("LIBRARY_MAX_VIDEO_MB", 4096, 1, 65536) * 1024 * 1024,
+        max_video_seconds=_int("LIBRARY_MAX_VIDEO_MINUTES", 180, 1, 1440) * 60.0,
+        video_max_keyframes=_int("LIBRARY_VIDEO_MAX_KEYFRAMES", 120, 1, 2000),
     )
     root = Path(library_root or os.getenv("ATTENTIONX_LIBRARY_ROOT", APP_ROOT / "data" / "library"))
     model_root = Path(os.getenv("ATTENTIONX_MODEL_ROOT", APP_ROOT / "data" / "models"))
