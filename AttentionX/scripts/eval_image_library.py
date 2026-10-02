@@ -256,6 +256,9 @@ def judged_queries(by_asset, eligible):
     return Q
 
 
+CROP_BOXES = [(0.2, 0.2, 0.8, 0.8), (0.0, 0.0, 0.6, 0.6), (0.3, 0.1, 0.9, 0.7), (0.1, 0.4, 0.5, 0.9)]
+
+
 def reference_queries(by_asset, eligible, split, seed=11):
     rnd = random.Random(seed)
     Q = []
@@ -265,10 +268,12 @@ def reference_queries(by_asset, eligible, split, seed=11):
         for ref in rnd.sample(refs, min(2, len(refs))):
             rel = {a for a, r in by_asset.items() if a in eligible and r["narrow_group"] == f"flower:{s}"} - {ref}
             Q.append(("reference", ref, None, rel))
-        if refs:
-            ref = refs[-1]
-            rel = {a for a, r in by_asset.items() if a in eligible and r["narrow_group"] == f"flower:{s}"}
-            Q.append(("crop", ref, (0.2, 0.2, 0.8, 0.8), rel))
+        # Crops: 4 references x 4 fixed boxes per species (2026-10-02; was 1 x 1, too few to measure —
+        # per-query nDCG ranged 0.36-0.87, see reports/experiments_m5_crop.md).
+        rel = {a for a, r in by_asset.items() if a in eligible and r["narrow_group"] == f"flower:{s}"}
+        for ref in refs[-4:]:
+            for box in CROP_BOXES:
+                Q.append(("crop", ref, box, rel))
     films = sorted({r["narrow_group"] for a, r in by_asset.items() if r["category"] == "film_frame_synthetic"})
     for g in films[:2]:
         ref = sorted(a for a, r in by_asset.items() if r["narrow_group"] == g and a in eligible)[0]

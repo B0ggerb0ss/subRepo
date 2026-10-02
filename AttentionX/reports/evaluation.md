@@ -1,4 +1,4 @@
-# Evaluation report — 2026-09-30
+# Evaluation report — 2026-09-30 (re-run 2026-10-02 on the schema-v6-migrated library: identical except the enlarged crop set)
 
 **Read this first.** Measured on the *stand-in* set described in `docs/evaluation-protocol.md`
 (Chromium-rendered screenshots of fictitious content + real CC-BY flower photos + scikit-image
@@ -24,7 +24,7 @@ thresholds `services/organize/decision_thresholds.json`.
 | Source/context queries (10) | same | nDCG **0.89**, R **0.87** | met on stand-in |
 | Combined intent (9) | same | nDCG **0.84**, R **0.79** | recall marginally below |
 | Reference-image similarity (12) | same | nDCG **0.80**, R **0.79** | recall marginally below |
-| Crop similarity (5) | same | nDCG **0.62**, R **0.52** | **below target** |
+| Crop similarity (80; was 5) | same | nDCG **0.735**, R **0.667** | **below target** (encoder-limited; see `experiments_m5_crop.md`) |
 | Object/scene precision ≥ 0.80 | — | **NOT TESTED** at scale: COCO/Places were unreachable; 3 real photos only (cat, cup, person all detected); scenes have **no positive labels** | NOT TESTED |
 | LinkedIn collection | P ≥ 0.95, R ≥ 0.80 | **P 1.00, R 0.90** (look-alike UI; 0 brand-mention/adversarial false positives) | met on stand-in |
 | Movie/TV collection | P ≥ 0.90, R ≥ 0.75 | **P 1.00, R 0.73** — synthetic frames share the letterbox+subtitle recipe with two features → optimistic | recall below; not a real film test |
@@ -62,7 +62,7 @@ interleaves short UI labels, so reading order — not recognition — dominates 
 | combined | **0.84 / 0.79** | 0.69 / 0.66 | 0.78 / 0.77 |
 | source/context | 0.89 / 0.87 | 0.89 / 0.87 | 0.89 / 0.87 |
 | reference | 0.80 / 0.79 | 0.80 / 0.79 | — |
-| crop | 0.62 / 0.52 | 0.62 / 0.52 | — |
+| crop (80 queries) | 0.735 / 0.667 | 0.735 / 0.667 | — |
 
 Hybrid fusion helps text-bearing and combined intents and costs a little on pure visual queries
 (lexical/OCR channels add a few text images for words like "flowers"). No-relevant queries now

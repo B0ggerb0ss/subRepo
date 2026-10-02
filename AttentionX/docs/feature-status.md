@@ -41,7 +41,7 @@ the M7 row). Evaluation: `reports/evaluation.md`; performance: `reports/benchmar
 | Literal search incl. `C++`/`c#`/URLs, short strings, spacing-insensitive fallback | verified | tests + literal recall 0.906 (all misses OCR-side) |
 | Typed grammar & AND filters | verified | parser errors, `source:linkedin text:"hiring"` |
 | Hybrid RRF + evidence | verified (stand-in) | ablations in evaluation report |
-| Reference & crop similarity | verified (stand-in); crop below target | crop nDCG 0.62 |
+| Reference & crop similarity | verified (stand-in); crop below target | crop nDCG 0.735 / R 0.667 on 80 test queries (was 5 queries). Cut-off and denser region views tested and ruled out; encoder-limited (`reports/experiments_m5_crop.md`) |
 | Typed decisions (23 heads, calibrated where dev data allows) | verified (stand-in) for capture/source/context; topics weak; scenes untested | ADR-005 |
 | OneJev decision backend | blocked | GitHub/HF unreachable; CLIP zero-shot backend used instead |
 | Smart collections + needs-review | verified (stand-in) | thresholds selected on dev |
