@@ -1,0 +1,268 @@
+{
+ "_note": "MEASURED response from the eval library (2 of 23 hits shown)",
+ "response": {
+  "query": {
+   "raw": "source:linkedin text:\"hiring\"",
+   "free_text": "",
+   "text_phrases": [
+    "hiring"
+   ],
+   "filters": [
+    {
+     "key": "source",
+     "value": "linkedin"
+    }
+   ],
+   "approximate_notes": []
+  },
+  "hits": [
+   {
+    "asset_id": "ast_043cd993a8fabf07cc28",
+    "metadata_revision": 8,
+    "score": 0.016393,
+    "channel_ranks": {
+     "phrase": 1
+    },
+    "channel_scores": {
+     "phrase": 6.0
+    },
+    "reasons": [
+     {
+      "reason": "OCR_PHRASE",
+      "detail": "OCR text contains \"hiring\"",
+      "region_ids": [
+       "r0010"
+      ],
+      "polygons": [
+       [
+        [
+         0.24242424242424243,
+         0.20476190476190478
+        ],
+        [
+         0.733939393939394,
+         0.20476190476190478
+        ],
+        [
+         0.733939393939394,
+         0.23238095238095235
+        ],
+        [
+         0.24242424242424243,
+         0.23238095238095235
+        ]
+       ]
+      ],
+      "box": null,
+      "score": null,
+      "score_kind": "literal_match",
+      "excerpt": "Hiring a data scientist who loves experimentation and causal inference."
+     },
+     {
+      "reason": "OCR_PHRASE",
+      "detail": "OCR text contains \"hiring\"",
+      "region_ids": [
+       "r0011"
+      ],
+      "polygons": [
+       [
+        [
+         0.24121212121212118,
+         0.26571428571428574
+        ],
+        [
+         0.7151515151515151,
+         0.26761904761904765
+        ],
+        [
+         0.7151515151515151,
+         0.29523809523809524
+        ],
+        [
+         0.24121212121212118,
+         0.29333333333333333
+        ]
+       ]
+      ],
+      "box": null,
+      "score": null,
+      "score_kind": "literal_match",
+      "excerpt": "We're hiring a Senior Machine Learning Engineer to build our ranking"
+     },
+     {
+      "reason": "OCR_PHRASE",
+      "detail": "OCR text contains \"hiring\"",
+      "region_ids": [
+       "r0014"
+      ],
+      "polygons": [
+       [
+        [
+         0.2545454545454545,
+         0.39619047619047615
+        ],
+        [
+         0.7018181818181818,
+         0.39619047619047615
+        ],
+        [
+         0.7018181818181818,
+         0.4228571428571429
+        ],
+        [
+         0.2545454545454545,
+         0.4228571428571429
+        ]
+       ]
+      ],
+      "box": null,
+      "score": null,
+      "score_kind": "literal_match",
+      "excerpt": "Hiring a data scientist who loves experimentation and"
+     },
+     {
+      "reason": "SOURCE_CONTEXT",
+      "detail": "source_app = linkedin, P=0.99 (zero_shot_softmax_uncalibrated)",
+      "region_ids": [],
+      "polygons": [],
+      "box": null,
+      "score": 0.9851,
+      "score_kind": "zero_shot_softmax_uncalibrated",
+      "excerpt": null
+     }
+    ],
+    "duplicate_count": 0,
+    "duplicate_ids": []
+   },
+   {
+    "asset_id": "ast_a5bb9474ec049e06c2d5",
+    "metadata_revision": 8,
+    "score": 0.016129,
+    "channel_ranks": {
+     "phrase": 2
+    },
+    "channel_scores": {
+     "phrase": 6.0
+    },
+    "reasons": [
+     {
+      "reason": "OCR_PHRASE",
+      "detail": "OCR text contains \"hiring\"",
+      "region_ids": [
+       "r0004"
+      ],
+      "polygons": [
+       [
+        [
+         0.042735042735042736,
+         0.09360189573459715
+        ],
+        [
+         0.8726495726495725,
+         0.09399684044233807
+        ],
+        [
+         0.8726495726495725,
+         0.11334913112164298
+        ],
+        [
+         0.042735042735042736,
+         0.11295418641390205
+        ]
+       ]
+      ],
+      "box": null,
+      "score": null,
+      "score_kind": "literal_match",
+      "excerpt": "Hiring a partnerships manager to build our"
+     },
+     {
+      "reason": "OCR_PHRASE",
+      "detail": "OCR text contains \"hiring\"",
+      "region_ids": [
+       "r0006"
+      ],
+      "polygons": [
+       [
+        [
+         0.042735042735042736,
+         0.17140600315955765
+        ],
+        [
+         0.9461538461538461,
+         0.17140600315955765
+        ],
+        [
+         0.9461538461538461,
+         0.1895734597156398
+        ],
+        [
+         0.042735042735042736,
+         0.1895734597156398
+        ]
+       ]
+      ],
+      "box": null,
+      "score": null,
+      "score_kind": "literal_match",
+      "excerpt": "Our revenue team is hiring in Toronto and New"
+     },
+     {
+      "reason": "OCR_PHRASE",
+      "detail": "OCR text contains \"hiring\"",
+      "region_ids": [
+       "r0008"
+      ],
+      "polygons": [
+       [
+        [
+         0.07606837606837608,
+         0.25118483412322273
+        ],
+        [
+         0.8529914529914531,
+         0.25276461295418645
+        ],
+        [
+         0.8529914529914531,
+         0.273696682464455
+        ],
+        [
+         0.07606837606837608,
+         0.2721169036334913
+        ]
+       ]
+      ],
+      "box": null,
+      "score": null,
+      "score_kind": "literal_match",
+      "excerpt": "Hiring a partnerships manager to"
+     },
+     {
+      "reason": "SOURCE_CONTEXT",
+      "detail": "source_app = linkedin, P=0.94 (zero_shot_softmax_uncalibrated)",
+      "region_ids": [],
+      "polygons": [],
+      "box": null,
+      "score": 0.9362,
+      "score_kind": "zero_shot_softmax_uncalibrated",
+      "excerpt": null
+     }
+    ],
+    "duplicate_count": 0,
+    "duplicate_ids": []
+   }
+  ],
+  "total_candidates": 23,
+  "channels_used": [
+   "phrase"
+  ],
+  "degraded": [],
+  "index_revision": {
+   "clip-b32-laion2b:6f19d3858fb5:clip-views/1": 13760,
+   "minilm-l6-v2:77d282d9166b:ocr-chunks/1": 22960,
+   "write_seq": 14017
+  },
+  "elapsed_ms": 5.48
+ }
+}

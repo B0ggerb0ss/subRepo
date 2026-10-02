@@ -1,0 +1,9 @@
+# ADR-009 — Three separate organizing mechanisms
+
+1. **Smart context collections** (`services/organize/collections.py`): rule sets over typed decisions/overrides (threshold 0.80 for high-trust sets), multi-membership, hierarchical LinkedIn subsets, a "Needs review" set for undecided capture type. Not clustering.
+2. **Similarity groups** (`clustering.py`): inside a smart-set scope, one channel per scope — CLIP global vectors for photo/film scopes, mean MiniLM OCR-chunk vectors for text-heavy scopes (so shared UI chrome does not dominate). Sparse mutual-kNN edges + complete-linkage merging (min pairwise similarity ≥ τ_link) → no transitive chains; singletons allowed; no forced K; affinity = cosine to medoid (not a probability).
+3. **Near-duplicate candidates** (`duplicates.py`): pHash+dHash candidates → verification requiring equal aspect (crops are "related"), CLIP cosine, and OCR character similarity of whitespace-free text (shared chrome is not duplication); star groups around a representative prevent chaining. Nothing is ever deleted; search collapses duplicates with a count and can expand.
+
+**Stable identity & corrections.** Group ids survive rebuilds via best-overlap reconciliation; lineage is recorded in `collection_aliases` (split/merge/recluster). Memberships have `suggested/confirmed/excluded` states; rebuilds only rewrite *suggested* rows; pinned groups are frozen; user-owned groups are never retired; every correction is recorded with actor/time/previous/new/revision and optimistic revision checks.
+
+**Incremental.** After each commit, the per-asset `organize` stage updates smart memberships, checks duplicates for that asset (vectorized hash scan) and attaches it to a coherent existing group; a full rebuild is an explicit job. Measured in `reports/benchmark.json`.

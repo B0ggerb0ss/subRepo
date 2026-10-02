@@ -1,0 +1,338 @@
+{
+ "_note": "MEASURED export (collection linkedin_job_posts), truncated to one asset",
+ "export_ref": {
+  "export_id": "exp_20260930T194531_764ca5",
+  "relative_path": "exports/exp_20260930T194531_764ca5.json",
+  "sha256": "a012a1579b25fec6f5d07c73a3811f72190324a5718d1ea625083fe58ce4dee9",
+  "bytes": 1411057,
+  "assets": 39,
+  "collections": 1
+ },
+ "snapshot": {
+  "assets": [
+   {
+    "annotations": {
+     "revision": 0,
+     "tags": [],
+     "title": ""
+    },
+    "asset_id": "ast_020a922e56d8ec88bcf6",
+    "byte_size": 81301,
+    "content_hash": "6e123763c7b94c83eae21d95d6aad0545e717194c8fa3872ddce9b2493900375",
+    "height": 1688,
+    "import_count": 1,
+    "metadata": {
+     "schema_version": "MediaMetadata/1.1",
+     "_note": "full metadata omitted in this excerpt"
+    },
+    "metadata_revision": 8,
+    "mime": "image/png",
+    "overrides": {},
+    "width": 780
+   }
+  ],
+  "collections": [
+   {
+    "id": "col_smart_local_linkedin_job_posts",
+    "key": "linkedin_job_posts",
+    "label": "LinkedIn · job posts",
+    "members": [
+     {
+      "affinity": 0.527846,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_020a922e56d8ec88bcf6",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.67573,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_043cd993a8fabf07cc28",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.53108,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_29a4480a93a621faf77e",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.389797,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_2ec611cefa2a4f54ab3c",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.306288,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_2eed2c32ed16275ce1e5",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.847395,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_3026d6470f9260b325d6",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.4461,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_3261393dac4794bcb415",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.317114,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_37e67813e91ad3ed388c",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.26548,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_413f78eafe944dc1f0b9",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.609804,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_4b3fc0acf20d77e5f469",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.283236,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_4b8cfb3d87889fef924e",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.251701,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_5812645d9dbacdb05a21",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.456241,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_5a9498bde806967d01da",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.622045,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_5f837d60600b307082e6",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.687692,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_6201c118bf70eff4465f",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.555124,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_6498fb833b47e9e58793",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.517753,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_653a74dd657450713342",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.312988,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_70c2f9c83302fbf25d15",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.564002,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_71fc3c1b031a3c51c790",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.314082,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_8304f33ab6d8a5890f44",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.497038,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_8802ee0b60fc147ee2b3",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.652989,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_908389987e36a6f1a800",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.512989,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_92777b930ce940b7d5fb",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.573818,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_a162e9675401284c471c",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.252047,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_a456ef6389fa0ff62965",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.6901,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_a5bb9474ec049e06c2d5",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.491375,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_adff19c5a7d9f10c3c87",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.518241,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_afb6366ba87baa18ffd1",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.443851,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_bbc46a0feb30dc128021",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.571745,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_c10cb73e80aa1e96dcb5",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.459455,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_c61b91e9b25f50809f93",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.679028,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_d4e5b992d175b1178570",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.586463,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_da55ba9acc06c00281c4",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.531758,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_ddba5190b97f3baadc79",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.824489,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_e0a07b0dc307f57d734d",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.499406,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_e6b3db716b2e6f4f43aa",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.276885,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_e8b53c62ca5d3d540d73",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.749904,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_f0d6aa1d67bc574613d1",
+      "method": "decision",
+      "state": "suggested"
+     },
+     {
+      "affinity": 0.450644,
+      "affinity_kind": "zero_shot_softmax_uncalibrated",
+      "asset_id": "ast_f8c78466cf721e49aca0",
+      "method": "decision",
+      "state": "suggested"
+     }
+    ],
+    "parent_id": "col_smart_local_linkedin_screenshots",
+    "pinned": false,
+    "representative_asset": null,
+    "revision": 0,
+    "suggested_label": "LinkedIn · job posts",
+    "type": "smart",
+    "user_label": null
+   }
+  ],
+  "content_sha256": "80265f5b427f89c27f3c1774a25d139e90efb052a2ebdac7ecfa145a68a1c71b",
+  "corrections": [],
+  "library_id": "local",
+  "metadata_format": "1.1",
+  "options": {
+   "include_camera_exif": false,
+   "include_corrections": true,
+   "include_filenames": false,
+   "include_generated_at": false,
+   "include_notes": false,
+   "include_path_hints": false,
+   "metadata_format": "1.1"
+  },
+  "snapshot_version": "AttentionXLibrarySnapshot/1"
+ }
+}

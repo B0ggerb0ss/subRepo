@@ -1,0 +1,66 @@
+[
+  {
+    "check": "All 51 Python source files parse",
+    "status": "passed"
+  },
+  {
+    "check": "Face visibility uses coordinates as absence sentinel",
+    "observed": 0.0,
+    "expected_if_two_detections": 1.0
+  },
+  {
+    "check": "Crop ignores true centered faces",
+    "observed_mean": 0.8,
+    "expected_if_all_detected": 0.6
+  },
+  {
+    "check": "Snapping exceeds configured max duration",
+    "observed": [
+      {
+        "start": 9.0,
+        "end": 30,
+        "duration": 21.0
+      },
+      {
+        "start": 30.0,
+        "end": 45,
+        "duration": 15.0
+      }
+    ],
+    "configured_max": 20
+  },
+  {
+    "check": "Transcript silence counted into next window",
+    "observed": [
+      [
+        0.0,
+        15
+      ],
+      [
+        15,
+        25
+      ]
+    ],
+    "second_speech_start": 20
+  },
+  {
+    "check": "Caption overflow and loss",
+    "source_words": 40,
+    "subtitle_words": 10,
+    "last_token_preserved": false,
+    "caption_end": "00:00:00,000 --> 00:00:08,000"
+  },
+  {
+    "check": "Narrow portrait crop",
+    "status": "reproduced_failure",
+    "exception": "RenderError",
+    "detail": "[Parsed_crop_0 @ 0x555eeeeec2c0] Invalid too big or non positive size for width '404' or height '720'"
+  },
+  {
+    "check": "Ordinary capitalization receives named-entity score",
+    "observed_scores": {
+      "lowercase": 0.2,
+      "capitalized": 0.4
+    }
+  }
+]

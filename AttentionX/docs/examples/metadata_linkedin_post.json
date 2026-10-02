@@ -1,0 +1,2007 @@
+{
+ "_note": "MEASURED output of the pipeline on a Chromium-rendered screenshot of fictitious content (eval set). Not illustrative.",
+ "metadata": {
+  "schema_version": "MediaMetadata/1.1",
+  "asset_id": "ast_4b3fc0acf20d77e5f469",
+  "content_hash": "8b97af00b04c13527cad7538a1eee15eb92b05910987d125b79611706b81dd77",
+  "asset_kind": "image",
+  "analyzer_version": "attentionx-image/1.0",
+  "analyzed_at": "2026-09-30T19:25:57.643338Z",
+  "illustrative": false,
+  "image": {
+   "format": "PNG",
+   "mime": "image/png",
+   "stored_width": 1100,
+   "stored_height": 700,
+   "exif_orientation": 1,
+   "display_width": 1100,
+   "display_height": 700,
+   "color_mode": "RGB",
+   "icc_profile": false,
+   "animated": false,
+   "frame_count": 1,
+   "frames_analyzed": [
+    0
+   ],
+   "camera_exif": false,
+   "metrics": {
+    "aspect_ratio": 1.5714,
+    "axis_aligned_gradient_fraction": 0.4005,
+    "clip_black_fraction": 0.0,
+    "clip_white_fraction": 0.3254,
+    "colorfulness": 13.7,
+    "edge_density": 0.0237,
+    "flat_block_fraction": 0.8106,
+    "letterbox_bottom_fraction": 0.0,
+    "letterbox_top_fraction": 0.0,
+    "luma_p05": 0.9412,
+    "luma_p50": 0.949,
+    "luma_p95": 1.0,
+    "metric_long_edge": 768.0,
+    "sharpness_laplacian_var": 1080.843,
+    "unique_color_bins": 1080.0
+   },
+   "palette": [
+    {
+     "fraction": 0.6342,
+     "hex": "#f4f2ee"
+    },
+    {
+     "fraction": 0.3252,
+     "hex": "#ffffff"
+    },
+    {
+     "fraction": 0.0302,
+     "hex": "#a9b1ba"
+    },
+    {
+     "fraction": 0.0058,
+     "hex": "#ebf7fb"
+    },
+    {
+     "fraction": 0.0047,
+     "hex": "#fbf2e3"
+    }
+   ],
+   "hashes": {
+    "dhash64": "5038243430500000",
+    "phash64": "9898e39998e7c786",
+    "sha256": "8b97af00b04c13527cad7538a1eee15eb92b05910987d125b79611706b81dd77"
+   },
+   "provenance": {
+    "producer": "services.analyze.pixels",
+    "source_modality": "image",
+    "source_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469"
+    ],
+    "extractor": "pillow+opencv",
+    "extractor_version": "pixels/1.0",
+    "model_digest": null,
+    "confidence_kind": "deterministic_parse",
+    "calibration_version": null,
+    "cost_class": "cached",
+    "cache_key": "f127fbfaa951d38ae16e4202a49238fad40ba327f5c96f03ac8fd4ef9ed47961",
+    "failure_modes": [
+     "corrupt_or_truncated_data",
+     "unsupported_color_profile_conversion"
+    ],
+    "status": "cached"
+   }
+  },
+  "ocr": {
+   "engine": "rapidocr",
+   "engine_version": "1.4.4",
+   "model_ids": [
+    "ch_PP-OCRv4_det_infer.onnx",
+    "ch_PP-OCRv4_rec_infer.onnx",
+    "ch_ppocr_mobile_v2.0_cls_infer.onnx"
+   ],
+   "languages": [
+    "en"
+   ],
+   "script_scope": "PP-OCRv4 ch recognizer: Simplified Chinese + Latin (English); no Arabic/Devanagari",
+   "tiles": [
+    {
+     "tile_id": "t000_00",
+     "box_px": [
+      0,
+      0,
+      853,
+      700
+     ],
+     "scale": 1.5,
+     "status": "complete"
+    },
+    {
+     "tile_id": "t000_01",
+     "box_px": [
+      747,
+      0,
+      1100,
+      700
+     ],
+     "scale": 1.5,
+     "status": "complete"
+    }
+   ],
+   "regions": [
+    {
+     "region_id": "r0000",
+     "raw_text": "in",
+     "norm_text": "in",
+     "polygon": [
+      [
+       0.020606060606060607,
+       0.017142857142857144
+      ],
+      [
+       0.04424242424242424,
+       0.017142857142857144
+      ],
+      [
+       0.04424242424242424,
+       0.04857142857142857
+      ],
+      [
+       0.020606060606060607,
+       0.04857142857142857
+      ]
+     ],
+     "reading_order": 0,
+     "line_group": 0,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99924,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0001",
+     "raw_text": "Home",
+     "norm_text": "home",
+     "polygon": [
+      [
+       0.08242424242424243,
+       0.010476190476190476
+      ],
+      [
+       0.12242424242424242,
+       0.01238095238095238
+      ],
+      [
+       0.12181818181818181,
+       0.039047619047619046
+      ],
+      [
+       0.08181818181818182,
+       0.03619047619047619
+      ]
+     ],
+     "reading_order": 1,
+     "line_group": 0,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99983,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0002",
+     "raw_text": "My Network",
+     "norm_text": "my network",
+     "polygon": [
+      [
+       0.14424242424242423,
+       0.014285714285714285
+      ],
+      [
+       0.2175757575757576,
+       0.014285714285714285
+      ],
+      [
+       0.2175757575757576,
+       0.037142857142857144
+      ],
+      [
+       0.14424242424242423,
+       0.037142857142857144
+      ]
+     ],
+     "reading_order": 2,
+     "line_group": 0,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.98896,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0003",
+     "raw_text": "Jobs",
+     "norm_text": "jobs",
+     "polygon": [
+      [
+       0.23757575757575755,
+       0.01238095238095238
+      ],
+      [
+       0.2684848484848485,
+       0.01238095238095238
+      ],
+      [
+       0.2684848484848485,
+       0.04
+      ],
+      [
+       0.23757575757575755,
+       0.04
+      ]
+     ],
+     "reading_order": 3,
+     "line_group": 0,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.97104,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0004",
+     "raw_text": "Messaging",
+     "norm_text": "messaging",
+     "polygon": [
+      [
+       0.28909090909090907,
+       0.013333333333333334
+      ],
+      [
+       0.35515151515151516,
+       0.013333333333333334
+      ],
+      [
+       0.35515151515151516,
+       0.039047619047619046
+      ],
+      [
+       0.28909090909090907,
+       0.039047619047619046
+      ]
+     ],
+     "reading_order": 4,
+     "line_group": 0,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99983,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0005",
+     "raw_text": "Notifications",
+     "norm_text": "notifications",
+     "polygon": [
+      [
+       0.37757575757575756,
+       0.01238095238095238
+      ],
+      [
+       0.4539393939393939,
+       0.01238095238095238
+      ],
+      [
+       0.4539393939393939,
+       0.03523809523809524
+      ],
+      [
+       0.37757575757575756,
+       0.03523809523809524
+      ]
+     ],
+     "reading_order": 5,
+     "line_group": 0,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.9942,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0006",
+     "raw_text": "Mei Kowalski·lst",
+     "norm_text": "mei kowalski·lst",
+     "polygon": [
+      [
+       0.2957575757575757,
+       0.11904761904761904
+      ],
+      [
+       0.43636363636363634,
+       0.11904761904761904
+      ],
+      [
+       0.43636363636363634,
+       0.1438095238095238
+      ],
+      [
+       0.2957575757575757,
+       0.1438095238095238
+      ]
+     ],
+     "reading_order": 6,
+     "line_group": 1,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.98257,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0007",
+     "raw_text": "Founder atQuartzlineFinance",
+     "norm_text": "founder atquartzlinefinance",
+     "polygon": [
+      [
+       0.29393939393939394,
+       0.14476190476190476
+      ],
+      [
+       0.46060606060606063,
+       0.14476190476190476
+      ],
+      [
+       0.46060606060606063,
+       0.16666666666666669
+      ],
+      [
+       0.29393939393939394,
+       0.16666666666666669
+      ]
+     ],
+     "reading_order": 7,
+     "line_group": 2,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.98285,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0008",
+     "raw_text": "+ Follow",
+     "norm_text": "+ follow",
+     "polygon": [
+      [
+       0.6957575757575758,
+       0.14
+      ],
+      [
+       0.7593939393939394,
+       0.14
+      ],
+      [
+       0.7593939393939394,
+       0.1657142857142857
+      ],
+      [
+       0.6957575757575758,
+       0.1657142857142857
+      ]
+     ],
+     "reading_order": 8,
+     "line_group": 2,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.98461,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0009",
+     "raw_text": "3d·Edited",
+     "norm_text": "3d·edited",
+     "polygon": [
+      [
+       0.29454545454545455,
+       0.1657142857142857
+      ],
+      [
+       0.3593939393939394,
+       0.1657142857142857
+      ],
+      [
+       0.3593939393939394,
+       0.18476190476190477
+      ],
+      [
+       0.29454545454545455,
+       0.18476190476190477
+      ]
+     ],
+     "reading_order": 9,
+     "line_group": 3,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.98002,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0010",
+     "raw_text": "We're hiring a Senior Machine Learning Engineer to build our ranking",
+     "norm_text": "we're hiring a senior machine learning engineer to build our ranking",
+     "polygon": [
+      [
+       0.24181818181818182,
+       0.20476190476190478
+      ],
+      [
+       0.7151515151515151,
+       0.2057142857142857
+      ],
+      [
+       0.7151515151515151,
+       0.23142857142857143
+      ],
+      [
+       0.24181818181818182,
+       0.2304761904761905
+      ]
+     ],
+     "reading_order": 10,
+     "line_group": 4,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.98695,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0011",
+     "raw_text": "models.",
+     "norm_text": "models.",
+     "polygon": [
+      [
+       0.24060606060606063,
+       0.23714285714285716
+      ],
+      [
+       0.29818181818181816,
+       0.2342857142857143
+      ],
+      [
+       0.29818181818181816,
+       0.26095238095238094
+      ],
+      [
+       0.24060606060606063,
+       0.26380952380952377
+      ]
+     ],
+     "reading_order": 11,
+     "line_group": 5,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99966,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0012",
+     "raw_text": "Open role: Machine Learning Platform Engineer. Kubernetes and Python",
+     "norm_text": "open role: machine learning platform engineer. kubernetes and python",
+     "polygon": [
+      [
+       0.243030303030303,
+       0.29714285714285715
+      ],
+      [
+       0.733939393939394,
+       0.29714285714285715
+      ],
+      [
+       0.733939393939394,
+       0.32476190476190475
+      ],
+      [
+       0.243030303030303,
+       0.32476190476190475
+      ]
+     ],
+     "reading_order": 12,
+     "line_group": 6,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99585,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0013",
+     "raw_text": "required.",
+     "norm_text": "required.",
+     "polygon": [
+      [
+       0.24060606060606063,
+       0.32857142857142857
+      ],
+      [
+       0.3054545454545455,
+       0.32857142857142857
+      ],
+      [
+       0.3054545454545455,
+       0.3580952380952381
+      ],
+      [
+       0.24060606060606063,
+       0.3580952380952381
+      ]
+     ],
+     "reading_order": 13,
+     "line_group": 7,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99995,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0014",
+     "raw_text": "We're hiring a Senior Machine Learning Engineer to build",
+     "norm_text": "we're hiring a senior machine learning engineer to build",
+     "polygon": [
+      [
+       0.2539393939393939,
+       0.3952380952380953
+      ],
+      [
+       0.7254545454545455,
+       0.39619047619047615
+      ],
+      [
+       0.7254545454545455,
+       0.42380952380952386
+      ],
+      [
+       0.2539393939393939,
+       0.4228571428571429
+      ]
+     ],
+     "reading_order": 14,
+     "line_group": 8,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99159,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0015",
+     "raw_text": "our",
+     "norm_text": "our",
+     "polygon": [
+      [
+       0.25333333333333335,
+       0.4257142857142857
+      ],
+      [
+       0.28484848484848485,
+       0.4257142857142857
+      ],
+      [
+       0.28484848484848485,
+       0.44952380952380955
+      ],
+      [
+       0.25333333333333335,
+       0.44952380952380955
+      ]
+     ],
+     "reading_order": 15,
+     "line_group": 9,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99816,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0016",
+     "raw_text": "Quartzline Finance· Berlin, Germany",
+     "norm_text": "quartzline finance· berlin, germany",
+     "polygon": [
+      [
+       0.25272727272727274,
+       0.44857142857142857
+      ],
+      [
+       0.4733333333333333,
+       0.44952380952380955
+      ],
+      [
+       0.4733333333333333,
+       0.4742857142857143
+      ],
+      [
+       0.25272727272727274,
+       0.47333333333333333
+      ]
+     ],
+     "reading_order": 16,
+     "line_group": 10,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.98383,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0017",
+     "raw_text": "EUR 80k-95k",
+     "norm_text": "eur 80k-95k",
+     "polygon": [
+      [
+       0.2539393939393939,
+       0.4714285714285714
+      ],
+      [
+       0.33333333333333337,
+       0.4714285714285714
+      ],
+      [
+       0.33333333333333337,
+       0.4933333333333333
+      ],
+      [
+       0.2539393939393939,
+       0.4933333333333333
+      ]
+     ],
+     "reading_order": 17,
+     "line_group": 11,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.94054,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0018",
+     "raw_text": "Easy Apply",
+     "norm_text": "easy apply",
+     "polygon": [
+      [
+       0.26606060606060605,
+       0.5095238095238096
+      ],
+      [
+       0.3381818181818182,
+       0.5114285714285715
+      ],
+      [
+       0.3381818181818182,
+       0.54
+      ],
+      [
+       0.26606060606060605,
+       0.5380952380952381
+      ]
+     ],
+     "reading_order": 18,
+     "line_group": 12,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99215,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0019",
+     "raw_text": "Save",
+     "norm_text": "save",
+     "polygon": [
+      [
+       0.3709090909090909,
+       0.5123809523809524
+      ],
+      [
+       0.4072727272727273,
+       0.5123809523809524
+      ],
+      [
+       0.4072727272727273,
+       0.539047619047619
+      ],
+      [
+       0.3709090909090909,
+       0.539047619047619
+      ]
+     ],
+     "reading_order": 19,
+     "line_group": 12,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99747,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0020",
+     "raw_text": "189reactions",
+     "norm_text": "189reactions",
+     "polygon": [
+      [
+       0.24181818181818182,
+       0.579047619047619
+      ],
+      [
+       0.3193939393939394,
+       0.579047619047619
+      ],
+      [
+       0.3193939393939394,
+       0.6
+      ],
+      [
+       0.24181818181818182,
+       0.6
+      ]
+     ],
+     "reading_order": 20,
+     "line_group": 13,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99557,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0021",
+     "raw_text": "26 comments · 3 reposts",
+     "norm_text": "26 comments · 3 reposts",
+     "polygon": [
+      [
+       0.62,
+       0.5771428571428572
+      ],
+      [
+       0.7587878787878788,
+       0.579047619047619
+      ],
+      [
+       0.7587878787878788,
+       0.600952380952381
+      ],
+      [
+       0.62,
+       0.6
+      ]
+     ],
+     "reading_order": 21,
+     "line_group": 13,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.95866,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0022",
+     "raw_text": "nts·3reposts",
+     "norm_text": "nts·3reposts",
+     "polygon": [
+      [
+       0.6796969696969697,
+       0.579047619047619
+      ],
+      [
+       0.7578787878787878,
+       0.579047619047619
+      ],
+      [
+       0.7578787878787878,
+       0.600952380952381
+      ],
+      [
+       0.6796969696969697,
+       0.600952380952381
+      ]
+     ],
+     "reading_order": 22,
+     "line_group": 13,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99222,
+     "tile_ids": [
+      "t000_01"
+     ]
+    },
+    {
+     "region_id": "r0023",
+     "raw_text": "Like",
+     "norm_text": "like",
+     "polygon": [
+      [
+       0.2818181818181818,
+       0.62
+      ],
+      [
+       0.31636363636363635,
+       0.6228571428571429
+      ],
+      [
+       0.31575757575757574,
+       0.6495238095238095
+      ],
+      [
+       0.2812121212121212,
+       0.6476190476190475
+      ]
+     ],
+     "reading_order": 23,
+     "line_group": 14,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99941,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0024",
+     "raw_text": "Comment",
+     "norm_text": "comment",
+     "polygon": [
+      [
+       0.39575757575757575,
+       0.6247619047619047
+      ],
+      [
+       0.4672727272727273,
+       0.6247619047619047
+      ],
+      [
+       0.4672727272727273,
+       0.6476190476190475
+      ],
+      [
+       0.39575757575757575,
+       0.6476190476190475
+      ]
+     ],
+     "reading_order": 24,
+     "line_group": 14,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99958,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0025",
+     "raw_text": "Repost",
+     "norm_text": "repost",
+     "polygon": [
+      [
+       0.546060606060606,
+       0.6228571428571429
+      ],
+      [
+       0.6006060606060606,
+       0.6228571428571429
+      ],
+      [
+       0.6006060606060606,
+       0.6495238095238095
+      ],
+      [
+       0.546060606060606,
+       0.6495238095238095
+      ]
+     ],
+     "reading_order": 25,
+     "line_group": 14,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99995,
+     "tile_ids": [
+      "t000_00"
+     ]
+    },
+    {
+     "region_id": "r0026",
+     "raw_text": "Send",
+     "norm_text": "send",
+     "polygon": [
+      [
+       0.6781818181818182,
+       0.620952380952381
+      ],
+      [
+       0.7181818181818181,
+       0.620952380952381
+      ],
+      [
+       0.7181818181818181,
+       0.6476190476190475
+      ],
+      [
+       0.6781818181818182,
+       0.6476190476190475
+      ]
+     ],
+     "reading_order": 26,
+     "line_group": 14,
+     "language": null,
+     "granularity": "line",
+     "recognizer_score": 0.99986,
+     "tile_ids": [
+      "t000_00"
+     ]
+    }
+   ],
+   "coverage_fraction": 1.0,
+   "complete": true,
+   "incomplete_reason": null,
+   "provenance": {
+    "producer": "services.analyze.ocr",
+    "source_modality": "image",
+    "source_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469"
+    ],
+    "extractor": "rapidocr",
+    "extractor_version": "1.4.4",
+    "model_digest": "a3f95c3630da412d5b11d45ebd2db4b91752a329071dc2cce75023b785f0be9d",
+    "confidence_kind": "raw_recognizer",
+    "calibration_version": null,
+    "cost_class": "cached",
+    "cache_key": "36d24fc7366f9731cf6942ed42cab968c0123599745385421e65208c84ff7708",
+    "failure_modes": [
+     "small_or_low_contrast_text_missed",
+     "unsupported_script",
+     "tile_cap_truncation",
+     "reading_order_multicolumn"
+    ],
+    "status": "cached"
+   }
+  },
+  "objects": {
+   "model": "efficientdet_lite0",
+   "ontology_version": "coco2017-efficientdet-lite0-labels/1",
+   "score_threshold": 0.3,
+   "observations": [],
+   "provenance": {
+    "producer": "services.analyze.objects",
+    "source_modality": "image",
+    "source_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469"
+    ],
+    "extractor": "mediapipe-tasks",
+    "extractor_version": "objects/1.0",
+    "model_digest": "5705aab04121827ea57e558217d46c53d6a4902404359851d9c1caf708eaaa92477e5fc7",
+    "confidence_kind": "raw_detector",
+    "calibration_version": null,
+    "cost_class": "cached",
+    "cache_key": "d589ca1d13720146e963e2048349cdf02a6a7b03088eb2a6886d20802ac2c814",
+    "failure_modes": [
+     "closed_coco_vocabulary",
+     "small_objects_missed",
+     "uncalibrated_scores"
+    ],
+    "status": "cached"
+   }
+  },
+  "decisions": {
+   "capture_type": {
+    "question_id": "capture_type",
+    "dtype": "choice",
+    "value": "screenshot",
+    "probs": {
+     "graphic": 0.00037265555591227065,
+     "photo": 0.0011702397160530825,
+     "scanned_document": 0.0008877753400364218,
+     "screenshot": 0.9975693293879982
+    },
+    "probability_kind": "zero_shot_softmax_uncalibrated",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global",
+     "asset:ast_4b3fc0acf20d77e5f469#pixels"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "axis_aligned_gradient_fraction": 0.4005,
+     "flat_block_fraction": 0.8106,
+     "pixel_prior": {
+      "graphic": 1.0,
+      "photo": 1.0,
+      "scanned_document": 1.0,
+      "screenshot": 1.0
+     },
+     "visual_softmax": {
+      "graphic": 0.0004,
+      "photo": 0.0012,
+      "scanned_document": 0.0009,
+      "screenshot": 0.9976
+     }
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "context.article": {
+    "question_id": "context.article",
+    "dtype": "noul",
+    "value": 0.1461520099646813,
+    "probs": {
+     "no": 0.8538479900353186,
+     "yes": 0.1461520099646813
+    },
+    "probability_kind": "model_probability",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr_chunks"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "calibration": "platt-synthetic-dev-20260930-f49f053e95",
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 1.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.375,
+      "subtitle": 0.0,
+      "text_logit": -6.43615,
+      "ui_any": 1.0,
+      "visual_logit": 1.98983
+     },
+     "prose_score": 0.375,
+     "text_p": 0.0016,
+     "visual_p": 0.8797
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": "platt-synthetic-dev-20260930-f49f053e95"
+   },
+   "context.conversation": {
+    "question_id": "context.conversation",
+    "dtype": "noul",
+    "value": 0.0013,
+    "probs": {
+     "no": 0.9987,
+     "yes": 0.0013
+    },
+    "probability_kind": "zero_shot_softmax_uncalibrated",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr_chunks"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 1.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": -5.94964,
+      "ui_any": 1.0,
+      "visual_logit": -1.7784
+     },
+     "lexicon": 0.0,
+     "text_p": 0.0026,
+     "visual_p": 0.1445
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "context.film_tv_frame": {
+    "question_id": "context.film_tv_frame",
+    "dtype": "noul",
+    "value": 0.0024303703812139795,
+    "probs": {
+     "no": 0.997569629618786,
+     "yes": 0.0024303703812139795
+    },
+    "probability_kind": "model_probability",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "calibration": "platt-synthetic-dev-20260930-f49f053e95",
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 0.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.0,
+      "ui_any": 1.0,
+      "visual_logit": -9.21024
+     },
+     "letterbox_fraction": 0.0,
+     "visual_p": 0.0001
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": "platt-synthetic-dev-20260930-f49f053e95"
+   },
+   "context.job_posting": {
+    "question_id": "context.job_posting",
+    "dtype": "noul",
+    "value": 0.5253843531437493,
+    "probs": {
+     "no": 0.4746156468562507,
+     "yes": 0.5253843531437493
+    },
+    "probability_kind": "model_probability",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr_chunks"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "calibration": "platt-synthetic-dev-20260930-f49f053e95",
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 1.0,
+      "letterbox": 0.0,
+      "lexicon": 1.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 1.94135,
+      "ui_any": 1.0,
+      "visual_logit": -2.94542
+     },
+     "lexicon": 1.0,
+     "text_p": 0.8745,
+     "visual_p": 0.05
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": "platt-synthetic-dev-20260930-f49f053e95"
+   },
+   "context.presentation_slide": {
+    "question_id": "context.presentation_slide",
+    "dtype": "noul",
+    "value": 0.00023521257710080066,
+    "probs": {
+     "no": 0.9997647874228992,
+     "yes": 0.00023521257710080066
+    },
+    "probability_kind": "model_probability",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "calibration": "platt-synthetic-dev-20260930-f49f053e95",
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 0.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.0,
+      "ui_any": 1.0,
+      "visual_logit": -4.83861
+     },
+     "visual_p": 0.0079
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": "platt-synthetic-dev-20260930-f49f053e95"
+   },
+   "context.source_code": {
+    "question_id": "context.source_code",
+    "dtype": "noul",
+    "value": 0.0010222235668481258,
+    "probs": {
+     "no": 0.9989777764331519,
+     "yes": 0.0010222235668481258
+    },
+    "probability_kind": "model_probability",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "calibration": "platt-synthetic-dev-20260930-f49f053e95",
+     "code_line_fraction": 0.0,
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 0.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.0,
+      "ui_any": 1.0,
+      "visual_logit": -3.68038
+     },
+     "visual_p": 0.0246
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": "platt-synthetic-dev-20260930-f49f053e95"
+   },
+   "scene.beach": {
+    "question_id": "scene.beach",
+    "dtype": "noul",
+    "value": 7.820176240808776e-07,
+    "probs": {
+     "no": 0.9999992179823759,
+     "yes": 7.820176240808776e-07
+    },
+    "probability_kind": "zero_shot_softmax_uncalibrated",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 0.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.0,
+      "ui_any": 1.0,
+      "visual_logit": -9.21024
+     },
+     "visual_p": 0.0
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "scene.city_street": {
+    "question_id": "scene.city_street",
+    "dtype": "noul",
+    "value": 2.2340287688432257e-08,
+    "probs": {
+     "no": 0.9999999776597123,
+     "yes": 2.2340287688432257e-08
+    },
+    "probability_kind": "zero_shot_softmax_uncalibrated",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 0.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.0,
+      "ui_any": 1.0,
+      "visual_logit": -9.21024
+     },
+     "visual_p": 0.0
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "scene.classroom": {
+    "question_id": "scene.classroom",
+    "dtype": "noul",
+    "value": 3.794142276943746e-07,
+    "probs": {
+     "no": 0.9999996205857723,
+     "yes": 3.794142276943746e-07
+    },
+    "probability_kind": "zero_shot_softmax_uncalibrated",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 0.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.0,
+      "ui_any": 1.0,
+      "visual_logit": -9.21024
+     },
+     "visual_p": 0.0
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "scene.forest": {
+    "question_id": "scene.forest",
+    "dtype": "noul",
+    "value": 1.0527067426728919e-07,
+    "probs": {
+     "no": 0.9999998947293257,
+     "yes": 1.0527067426728919e-07
+    },
+    "probability_kind": "zero_shot_softmax_uncalibrated",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 0.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.0,
+      "ui_any": 1.0,
+      "visual_logit": -9.21024
+     },
+     "visual_p": 0.0
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "scene.kitchen": {
+    "question_id": "scene.kitchen",
+    "dtype": "noul",
+    "value": 2.0008765775667072e-07,
+    "probs": {
+     "no": 0.9999997999123422,
+     "yes": 2.0008765775667072e-07
+    },
+    "probability_kind": "zero_shot_softmax_uncalibrated",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 0.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.0,
+      "ui_any": 1.0,
+      "visual_logit": -9.21024
+     },
+     "visual_p": 0.0
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "scene.mountain": {
+    "question_id": "scene.mountain",
+    "dtype": "noul",
+    "value": 1.3778979233450363e-06,
+    "probs": {
+     "no": 0.9999986221020767,
+     "yes": 1.3778979233450363e-06
+    },
+    "probability_kind": "zero_shot_softmax_uncalibrated",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 0.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.0,
+      "ui_any": 1.0,
+      "visual_logit": -9.21024
+     },
+     "visual_p": 0.0
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "scene.office": {
+    "question_id": "scene.office",
+    "dtype": "noul",
+    "value": 9.90490973791211e-07,
+    "probs": {
+     "no": 0.9999990095090262,
+     "yes": 9.90490973791211e-07
+    },
+    "probability_kind": "zero_shot_softmax_uncalibrated",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 0.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.0,
+      "ui_any": 1.0,
+      "visual_logit": -9.21024
+     },
+     "visual_p": 0.0
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "scene.stadium": {
+    "question_id": "scene.stadium",
+    "dtype": "noul",
+    "value": 2.0224733857022796e-08,
+    "probs": {
+     "no": 0.9999999797752661,
+     "yes": 2.0224733857022796e-08
+    },
+    "probability_kind": "zero_shot_softmax_uncalibrated",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 0.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.0,
+      "ui_any": 1.0,
+      "visual_logit": -9.21024
+     },
+     "visual_p": 0.0
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "source_app": {
+    "question_id": "source_app",
+    "dtype": "choice",
+    "value": "linkedin",
+    "probs": {
+     "browser": 0.0018298685188114193,
+     "github": 6.451040596637296e-05,
+     "instagram": 5.6124963936251594e-06,
+     "linkedin": 0.9942379427880802,
+     "other": 0.0038498324087389807,
+     "whatsapp": 8.373154488119538e-06,
+     "youtube": 3.860227521113538e-06
+    },
+    "probability_kind": "zero_shot_softmax_uncalibrated",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr/r0001",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr/r0002",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr/r0003",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr/r0004",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr/r0005"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "ui_evidence": {
+      "linkedin": {
+       "region_ids": [
+        "r0001",
+        "r0002",
+        "r0003",
+        "r0004",
+        "r0005"
+       ],
+       "rule_min": 3,
+       "tokens": [
+        "home",
+        "jobs",
+        "messaging",
+        "my network",
+        "notifications"
+       ]
+      }
+     },
+     "ui_prior": {
+      "browser": 0.1,
+      "github": 0.02,
+      "instagram": 0.02,
+      "linkedin": 1.0,
+      "other": 0.1,
+      "whatsapp": 0.02,
+      "youtube": 0.02
+     },
+     "visual_softmax": {
+      "browser": 0.0173,
+      "github": 0.0031,
+      "instagram": 0.0003,
+      "linkedin": 0.9423,
+      "other": 0.0365,
+      "whatsapp": 0.0004,
+      "youtube": 0.0002
+     }
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "sufficiency.a": {
+    "question_id": "sufficiency.a",
+    "dtype": "noul",
+    "value": 1.0,
+    "probs": {
+     "no": 0.0,
+     "yes": 1.0
+    },
+    "probability_kind": "deterministic_parse",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#pixels"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "clip": true,
+     "ocr": "cached",
+     "pixels": true
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "sufficiency.b": {
+    "question_id": "sufficiency.b",
+    "dtype": "noul",
+    "value": 1.0,
+    "probs": {
+     "no": 0.0,
+     "yes": 1.0
+    },
+    "probability_kind": "deterministic_parse",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#pixels"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "clip": true,
+     "ocr": "cached"
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": null
+   },
+   "topic.ai_ml": {
+    "question_id": "topic.ai_ml",
+    "dtype": "noul",
+    "value": 0.7814169568966719,
+    "probs": {
+     "no": 0.2185830431033281,
+     "yes": 0.7814169568966719
+    },
+    "probability_kind": "model_probability",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr_chunks"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "calibration": "platt-synthetic-dev-20260930-f49f053e95",
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 1.0,
+      "letterbox": 0.0,
+      "lexicon": 0.66667,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 1.88864,
+      "ui_any": 1.0,
+      "visual_logit": 1.98081
+     },
+     "lexicon": 0.6667,
+     "text_p": 0.8686,
+     "visual_p": 0.8788
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": "platt-synthetic-dev-20260930-f49f053e95"
+   },
+   "topic.education": {
+    "question_id": "topic.education",
+    "dtype": "noul",
+    "value": 0.006644833544199621,
+    "probs": {
+     "no": 0.9933551664558004,
+     "yes": 0.006644833544199621
+    },
+    "probability_kind": "model_probability",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr_chunks"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "calibration": "platt-synthetic-dev-20260930-f49f053e95",
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 1.0,
+      "letterbox": 0.0,
+      "lexicon": 0.33333,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": -2.80974,
+      "ui_any": 1.0,
+      "visual_logit": 2.45044
+     },
+     "lexicon": 0.3333,
+     "text_p": 0.0568,
+     "visual_p": 0.9206
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": "platt-synthetic-dev-20260930-f49f053e95"
+   },
+   "topic.entertainment": {
+    "question_id": "topic.entertainment",
+    "dtype": "noul",
+    "value": 0.013927757318452073,
+    "probs": {
+     "no": 0.9860722426815479,
+     "yes": 0.013927757318452073
+    },
+    "probability_kind": "model_probability",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr_chunks"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "calibration": "platt-synthetic-dev-20260930-f49f053e95",
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 1.0,
+      "letterbox": 0.0,
+      "lexicon": 0.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": -2.64013,
+      "ui_any": 1.0,
+      "visual_logit": -6.74209
+     },
+     "lexicon": 0.0,
+     "text_p": 0.0666,
+     "visual_p": 0.0012
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": "platt-synthetic-dev-20260930-f49f053e95"
+   },
+   "topic.hiring": {
+    "question_id": "topic.hiring",
+    "dtype": "noul",
+    "value": 0.6098040338009894,
+    "probs": {
+     "no": 0.39019596619901065,
+     "yes": 0.6098040338009894
+    },
+    "probability_kind": "model_probability",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr_chunks"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "calibration": "platt-synthetic-dev-20260930-f49f053e95",
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 1.0,
+      "letterbox": 0.0,
+      "lexicon": 1.0,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 2.75687,
+      "ui_any": 1.0,
+      "visual_logit": -0.10286
+     },
+     "lexicon": 1.0,
+     "text_p": 0.9403,
+     "visual_p": 0.4743
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": "platt-synthetic-dev-20260930-f49f053e95"
+   },
+   "topic.software_development": {
+    "question_id": "topic.software_development",
+    "dtype": "noul",
+    "value": 0.5503850567132148,
+    "probs": {
+     "no": 0.4496149432867852,
+     "yes": 0.5503850567132148
+    },
+    "probability_kind": "model_probability",
+    "status": "complete",
+    "abstain_reason": null,
+    "evidence_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469#clip/global",
+     "asset:ast_4b3fc0acf20d77e5f469#ocr_chunks"
+    ],
+    "missing_evidence": [],
+    "gates": {
+     "calibration": "platt-synthetic-dev-20260930-f49f053e95",
+     "features": {
+      "code_fraction": 0.0,
+      "has_text": 1.0,
+      "letterbox": 0.0,
+      "lexicon": 0.66667,
+      "prose_score": 0.0,
+      "subtitle": 0.0,
+      "text_logit": 0.88327,
+      "ui_any": 1.0,
+      "visual_logit": 4.59393
+     },
+     "lexicon": 0.6667,
+     "text_p": 0.7075,
+     "visual_p": 0.99
+    },
+    "model": "clip-zero-shot+minilm@attentionx",
+    "catalog_version": "attentionx-image-questions/1.0",
+    "calibration_version": "platt-synthetic-dev-20260930-f49f053e95"
+   }
+  },
+  "embeddings": [
+   {
+    "embedding_id": "ast_4b3fc0acf20d77e5f469:clip-b32-laion2b:6f19d3858fb5:clip-views/1:global",
+    "namespace": "clip-b32-laion2b:6f19d3858fb5:clip-views/1",
+    "space": "clip-b32-laion2b:6f19d3858fb5",
+    "model": "image_embed",
+    "model_digest": "6f19d3858fb51a526f5da038181a504de1d848f2cb1380840d23406ada62862b",
+    "dim": 512,
+    "normalization": "l2",
+    "preprocess_version": "clip-views/1",
+    "view_kind": "global_letterbox",
+    "view_id": "global",
+    "region": null,
+    "source_refs": [],
+    "storage_ref": "sqlite:vectors/clip-b32-laion2b:6f19d3858fb5:clip-views/1/ast_4b3fc0acf20d77e5f469/global"
+   },
+   {
+    "embedding_id": "ast_4b3fc0acf20d77e5f469:clip-b32-laion2b:6f19d3858fb5:clip-views/1:region0",
+    "namespace": "clip-b32-laion2b:6f19d3858fb5:clip-views/1",
+    "space": "clip-b32-laion2b:6f19d3858fb5",
+    "model": "image_embed",
+    "model_digest": "6f19d3858fb51a526f5da038181a504de1d848f2cb1380840d23406ada62862b",
+    "dim": 512,
+    "normalization": "l2",
+    "preprocess_version": "clip-views/1",
+    "view_kind": "region",
+    "view_id": "region0",
+    "region": [
+     0.0,
+     0.0,
+     0.6,
+     0.6
+    ],
+    "source_refs": [],
+    "storage_ref": "sqlite:vectors/clip-b32-laion2b:6f19d3858fb5:clip-views/1/ast_4b3fc0acf20d77e5f469/region0"
+   },
+   {
+    "note": "31 more embedding records omitted in this example"
+   }
+  ],
+  "stage_status": {
+   "pixels": "cached",
+   "ocr": "cached",
+   "image_embed": "cached",
+   "ocr_text_embed": "cached",
+   "objects": "cached",
+   "context": "cached",
+   "index": "complete"
+  },
+  "stage_provenance": {
+   "pixels": {
+    "producer": "services.analyze.pixels",
+    "source_modality": "image",
+    "source_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469"
+    ],
+    "extractor": "pillow+opencv",
+    "extractor_version": "pixels/1.0",
+    "model_digest": null,
+    "confidence_kind": "deterministic_parse",
+    "calibration_version": null,
+    "cost_class": "cached",
+    "cache_key": "f127fbfaa951d38ae16e4202a49238fad40ba327f5c96f03ac8fd4ef9ed47961",
+    "failure_modes": [
+     "corrupt_or_truncated_data",
+     "unsupported_color_profile_conversion"
+    ],
+    "status": "cached"
+   },
+   "ocr": {
+    "producer": "services.analyze.ocr",
+    "source_modality": "image",
+    "source_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469"
+    ],
+    "extractor": "rapidocr",
+    "extractor_version": "1.4.4",
+    "model_digest": "a3f95c3630da412d5b11d45ebd2db4b91752a329071dc2cce75023b785f0be9d",
+    "confidence_kind": "raw_recognizer",
+    "calibration_version": null,
+    "cost_class": "cached",
+    "cache_key": "36d24fc7366f9731cf6942ed42cab968c0123599745385421e65208c84ff7708",
+    "failure_modes": [
+     "small_or_low_contrast_text_missed",
+     "unsupported_script",
+     "tile_cap_truncation",
+     "reading_order_multicolumn"
+    ],
+    "status": "cached"
+   },
+   "image_embed": {
+    "producer": "services.analyze.image_embed",
+    "source_modality": "image",
+    "source_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469"
+    ],
+    "extractor": "onnxruntime",
+    "extractor_version": "embed/1.1",
+    "model_digest": "6f19d3858fb51a526f5da038181a504de1d848f2cb1380840d23406ada62862b",
+    "confidence_kind": "unavailable",
+    "calibration_version": null,
+    "cost_class": "cached",
+    "cache_key": "e11011825016cf2c0661cfee0fbaeedeb9487dc4120e2aff635cc2c70270c3c3",
+    "failure_modes": [
+     "out_of_domain_imagery",
+     "center_bias"
+    ],
+    "status": "cached"
+   },
+   "ocr_text_embed": {
+    "producer": "services.analyze.ocr_text_embed",
+    "source_modality": "text",
+    "source_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469"
+    ],
+    "extractor": "onnxruntime",
+    "extractor_version": "embed/1.1",
+    "model_digest": "77d282d9166bb32ac99b35dbec93cf5b4948554271f318cb384f1893d5171ddb",
+    "confidence_kind": "unavailable",
+    "calibration_version": null,
+    "cost_class": "cached",
+    "cache_key": "3c8a391b31d3176c468bdd8186489a424984ceb639db9ce4493e8f4a034d79dc",
+    "failure_modes": [
+     "out_of_domain_imagery",
+     "english_only_text"
+    ],
+    "status": "cached"
+   },
+   "objects": {
+    "producer": "services.analyze.objects",
+    "source_modality": "image",
+    "source_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469"
+    ],
+    "extractor": "mediapipe-tasks",
+    "extractor_version": "objects/1.0",
+    "model_digest": "5705aab04121827ea57e558217d46c53d6a4902404359851d9c1caf708eaaa92477e5fc7",
+    "confidence_kind": "raw_detector",
+    "calibration_version": null,
+    "cost_class": "cached",
+    "cache_key": "d589ca1d13720146e963e2048349cdf02a6a7b03088eb2a6886d20802ac2c814",
+    "failure_modes": [
+     "closed_coco_vocabulary",
+     "small_objects_missed",
+     "uncalibrated_scores"
+    ],
+    "status": "cached"
+   },
+   "context": {
+    "producer": "services.analyze.context",
+    "source_modality": "image",
+    "source_refs": [
+     "asset:ast_4b3fc0acf20d77e5f469"
+    ],
+    "extractor": "clip-zero-shot",
+    "extractor_version": "context/1.4",
+    "model_digest": "2614804082bb4b9f023371e94a1a49d17ff851e6846e8c1b1375ef99ad60196c",
+    "confidence_kind": "zero_shot_softmax_uncalibrated",
+    "calibration_version": null,
+    "cost_class": "cached",
+    "cache_key": "4d66f5b37948d2c05898dda5583859a9fa280ee2d665738dc6b3f4d4ff36e44a",
+    "failure_modes": [
+     "uncalibrated_probabilities",
+     "prompt_sensitivity",
+     "ui_rule_coverage"
+    ],
+    "status": "cached"
+   }
+  },
+  "errors": [],
+  "partial": false
+ }
+}

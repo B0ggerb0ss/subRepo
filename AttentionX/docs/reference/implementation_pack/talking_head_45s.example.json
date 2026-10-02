@@ -1,0 +1,1446 @@
+{
+  "schema_version": "MediaMetadata/1.0",
+  "asset_id": "asset:illustrative45",
+  "content_hash": "8e3854e4785f5f515a30d1162b8c98c2bdd524a44d6e060255c0b8c5640df466",
+  "analyzer_version": "attentionx-analysis/1.0-example",
+  "analyzed_at": "2026-09-30T04:23:28Z",
+  "asset_kind": "video",
+  "illustrative": true,
+  "technical": {
+    "value": {
+      "duration_s": 45.0,
+      "container": "mp4",
+      "video_streams": [
+        {
+          "index": 0,
+          "codec": "h264",
+          "coded_width": 1920,
+          "coded_height": 1080,
+          "display_width": 1920,
+          "display_height": 1080,
+          "avg_frame_rate": "24/1",
+          "r_frame_rate": "24/1",
+          "time_base": "1/12288",
+          "rotation_deg": 0,
+          "sample_aspect_ratio": "1:1",
+          "color_primaries": "bt709",
+          "color_transfer": "bt709"
+        }
+      ],
+      "audio_streams": [
+        {
+          "index": 1,
+          "codec": "aac",
+          "sample_rate_hz": 48000,
+          "channels": 2,
+          "channel_layout": "stereo"
+        }
+      ]
+    },
+    "provenance": {
+      "source_modality": "bytes",
+      "source_refs": [
+        "asset:illustrative45"
+      ],
+      "extractor": "ffprobe/original-streams",
+      "extractor_version": "illustrative-v1",
+      "decision_model": null,
+      "confidence": 1.0,
+      "confidence_kind": "deterministic_parse",
+      "calibration_version": null,
+      "cost_class": "cpu_probe",
+      "cache_key": "0d8d89d9481e500b396f09161a9b626ba9d9107621100a6b6f4e16046eb40470",
+      "failure_modes": [
+        "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+      ],
+      "status": "complete"
+    }
+  },
+  "timeline": [
+    {
+      "project_id": "project:example",
+      "clip_id": "clip:example",
+      "source_in": 8.0,
+      "source_out": 23.0,
+      "timeline_start": 0.0,
+      "playback_rate": 1.0,
+      "provenance": {
+        "source_modality": "timeline",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "project-editor",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": 1.0,
+        "confidence_kind": "deterministic_parse",
+        "calibration_version": null,
+        "cost_class": "control",
+        "cache_key": "264679e68360bcc3a038ba4be33668de56304ee49dd8308a86984bec15ca34be",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    }
+  ],
+  "video_scenes": [
+    {
+      "t0": 0.0,
+      "t1": 22.5,
+      "scene_id": "s0",
+      "keyframe": {
+        "frame_id": "frame:s0",
+        "scene_id": "s0",
+        "t": 1.0,
+        "path": "frames/s0.jpg",
+        "why_sampled": [
+          "scene_representative",
+          "text_likelihood"
+        ],
+        "width": 1280,
+        "height": 720,
+        "provenance": {
+          "source_modality": "video",
+          "source_refs": [
+            "asset:illustrative45"
+          ],
+          "extractor": "ffmpeg/keyframe-selector",
+          "extractor_version": "illustrative-v1",
+          "decision_model": null,
+          "confidence": 1.0,
+          "confidence_kind": "deterministic_parse",
+          "calibration_version": null,
+          "cost_class": "cpu_decode",
+          "cache_key": "c9904f7dc70f1a68df37249a1d3816c9601482252af607fa74f18bf3a94a2554",
+          "failure_modes": [
+            "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+          ],
+          "status": "complete"
+        }
+      },
+      "additional_keyframes": [],
+      "metrics": {
+        "laplacian_variance": {
+          "value": 210.4,
+          "provenance": {
+            "source_modality": "image",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/laplacian-gray-long-edge768",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "f173bca5a026ef8108733e118fcd4028a52435075bc319e8f6a573241df788a4",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "mean_luma": {
+          "value": 0.48,
+          "provenance": {
+            "source_modality": "image",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/luma",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "7172fbe4d65c5d09bd95f189d87869e90578db6e311d320157f2cb6e58cbc9ae",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "dark_clip_fraction": {
+          "value": 0.003,
+          "provenance": {
+            "source_modality": "image",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/luma-thresholds",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "5cc3c55ca12163b861ba9ef176c6f9fb77a0e021a3a47ef81f5ac74a7e4f56e7",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "bright_clip_fraction": {
+          "value": 0.006,
+          "provenance": {
+            "source_modality": "image",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/luma-thresholds",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "5cc3c55ca12163b861ba9ef176c6f9fb77a0e021a3a47ef81f5ac74a7e4f56e7",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "motion_px_per_s": {
+          "value": 1.8,
+          "provenance": {
+            "source_modality": "video",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/sparse-flow",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "422597be1bd7a8884bfc72f8b0c24fa415c7e95c7522201997ef1c94772000ae",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "stability_proxy": {
+          "value": 0.93,
+          "provenance": {
+            "source_modality": "video",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/global-flow-residual",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "dbed3425aad430f7536bfaf1d52425f4b17f7c9da1e661148904cf6d2798c7cc",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "text_likelihood": {
+          "value": 0.81,
+          "provenance": {
+            "source_modality": "image",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/edge-components",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "0c85d36ba567cedfd6762b3813ba5e0763066d6303bc399e32cc21ddafa2958c",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        }
+      },
+      "ocr": {
+        "value": [
+          {
+            "region_id": "ocr:s0:0",
+            "text": "RELIABLE ML FEATURES",
+            "polygon": [
+              [
+                0.05,
+                0.78
+              ],
+              [
+                0.48,
+                0.78
+              ],
+              [
+                0.48,
+                0.9
+              ],
+              [
+                0.05,
+                0.9
+              ]
+            ],
+            "reading_order": 0,
+            "language": "en",
+            "granularity": "line",
+            "confidence": 0.96,
+            "provenance": {
+              "source_modality": "image",
+              "source_refs": [
+                "asset:illustrative45"
+              ],
+              "extractor": "RapidOCR/PP-OCRv5+reading-order-v1",
+              "extractor_version": "illustrative-v1",
+              "decision_model": null,
+              "confidence": 0.96,
+              "confidence_kind": "raw_recognizer",
+              "calibration_version": null,
+              "cost_class": "cpu_ocr",
+              "cache_key": "10b4a7073108d8debea585c51d9139536ecb7633fa84dacaabd35567a78d280b",
+              "failure_modes": [
+                "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+              ],
+              "status": "complete"
+            }
+          }
+        ],
+        "provenance": {
+          "source_modality": "image",
+          "source_refs": [
+            "asset:illustrative45"
+          ],
+          "extractor": "RapidOCR/PP-OCRv5+layout",
+          "extractor_version": "illustrative-v1",
+          "decision_model": null,
+          "confidence": 0.96,
+          "confidence_kind": "raw_recognizer",
+          "calibration_version": null,
+          "cost_class": "cpu_ocr",
+          "cache_key": "a6cbaf5ea8c4fe20f5dc7b7a992e011eb01259fd7df7471b7e069ffc712bc59e",
+          "failure_modes": [
+            "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+          ],
+          "status": "complete"
+        }
+      },
+      "decisions": {
+        "shot": {
+          "type": "choice",
+          "value": "medium",
+          "probs": {
+            "closeup": 0.05,
+            "medium": 0.85,
+            "wide": 0.04,
+            "insert": 0.03,
+            "overhead": 0.01,
+            "unknown": 0.02
+          },
+          "model": "OmniJev/OneJev-4B",
+          "confidence": 0.78,
+          "confidence_kind": "vendor_statistic",
+          "raw_model_score": null,
+          "legend": null,
+          "latency_ms": 220.0,
+          "request_id": "ILLUSTRATIVE-NOT-A-LIVE-CALL",
+          "question_catalog_version": "attentionx-questions/1.0",
+          "evidence_refs": [
+            "frame:s0",
+            "frame:s1",
+            "text:asr-0"
+          ],
+          "status": "complete",
+          "provenance": {
+            "source_modality": "mixed",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "systemone-adapter",
+            "extractor_version": "illustrative-v1",
+            "decision_model": "OmniJev/OneJev-4B",
+            "confidence": 0.78,
+            "confidence_kind": "vendor_statistic",
+            "calibration_version": null,
+            "cost_class": "local_vision",
+            "cache_key": "c0a943211a4e7dfa65c247f7ff0473cdb10cb4d97c6587803f2cbcf45785d1c9",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "highlight_value": {
+          "type": "score",
+          "value": 4.2,
+          "probs": {
+            "1": 0.0,
+            "2": 0.05,
+            "3": 0.1,
+            "4": 0.45,
+            "5": 0.4
+          },
+          "model": "OmniJev/OneJev-4B",
+          "confidence": 0.78,
+          "confidence_kind": "vendor_statistic",
+          "raw_model_score": 3.2,
+          "legend": null,
+          "latency_ms": 220.0,
+          "request_id": "ILLUSTRATIVE-NOT-A-LIVE-CALL",
+          "question_catalog_version": "attentionx-questions/1.0",
+          "evidence_refs": [
+            "frame:s0",
+            "frame:s1",
+            "text:asr-0"
+          ],
+          "status": "complete",
+          "provenance": {
+            "source_modality": "mixed",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "systemone-adapter",
+            "extractor_version": "illustrative-v1",
+            "decision_model": "OmniJev/OneJev-4B",
+            "confidence": 0.78,
+            "confidence_kind": "vendor_statistic",
+            "calibration_version": null,
+            "cost_class": "local_vision",
+            "cache_key": "c0a943211a4e7dfa65c247f7ff0473cdb10cb4d97c6587803f2cbcf45785d1c9",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        }
+      },
+      "provenance": {
+        "source_modality": "video",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "opencv/content-scene-pts",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": null,
+        "confidence_kind": "heuristic",
+        "calibration_version": null,
+        "cost_class": "cpu_decode",
+        "cache_key": "b420cafe2f7f4a56b3f95dd2d43fae7c823681b389486c75b19bdd0f6e433519",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    {
+      "t0": 22.5,
+      "t1": 45.0,
+      "scene_id": "s1",
+      "keyframe": {
+        "frame_id": "frame:s1",
+        "scene_id": "s1",
+        "t": 30.5,
+        "path": "frames/s1.jpg",
+        "why_sampled": [
+          "scene_representative",
+          "text_likelihood"
+        ],
+        "width": 1280,
+        "height": 720,
+        "provenance": {
+          "source_modality": "video",
+          "source_refs": [
+            "asset:illustrative45"
+          ],
+          "extractor": "ffmpeg/keyframe-selector",
+          "extractor_version": "illustrative-v1",
+          "decision_model": null,
+          "confidence": 1.0,
+          "confidence_kind": "deterministic_parse",
+          "calibration_version": null,
+          "cost_class": "cpu_decode",
+          "cache_key": "c9904f7dc70f1a68df37249a1d3816c9601482252af607fa74f18bf3a94a2554",
+          "failure_modes": [
+            "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+          ],
+          "status": "complete"
+        }
+      },
+      "additional_keyframes": [],
+      "metrics": {
+        "laplacian_variance": {
+          "value": 190.2,
+          "provenance": {
+            "source_modality": "image",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/laplacian-gray-long-edge768",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "f173bca5a026ef8108733e118fcd4028a52435075bc319e8f6a573241df788a4",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "mean_luma": {
+          "value": 0.48,
+          "provenance": {
+            "source_modality": "image",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/luma",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "7172fbe4d65c5d09bd95f189d87869e90578db6e311d320157f2cb6e58cbc9ae",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "dark_clip_fraction": {
+          "value": 0.003,
+          "provenance": {
+            "source_modality": "image",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/luma-thresholds",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "5cc3c55ca12163b861ba9ef176c6f9fb77a0e021a3a47ef81f5ac74a7e4f56e7",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "bright_clip_fraction": {
+          "value": 0.006,
+          "provenance": {
+            "source_modality": "image",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/luma-thresholds",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "5cc3c55ca12163b861ba9ef176c6f9fb77a0e021a3a47ef81f5ac74a7e4f56e7",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "motion_px_per_s": {
+          "value": 1.8,
+          "provenance": {
+            "source_modality": "video",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/sparse-flow",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "422597be1bd7a8884bfc72f8b0c24fa415c7e95c7522201997ef1c94772000ae",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "stability_proxy": {
+          "value": 0.93,
+          "provenance": {
+            "source_modality": "video",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/global-flow-residual",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "dbed3425aad430f7536bfaf1d52425f4b17f7c9da1e661148904cf6d2798c7cc",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "text_likelihood": {
+          "value": 0.81,
+          "provenance": {
+            "source_modality": "image",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "opencv/edge-components",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "heuristic",
+            "calibration_version": null,
+            "cost_class": "cpu_pixels",
+            "cache_key": "0c85d36ba567cedfd6762b3813ba5e0763066d6303bc399e32cc21ddafa2958c",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        }
+      },
+      "ocr": {
+        "value": [
+          {
+            "region_id": "ocr:s1:0",
+            "text": "POINT IN TIME JOINS",
+            "polygon": [
+              [
+                0.05,
+                0.78
+              ],
+              [
+                0.48,
+                0.78
+              ],
+              [
+                0.48,
+                0.9
+              ],
+              [
+                0.05,
+                0.9
+              ]
+            ],
+            "reading_order": 0,
+            "language": "en",
+            "granularity": "line",
+            "confidence": 0.96,
+            "provenance": {
+              "source_modality": "image",
+              "source_refs": [
+                "asset:illustrative45"
+              ],
+              "extractor": "RapidOCR/PP-OCRv5+reading-order-v1",
+              "extractor_version": "illustrative-v1",
+              "decision_model": null,
+              "confidence": 0.96,
+              "confidence_kind": "raw_recognizer",
+              "calibration_version": null,
+              "cost_class": "cpu_ocr",
+              "cache_key": "10b4a7073108d8debea585c51d9139536ecb7633fa84dacaabd35567a78d280b",
+              "failure_modes": [
+                "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+              ],
+              "status": "complete"
+            }
+          }
+        ],
+        "provenance": {
+          "source_modality": "image",
+          "source_refs": [
+            "asset:illustrative45"
+          ],
+          "extractor": "RapidOCR/PP-OCRv5+layout",
+          "extractor_version": "illustrative-v1",
+          "decision_model": null,
+          "confidence": 0.96,
+          "confidence_kind": "raw_recognizer",
+          "calibration_version": null,
+          "cost_class": "cpu_ocr",
+          "cache_key": "a6cbaf5ea8c4fe20f5dc7b7a992e011eb01259fd7df7471b7e069ffc712bc59e",
+          "failure_modes": [
+            "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+          ],
+          "status": "complete"
+        }
+      },
+      "decisions": {
+        "shot": {
+          "type": "choice",
+          "value": "medium",
+          "probs": {
+            "closeup": 0.05,
+            "medium": 0.85,
+            "wide": 0.04,
+            "insert": 0.03,
+            "overhead": 0.01,
+            "unknown": 0.02
+          },
+          "model": "OmniJev/OneJev-4B",
+          "confidence": 0.78,
+          "confidence_kind": "vendor_statistic",
+          "raw_model_score": null,
+          "legend": null,
+          "latency_ms": 220.0,
+          "request_id": "ILLUSTRATIVE-NOT-A-LIVE-CALL",
+          "question_catalog_version": "attentionx-questions/1.0",
+          "evidence_refs": [
+            "frame:s0",
+            "frame:s1",
+            "text:asr-0"
+          ],
+          "status": "complete",
+          "provenance": {
+            "source_modality": "mixed",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "systemone-adapter",
+            "extractor_version": "illustrative-v1",
+            "decision_model": "OmniJev/OneJev-4B",
+            "confidence": 0.78,
+            "confidence_kind": "vendor_statistic",
+            "calibration_version": null,
+            "cost_class": "local_vision",
+            "cache_key": "c0a943211a4e7dfa65c247f7ff0473cdb10cb4d97c6587803f2cbcf45785d1c9",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        "highlight_value": {
+          "type": "score",
+          "value": 4.2,
+          "probs": {
+            "1": 0.0,
+            "2": 0.05,
+            "3": 0.1,
+            "4": 0.45,
+            "5": 0.4
+          },
+          "model": "OmniJev/OneJev-4B",
+          "confidence": 0.78,
+          "confidence_kind": "vendor_statistic",
+          "raw_model_score": 3.2,
+          "legend": null,
+          "latency_ms": 220.0,
+          "request_id": "ILLUSTRATIVE-NOT-A-LIVE-CALL",
+          "question_catalog_version": "attentionx-questions/1.0",
+          "evidence_refs": [
+            "frame:s0",
+            "frame:s1",
+            "text:asr-0"
+          ],
+          "status": "complete",
+          "provenance": {
+            "source_modality": "mixed",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "systemone-adapter",
+            "extractor_version": "illustrative-v1",
+            "decision_model": "OmniJev/OneJev-4B",
+            "confidence": 0.78,
+            "confidence_kind": "vendor_statistic",
+            "calibration_version": null,
+            "cost_class": "local_vision",
+            "cache_key": "c0a943211a4e7dfa65c247f7ff0473cdb10cb4d97c6587803f2cbcf45785d1c9",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        }
+      },
+      "provenance": {
+        "source_modality": "video",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "opencv/content-scene-pts",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": null,
+        "confidence_kind": "heuristic",
+        "calibration_version": null,
+        "cost_class": "cpu_decode",
+        "cache_key": "b420cafe2f7f4a56b3f95dd2d43fae7c823681b389486c75b19bdd0f6e433519",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    }
+  ],
+  "audio": {
+    "loudness": {
+      "value": {
+        "integrated_lufs": -18.2,
+        "loudness_range_lu": 4.1,
+        "sample_peak_dbfs": -2.2,
+        "true_peak_dbtp": -1.8
+      },
+      "provenance": {
+        "source_modality": "audio",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "ffmpeg/ebur128-peak-true-original-stereo",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": 1.0,
+        "confidence_kind": "deterministic_parse",
+        "calibration_version": null,
+        "cost_class": "cpu_decode",
+        "cache_key": "7f7c9becd707dbfc96748392705ef39576b9f8a4ce1315ef657f95b84a798a51",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    "silence_ranges": {
+      "value": [
+        {
+          "t0": 14.8,
+          "t1": 15.2
+        },
+        {
+          "t0": 30.0,
+          "t1": 30.2
+        }
+      ],
+      "provenance": {
+        "source_modality": "audio",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "ffmpeg/silencedetect-n40dB-d0.15",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": null,
+        "confidence_kind": "heuristic",
+        "calibration_version": null,
+        "cost_class": "cpu_decode",
+        "cache_key": "29799a4f777b23c07b78f52408b32d78ea59466416116757e2e9eef0f8fc341d",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    "speech_prior": {
+      "value": 0.86,
+      "provenance": {
+        "source_modality": "audio",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "energy-spectral-prior-v1",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": null,
+        "confidence_kind": "heuristic",
+        "calibration_version": null,
+        "cost_class": "cpu_pixels",
+        "cache_key": "ab42a9bdf6fa9ead7f83755f5a1f9d89559c46b18b4f927551ff55c8268ef545",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    "transcript_ref": "text/transcript.en.json",
+    "transcript": {
+      "value": [
+        {
+          "layer_id": "asr-0",
+          "t_start": 0.0,
+          "t_end": 14.8,
+          "text": "A model is only useful when training and serving use the same feature definitions.",
+          "source": "asr",
+          "conf": null,
+          "source_ref": "audio:stream1:0-14.8",
+          "provenance": {
+            "source_modality": "audio",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "faster-whisper/small",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "unavailable",
+            "calibration_version": null,
+            "cost_class": "cpu_asr",
+            "cache_key": "2c1593eee525cc5a019bd81280b4a74e18ae57afcde270382814d901b445c5ff",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        {
+          "layer_id": "asr-1",
+          "t_start": 15.2,
+          "t_end": 30.0,
+          "text": "Here is a timestamped feature join. We exclude facts that arrived after the prediction time.",
+          "source": "asr",
+          "conf": null,
+          "source_ref": "audio:stream1:15.2-30",
+          "provenance": {
+            "source_modality": "audio",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "faster-whisper/small",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "unavailable",
+            "calibration_version": null,
+            "cost_class": "cpu_asr",
+            "cache_key": "2c1593eee525cc5a019bd81280b4a74e18ae57afcde270382814d901b445c5ff",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        },
+        {
+          "layer_id": "asr-2",
+          "t_start": 30.2,
+          "t_end": 44.7,
+          "text": "Check the data contract, run a replay test, and inspect missing values before deployment.",
+          "source": "asr",
+          "conf": null,
+          "source_ref": "audio:stream1:30.2-44.7",
+          "provenance": {
+            "source_modality": "audio",
+            "source_refs": [
+              "asset:illustrative45"
+            ],
+            "extractor": "faster-whisper/small",
+            "extractor_version": "illustrative-v1",
+            "decision_model": null,
+            "confidence": null,
+            "confidence_kind": "unavailable",
+            "calibration_version": null,
+            "cost_class": "cpu_asr",
+            "cache_key": "2c1593eee525cc5a019bd81280b4a74e18ae57afcde270382814d901b445c5ff",
+            "failure_modes": [
+              "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+            ],
+            "status": "complete"
+          }
+        }
+      ],
+      "provenance": {
+        "source_modality": "audio",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "faster-whisper/small",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": null,
+        "confidence_kind": "unavailable",
+        "calibration_version": null,
+        "cost_class": "cpu_asr",
+        "cache_key": "2c1593eee525cc5a019bd81280b4a74e18ae57afcde270382814d901b445c5ff",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    }
+  },
+  "image": null,
+  "text_layers": [
+    {
+      "layer_id": "asr-0",
+      "t_start": 0.0,
+      "t_end": 14.8,
+      "text": "A model is only useful when training and serving use the same feature definitions.",
+      "source": "asr",
+      "conf": null,
+      "source_ref": "audio:stream1:0-14.8",
+      "provenance": {
+        "source_modality": "audio",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "faster-whisper/small",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": null,
+        "confidence_kind": "unavailable",
+        "calibration_version": null,
+        "cost_class": "cpu_asr",
+        "cache_key": "2c1593eee525cc5a019bd81280b4a74e18ae57afcde270382814d901b445c5ff",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    {
+      "layer_id": "asr-1",
+      "t_start": 15.2,
+      "t_end": 30.0,
+      "text": "Here is a timestamped feature join. We exclude facts that arrived after the prediction time.",
+      "source": "asr",
+      "conf": null,
+      "source_ref": "audio:stream1:15.2-30",
+      "provenance": {
+        "source_modality": "audio",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "faster-whisper/small",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": null,
+        "confidence_kind": "unavailable",
+        "calibration_version": null,
+        "cost_class": "cpu_asr",
+        "cache_key": "2c1593eee525cc5a019bd81280b4a74e18ae57afcde270382814d901b445c5ff",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    {
+      "layer_id": "asr-2",
+      "t_start": 30.2,
+      "t_end": 44.7,
+      "text": "Check the data contract, run a replay test, and inspect missing values before deployment.",
+      "source": "asr",
+      "conf": null,
+      "source_ref": "audio:stream1:30.2-44.7",
+      "provenance": {
+        "source_modality": "audio",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "faster-whisper/small",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": null,
+        "confidence_kind": "unavailable",
+        "calibration_version": null,
+        "cost_class": "cpu_asr",
+        "cache_key": "2c1593eee525cc5a019bd81280b4a74e18ae57afcde270382814d901b445c5ff",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    {
+      "layer_id": "ocr-title",
+      "t_start": 1.0,
+      "t_end": 1.041667,
+      "text": "RELIABLE ML FEATURES",
+      "source": "ocr",
+      "conf": 0.96,
+      "source_ref": "ocr:s0:0",
+      "provenance": {
+        "source_modality": "image",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "RapidOCR/PP-OCRv5",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": 0.96,
+        "confidence_kind": "raw_recognizer",
+        "calibration_version": null,
+        "cost_class": "cpu_ocr",
+        "cache_key": "40072e6872ef3bc975facd7b314fa7ca2ef9410f2cecc5fe9bd761e77f97b926",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    }
+  ],
+  "decisions": {
+    "kind": {
+      "type": "choice",
+      "value": "talking_head",
+      "probs": {
+        "footage": 0.04,
+        "screen_recording": 0.02,
+        "talking_head": 0.86,
+        "slideshow": 0.02,
+        "motion_graphics": 0.01,
+        "photo_sequence": 0.01,
+        "other": 0.04
+      },
+      "model": "OmniJev/OneJev-4B",
+      "confidence": 0.78,
+      "confidence_kind": "vendor_statistic",
+      "raw_model_score": null,
+      "legend": null,
+      "latency_ms": 220.0,
+      "request_id": "ILLUSTRATIVE-NOT-A-LIVE-CALL",
+      "question_catalog_version": "attentionx-questions/1.0",
+      "evidence_refs": [
+        "frame:s0",
+        "frame:s1",
+        "text:asr-0"
+      ],
+      "status": "complete",
+      "provenance": {
+        "source_modality": "mixed",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "systemone-adapter",
+        "extractor_version": "illustrative-v1",
+        "decision_model": "OmniJev/OneJev-4B",
+        "confidence": 0.78,
+        "confidence_kind": "vendor_statistic",
+        "calibration_version": null,
+        "cost_class": "local_vision",
+        "cache_key": "c0a943211a4e7dfa65c247f7ff0473cdb10cb4d97c6587803f2cbcf45785d1c9",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    "usable": {
+      "type": "score",
+      "value": 4.7,
+      "probs": {
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.05,
+        "4": 0.2,
+        "5": 0.75
+      },
+      "model": "OmniJev/OneJev-4B",
+      "confidence": 0.78,
+      "confidence_kind": "vendor_statistic",
+      "raw_model_score": 3.7,
+      "legend": null,
+      "latency_ms": 220.0,
+      "request_id": "ILLUSTRATIVE-NOT-A-LIVE-CALL",
+      "question_catalog_version": "attentionx-questions/1.0",
+      "evidence_refs": [
+        "frame:s0",
+        "frame:s1",
+        "text:asr-0"
+      ],
+      "status": "complete",
+      "provenance": {
+        "source_modality": "mixed",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "systemone-adapter",
+        "extractor_version": "illustrative-v1",
+        "decision_model": "OmniJev/OneJev-4B",
+        "confidence": 0.78,
+        "confidence_kind": "vendor_statistic",
+        "calibration_version": null,
+        "cost_class": "local_vision",
+        "cache_key": "c0a943211a4e7dfa65c247f7ff0473cdb10cb4d97c6587803f2cbcf45785d1c9",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    "has_speech": {
+      "type": "noul",
+      "value": 0.98,
+      "probs": {
+        "yes": 0.98,
+        "no": 0.02
+      },
+      "model": "OmniJev/OneJev-4B",
+      "confidence": 0.96,
+      "confidence_kind": "derived_margin",
+      "raw_model_score": null,
+      "legend": null,
+      "latency_ms": 220.0,
+      "request_id": "ILLUSTRATIVE-NOT-A-LIVE-CALL",
+      "question_catalog_version": "attentionx-questions/1.0",
+      "evidence_refs": [
+        "frame:s0",
+        "frame:s1",
+        "text:asr-0"
+      ],
+      "status": "complete",
+      "provenance": {
+        "source_modality": "mixed",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "systemone-adapter",
+        "extractor_version": "illustrative-v1",
+        "decision_model": "OmniJev/OneJev-4B",
+        "confidence": 0.96,
+        "confidence_kind": "derived_margin",
+        "calibration_version": null,
+        "cost_class": "local_vision",
+        "cache_key": "c0a943211a4e7dfa65c247f7ff0473cdb10cb4d97c6587803f2cbcf45785d1c9",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    "has_on_screen_text": {
+      "type": "noul",
+      "value": 0.96,
+      "probs": {
+        "yes": 0.96,
+        "no": 0.04
+      },
+      "model": "OmniJev/OneJev-4B",
+      "confidence": 0.9199999999999999,
+      "confidence_kind": "derived_margin",
+      "raw_model_score": null,
+      "legend": null,
+      "latency_ms": 220.0,
+      "request_id": "ILLUSTRATIVE-NOT-A-LIVE-CALL",
+      "question_catalog_version": "attentionx-questions/1.0",
+      "evidence_refs": [
+        "frame:s0",
+        "frame:s1",
+        "text:asr-0"
+      ],
+      "status": "complete",
+      "provenance": {
+        "source_modality": "mixed",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "systemone-adapter",
+        "extractor_version": "illustrative-v1",
+        "decision_model": "OmniJev/OneJev-4B",
+        "confidence": 0.9199999999999999,
+        "confidence_kind": "derived_margin",
+        "calibration_version": null,
+        "cost_class": "local_vision",
+        "cache_key": "c0a943211a4e7dfa65c247f7ff0473cdb10cb4d97c6587803f2cbcf45785d1c9",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    "bin_suggestion": {
+      "type": "choice",
+      "value": "aroll",
+      "probs": {
+        "interviews": 0.08,
+        "broll": 0.04,
+        "aroll": 0.78,
+        "titles": 0.04,
+        "music": 0.01,
+        "sfx": 0.01,
+        "unusable": 0.04
+      },
+      "model": "OmniJev/OneJev-4B",
+      "confidence": 0.78,
+      "confidence_kind": "vendor_statistic",
+      "raw_model_score": null,
+      "legend": null,
+      "latency_ms": 220.0,
+      "request_id": "ILLUSTRATIVE-NOT-A-LIVE-CALL",
+      "question_catalog_version": "attentionx-questions/1.0",
+      "evidence_refs": [
+        "frame:s0",
+        "frame:s1",
+        "text:asr-0"
+      ],
+      "status": "complete",
+      "provenance": {
+        "source_modality": "mixed",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "systemone-adapter",
+        "extractor_version": "illustrative-v1",
+        "decision_model": "OmniJev/OneJev-4B",
+        "confidence": 0.78,
+        "confidence_kind": "vendor_statistic",
+        "calibration_version": null,
+        "cost_class": "local_vision",
+        "cache_key": "c0a943211a4e7dfa65c247f7ff0473cdb10cb4d97c6587803f2cbcf45785d1c9",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    "safety_review": {
+      "type": "choice",
+      "value": "needs_review",
+      "probs": {
+        "clean": 0.24,
+        "needs_review": 0.71,
+        "reject": 0.05
+      },
+      "model": "OmniJev/OneJev-4B",
+      "confidence": 0.78,
+      "confidence_kind": "vendor_statistic",
+      "raw_model_score": null,
+      "legend": null,
+      "latency_ms": 220.0,
+      "request_id": "ILLUSTRATIVE-NOT-A-LIVE-CALL",
+      "question_catalog_version": "attentionx-questions/1.0",
+      "evidence_refs": [
+        "frame:s0",
+        "frame:s1",
+        "text:asr-0"
+      ],
+      "status": "complete",
+      "provenance": {
+        "source_modality": "mixed",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "systemone-adapter",
+        "extractor_version": "illustrative-v1",
+        "decision_model": "OmniJev/OneJev-4B",
+        "confidence": 0.78,
+        "confidence_kind": "vendor_statistic",
+        "calibration_version": null,
+        "cost_class": "local_vision",
+        "cache_key": "c0a943211a4e7dfa65c247f7ff0473cdb10cb4d97c6587803f2cbcf45785d1c9",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    }
+  },
+  "search_tags": [
+    {
+      "tag": "talking_head",
+      "probability": 0.86,
+      "decision_ref": "decisions/kind",
+      "provenance": {
+        "source_modality": "mixed",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "tag-projector/threshold0.65",
+        "extractor_version": "illustrative-v1",
+        "decision_model": "OmniJev/OneJev-4B",
+        "confidence": 0.86,
+        "confidence_kind": "model_probability",
+        "calibration_version": null,
+        "cost_class": "control",
+        "cache_key": "dda5541ff4ed2be507a4c93096fdd8aa136efbf9d9ef00cd030bb7aa0ecd4a22",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    {
+      "tag": "aroll",
+      "probability": 0.78,
+      "decision_ref": "decisions/bin_suggestion",
+      "provenance": {
+        "source_modality": "mixed",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "tag-projector/threshold0.65",
+        "extractor_version": "illustrative-v1",
+        "decision_model": "OmniJev/OneJev-4B",
+        "confidence": 0.78,
+        "confidence_kind": "model_probability",
+        "calibration_version": null,
+        "cost_class": "control",
+        "cache_key": "dda5541ff4ed2be507a4c93096fdd8aa136efbf9d9ef00cd030bb7aa0ecd4a22",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    }
+  ],
+  "coverage": {
+    "value": {
+      "source_clock": "original-presentation-timestamps",
+      "decoded_width": 320,
+      "scene_scan": "all presentation frames at reduced resolution",
+      "selected_keyframes": 2,
+      "ocr_keyframes": 2,
+      "ocr_scope": "selected frames only; does not certify all burned-in subtitles",
+      "decision_frame_scope": "two representative frames; safety status remains review",
+      "asr_scope": "whole audio stream",
+      "omitted_frames_due_to_budget": 0
+    },
+    "provenance": {
+      "source_modality": "mixed",
+      "source_refs": [
+        "asset:illustrative45"
+      ],
+      "extractor": "analysis-orchestrator",
+      "extractor_version": "illustrative-v1",
+      "decision_model": null,
+      "confidence": null,
+      "confidence_kind": "heuristic",
+      "calibration_version": null,
+      "cost_class": "control",
+      "cache_key": "87286473b7cd7e0c7195a89a4d7d39b2272dbef80405cbbb39f57678d37ce9b7",
+      "failure_modes": [
+        "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+      ],
+      "status": "complete"
+    }
+  },
+  "stage_status": {
+    "probe": "complete",
+    "scenes": "complete",
+    "pixel_metrics": "complete",
+    "ocr": "complete",
+    "audio": "complete",
+    "asr": "complete",
+    "onejev": "complete",
+    "jev": "skipped"
+  },
+  "errors": [],
+  "partial": false
+}

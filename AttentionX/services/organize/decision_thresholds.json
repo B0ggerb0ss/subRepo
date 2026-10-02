@@ -1,0 +1,173 @@
+{
+  "detail": {
+    "context.article": {
+      "collection": {
+        "floor": null,
+        "precision": 1.0,
+        "recall": 0.308,
+        "t": 0.4
+      },
+      "filter": {
+        "precision": 1.0,
+        "recall": 0.308,
+        "t": 0.4
+      }
+    },
+    "context.film_tv_frame": {
+      "collection": {
+        "floor": 0.9,
+        "precision": 1.0,
+        "recall": 1.0,
+        "t": 0.7
+      },
+      "filter": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "t": 0.7
+      }
+    },
+    "context.job_posting": {
+      "collection": {
+        "floor": null,
+        "precision": 1.0,
+        "recall": 1.0,
+        "t": 0.45
+      },
+      "filter": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "t": 0.45
+      }
+    },
+    "context.presentation_slide": {
+      "collection": {
+        "floor": null,
+        "precision": 1.0,
+        "recall": 1.0,
+        "t": 0.55
+      },
+      "filter": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "t": 0.55
+      }
+    },
+    "context.source_code": {
+      "collection": {
+        "floor": null,
+        "precision": 1.0,
+        "recall": 1.0,
+        "t": 0.95
+      },
+      "filter": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "t": 0.95
+      }
+    },
+    "source_app": {
+      "collection": {
+        "floor": 0.95,
+        "precision": 1.0,
+        "recall": 1.0,
+        "t": 0.35
+      },
+      "filter": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "t": 0.35
+      }
+    },
+    "topic.ai_ml": {
+      "collection": {
+        "floor": null,
+        "precision": 1.0,
+        "recall": 0.65,
+        "t": 0.5
+      },
+      "filter": {
+        "precision": 1.0,
+        "recall": 0.65,
+        "t": 0.5
+      }
+    },
+    "topic.education": {
+      "collection": {
+        "floor": null,
+        "precision": 0.556,
+        "recall": 0.833,
+        "t": 0.25
+      },
+      "filter": {
+        "precision": 0.556,
+        "recall": 0.833,
+        "t": 0.25
+      }
+    },
+    "topic.entertainment": {
+      "collection": {
+        "floor": null,
+        "precision": 0.323,
+        "recall": 0.667,
+        "t": 0.15
+      },
+      "filter": {
+        "precision": 0.323,
+        "recall": 0.667,
+        "t": 0.15
+      }
+    },
+    "topic.hiring": {
+      "collection": {
+        "floor": null,
+        "precision": 0.737,
+        "recall": 1.0,
+        "t": 0.25
+      },
+      "filter": {
+        "precision": 0.737,
+        "recall": 1.0,
+        "t": 0.25
+      }
+    },
+    "topic.software_development": {
+      "collection": {
+        "floor": null,
+        "precision": 0.688,
+        "recall": 0.786,
+        "t": 0.35
+      },
+      "filter": {
+        "precision": 0.688,
+        "recall": 0.786,
+        "t": 0.35
+      }
+    }
+  },
+  "selected_on": "dev split (synthetic set)",
+  "thresholds": {
+    "collection:context.article": 0.4,
+    "collection:context.film_tv_frame": 0.7,
+    "collection:context.job_posting": 0.45,
+    "collection:context.presentation_slide": 0.55,
+    "collection:context.source_code": 0.95,
+    "collection:source_app=linkedin": 0.35,
+    "collection:topic.ai_ml": 0.5,
+    "collection:topic.education": 0.25,
+    "collection:topic.entertainment": 0.15,
+    "collection:topic.hiring": 0.25,
+    "collection:topic.software_development": 0.35,
+    "filter:context.article": 0.4,
+    "filter:context.film_tv_frame": 0.7,
+    "filter:context.job_posting": 0.45,
+    "filter:context.presentation_slide": 0.55,
+    "filter:context.source_code": 0.95,
+    "filter:source_app=linkedin": 0.35,
+    "filter:topic.ai_ml": 0.5,
+    "filter:topic.education": 0.25,
+    "filter:topic.entertainment": 0.15,
+    "filter:topic.hiring": 0.25,
+    "filter:topic.software_development": 0.35
+  },
+  "version": "dev-thresholds-20260930-0b3e7e168c"
+}

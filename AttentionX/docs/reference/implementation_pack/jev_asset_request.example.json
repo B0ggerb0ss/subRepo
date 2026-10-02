@@ -1,0 +1,439 @@
+{
+  "model": "jev-1.13.0",
+  "state": {
+    "target_asset": "asset:illustrative45",
+    "focus": "Explain reliable ML serving",
+    "technical": {
+      "value": {
+        "duration_s": 45.0,
+        "container": "mp4",
+        "video_streams": [
+          {
+            "index": 0,
+            "codec": "h264",
+            "coded_width": 1920,
+            "coded_height": 1080,
+            "display_width": 1920,
+            "display_height": 1080,
+            "avg_frame_rate": "24/1",
+            "r_frame_rate": "24/1",
+            "time_base": "1/12288",
+            "rotation_deg": 0,
+            "sample_aspect_ratio": "1:1",
+            "color_primaries": "bt709",
+            "color_transfer": "bt709"
+          }
+        ],
+        "audio_streams": [
+          {
+            "index": 1,
+            "codec": "aac",
+            "sample_rate_hz": 48000,
+            "channels": 2,
+            "channel_layout": "stereo"
+          }
+        ]
+      },
+      "provenance": {
+        "source_modality": "bytes",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "ffprobe/original-streams",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": 1.0,
+        "confidence_kind": "deterministic_parse",
+        "calibration_version": null,
+        "cost_class": "cpu_probe",
+        "cache_key": "0d8d89d9481e500b396f09161a9b626ba9d9107621100a6b6f4e16046eb40470",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    "scene_manifest": [
+      {
+        "scene_id": "s0",
+        "t0": 0.0,
+        "t1": 22.5,
+        "metrics": {
+          "laplacian_variance": {
+            "value": 210.4,
+            "confidence": null,
+            "status": "complete"
+          },
+          "mean_luma": {
+            "value": 0.48,
+            "confidence": null,
+            "status": "complete"
+          },
+          "dark_clip_fraction": {
+            "value": 0.003,
+            "confidence": null,
+            "status": "complete"
+          },
+          "bright_clip_fraction": {
+            "value": 0.006,
+            "confidence": null,
+            "status": "complete"
+          },
+          "motion_px_per_s": {
+            "value": 1.8,
+            "confidence": null,
+            "status": "complete"
+          },
+          "stability_proxy": {
+            "value": 0.93,
+            "confidence": null,
+            "status": "complete"
+          },
+          "text_likelihood": {
+            "value": 0.81,
+            "confidence": null,
+            "status": "complete"
+          }
+        }
+      },
+      {
+        "scene_id": "s1",
+        "t0": 22.5,
+        "t1": 45.0,
+        "metrics": {
+          "laplacian_variance": {
+            "value": 190.2,
+            "confidence": null,
+            "status": "complete"
+          },
+          "mean_luma": {
+            "value": 0.48,
+            "confidence": null,
+            "status": "complete"
+          },
+          "dark_clip_fraction": {
+            "value": 0.003,
+            "confidence": null,
+            "status": "complete"
+          },
+          "bright_clip_fraction": {
+            "value": 0.006,
+            "confidence": null,
+            "status": "complete"
+          },
+          "motion_px_per_s": {
+            "value": 1.8,
+            "confidence": null,
+            "status": "complete"
+          },
+          "stability_proxy": {
+            "value": 0.93,
+            "confidence": null,
+            "status": "complete"
+          },
+          "text_likelihood": {
+            "value": 0.81,
+            "confidence": null,
+            "status": "complete"
+          }
+        }
+      }
+    ],
+    "frame_manifest": [
+      {
+        "frame_id": "frame:s0",
+        "scene_id": "s0",
+        "t": 1.0,
+        "path": "frames/s0.jpg",
+        "why_sampled": [
+          "scene_representative",
+          "text_likelihood"
+        ]
+      },
+      {
+        "frame_id": "frame:s1",
+        "scene_id": "s1",
+        "t": 30.5,
+        "path": "frames/s1.jpg",
+        "why_sampled": [
+          "scene_representative",
+          "text_likelihood"
+        ]
+      }
+    ],
+    "ocr_layout": [
+      {
+        "scene_id": "s0",
+        "frame_id": "frame:s0",
+        "regions": [
+          {
+            "text": "RELIABLE ML FEATURES",
+            "polygon": [
+              [
+                0.05,
+                0.78
+              ],
+              [
+                0.48,
+                0.78
+              ],
+              [
+                0.48,
+                0.9
+              ],
+              [
+                0.05,
+                0.9
+              ]
+            ],
+            "reading_order": 0,
+            "language": "en",
+            "confidence": 0.96
+          }
+        ]
+      },
+      {
+        "scene_id": "s1",
+        "frame_id": "frame:s1",
+        "regions": [
+          {
+            "text": "POINT IN TIME JOINS",
+            "polygon": [
+              [
+                0.05,
+                0.78
+              ],
+              [
+                0.48,
+                0.78
+              ],
+              [
+                0.48,
+                0.9
+              ],
+              [
+                0.05,
+                0.9
+              ]
+            ],
+            "reading_order": 0,
+            "language": "en",
+            "confidence": 0.96
+          }
+        ]
+      }
+    ],
+    "audio": {
+      "loudness": {
+        "value": {
+          "integrated_lufs": -18.2,
+          "loudness_range_lu": 4.1,
+          "sample_peak_dbfs": -2.2,
+          "true_peak_dbtp": -1.8
+        },
+        "provenance": {
+          "source_modality": "audio",
+          "source_refs": [
+            "asset:illustrative45"
+          ],
+          "extractor": "ffmpeg/ebur128-peak-true-original-stereo",
+          "extractor_version": "illustrative-v1",
+          "decision_model": null,
+          "confidence": 1.0,
+          "confidence_kind": "deterministic_parse",
+          "calibration_version": null,
+          "cost_class": "cpu_decode",
+          "cache_key": "7f7c9becd707dbfc96748392705ef39576b9f8a4ce1315ef657f95b84a798a51",
+          "failure_modes": [
+            "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+          ],
+          "status": "complete"
+        }
+      },
+      "silence_ranges": {
+        "value": [
+          {
+            "t0": 14.8,
+            "t1": 15.2
+          },
+          {
+            "t0": 30.0,
+            "t1": 30.2
+          }
+        ],
+        "provenance": {
+          "source_modality": "audio",
+          "source_refs": [
+            "asset:illustrative45"
+          ],
+          "extractor": "ffmpeg/silencedetect-n40dB-d0.15",
+          "extractor_version": "illustrative-v1",
+          "decision_model": null,
+          "confidence": null,
+          "confidence_kind": "heuristic",
+          "calibration_version": null,
+          "cost_class": "cpu_decode",
+          "cache_key": "29799a4f777b23c07b78f52408b32d78ea59466416116757e2e9eef0f8fc341d",
+          "failure_modes": [
+            "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+          ],
+          "status": "complete"
+        }
+      },
+      "speech_prior": {
+        "value": 0.86,
+        "provenance": {
+          "source_modality": "audio",
+          "source_refs": [
+            "asset:illustrative45"
+          ],
+          "extractor": "energy-spectral-prior-v1",
+          "extractor_version": "illustrative-v1",
+          "decision_model": null,
+          "confidence": null,
+          "confidence_kind": "heuristic",
+          "calibration_version": null,
+          "cost_class": "cpu_pixels",
+          "cache_key": "ab42a9bdf6fa9ead7f83755f5a1f9d89559c46b18b4f927551ff55c8268ef545",
+          "failure_modes": [
+            "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+          ],
+          "status": "complete"
+        }
+      }
+    },
+    "text": [
+      {
+        "layer_id": "asr-0",
+        "t_start": 0.0,
+        "t_end": 14.8,
+        "text": "A model is only useful when training and serving use the same feature definitions.",
+        "source": "asr",
+        "conf": null,
+        "source_ref": "audio:stream1:0-14.8"
+      },
+      {
+        "layer_id": "asr-1",
+        "t_start": 15.2,
+        "t_end": 30.0,
+        "text": "Here is a timestamped feature join. We exclude facts that arrived after the prediction time.",
+        "source": "asr",
+        "conf": null,
+        "source_ref": "audio:stream1:15.2-30"
+      },
+      {
+        "layer_id": "asr-2",
+        "t_start": 30.2,
+        "t_end": 44.7,
+        "text": "Check the data contract, run a replay test, and inspect missing values before deployment.",
+        "source": "asr",
+        "conf": null,
+        "source_ref": "audio:stream1:30.2-44.7"
+      },
+      {
+        "layer_id": "ocr-title",
+        "t_start": 1.0,
+        "t_end": 1.041667,
+        "text": "RELIABLE ML FEATURES",
+        "source": "ocr",
+        "conf": 0.96,
+        "source_ref": "ocr:s0:0"
+      }
+    ],
+    "coverage": {
+      "value": {
+        "source_clock": "original-presentation-timestamps",
+        "decoded_width": 320,
+        "scene_scan": "all presentation frames at reduced resolution",
+        "selected_keyframes": 2,
+        "ocr_keyframes": 2,
+        "ocr_scope": "selected frames only; does not certify all burned-in subtitles",
+        "decision_frame_scope": "two representative frames; safety status remains review",
+        "asr_scope": "whole audio stream",
+        "omitted_frames_due_to_budget": 0
+      },
+      "provenance": {
+        "source_modality": "mixed",
+        "source_refs": [
+          "asset:illustrative45"
+        ],
+        "extractor": "analysis-orchestrator",
+        "extractor_version": "illustrative-v1",
+        "decision_model": null,
+        "confidence": null,
+        "confidence_kind": "heuristic",
+        "calibration_version": null,
+        "cost_class": "control",
+        "cache_key": "87286473b7cd7e0c7195a89a4d7d39b2272dbef80405cbbb39f57678d37ce9b7",
+        "failure_modes": [
+          "Missing/corrupt source, sparse evidence, unsupported language/format, or extraction bias; see field registry."
+        ],
+        "status": "complete"
+      }
+    },
+    "evidence_availability": {
+      "pixels_attached": false
+    },
+    "omitted_text_rows": 0,
+    "omitted_scene_rows": 0,
+    "illustrative": true
+  },
+  "questions": {
+    "usable": {
+      "type": "score",
+      "instructions": "Rate technical edit usability of target_asset using measured blur, exposure, clipping, duration, audio, and coverage. Do not infer visual quality from transcript alone.",
+      "criteria": [
+        "1: Unusable for the intended edit; unreadable/corrupt or severe persistent loss of required picture/audio.",
+        "2: Major quality problems; usable only after substantial repair or in a very limited context.",
+        "3: Usable with visible/audible defects or partial coverage; review and ordinary cleanup required.",
+        "4: Good source quality; minor defects and no persistent loss of essential content.",
+        "5: Excellent source quality for this edit; relevant coverage and measurements support clean picture and required audio."
+      ]
+    },
+    "has_on_screen_text": {
+      "type": "noul",
+      "instructions": "Does target_asset contain readable on-screen text, supported by OCR or attached visual evidence? A skipped OCR stage is not negative evidence.",
+      "criteria": {
+        "true": "Readable text is observed in OCR or attached frames.",
+        "false": "Adequate reviewed visual/OCR coverage supports no readable on-screen text."
+      }
+    },
+    "has_speech": {
+      "type": "noul",
+      "instructions": "Does target_asset contain intelligible human speech, supported by local VAD/ASR evidence? Energy alone does not prove speech.",
+      "criteria": {
+        "true": "Intelligible speech is supported by local evidence.",
+        "false": "Adequate local audio evidence supports no intelligible speech."
+      }
+    },
+    "bin_suggestion": {
+      "type": "choice",
+      "instructions": "Suggest one primary editorial bin for target_asset and the supplied focus. Infer no unseen content.",
+      "criteria": {
+        "interviews": "Interview or question-and-answer material.",
+        "broll": "Supporting visual coverage rather than the main narrative.",
+        "aroll": "Primary narrative, demonstration, or presenter material.",
+        "titles": "Title cards, overlays, slides primarily useful for text/introduction.",
+        "music": "Predominantly a music bed with no required spoken narrative.",
+        "sfx": "Short nonverbal sound effects or ambience for supporting an edit.",
+        "unusable": "Evidence supports technical unsuitability; uncertain material is reviewed, not automatically discarded."
+      }
+    },
+    "information_sufficient": {
+      "type": "noul",
+      "instructions": "Is the supplied extraction and modality coverage sufficient for the asset judgments requested? Text paths in frame_manifest are not images.",
+      "criteria": {
+        "true": "Required measurements and modality evidence are available for the requested judgments.",
+        "false": "Missing, failed, sparse, or conflicting evidence prevents a dependable judgment."
+      }
+    },
+    "content_complete": {
+      "type": "noul",
+      "instructions": "Does the observed narrative begin and end as a self-contained thought for the supplied focus? A silent B-roll or music bed can be complete for its intended purpose.",
+      "criteria": {
+        "true": "The material has a usable beginning and ending for its editorial role.",
+        "false": "It cuts off required context, speech, action, or resolution."
+      }
+    }
+  }
+}

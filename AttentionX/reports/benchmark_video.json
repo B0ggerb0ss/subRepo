@@ -1,0 +1,84 @@
+{
+  "generated": "2026-10-02T12:30:15Z",
+  "machine": {
+    "cpus": 4,
+    "python": "3.11.15"
+  },
+  "note": "FFmpeg-rendered testsrc2 + drawtext inputs; plumbing/cost measurement, not footage quality",
+  "videos": [
+    {
+      "duration_s": 60,
+      "size": "1280x720",
+      "bytes": 18256742,
+      "status": [
+        "complete"
+      ],
+      "admission_ms": 124.7,
+      "analysis_wall_s": 66.75,
+      "analysis_x_realtime": 1.113,
+      "stage_s": {
+        "keyframes": 1.83,
+        "ocr": 54.621,
+        "image_embed": 4.935,
+        "ocr_text_embed": 2.519,
+        "objects": 2.822,
+        "transcript": 0.0,
+        "index": 0.015,
+        "organize": 0.004
+      },
+      "keyframes": 60,
+      "keyframe_disk_kb": 5504.6,
+      "rendered_text_lines": 12,
+      "literal_found": 9,
+      "literal_recall": 0.75,
+      "timestamp_abs_err_s_max": 1.0,
+      "search_ms": {
+        "p50": 1.0,
+        "p95": 1.2
+      }
+    },
+    {
+      "duration_s": 300,
+      "size": "1280x720",
+      "bytes": 91205012,
+      "status": [
+        "complete"
+      ],
+      "admission_ms": 264.9,
+      "analysis_wall_s": 112.5,
+      "analysis_x_realtime": 0.375,
+      "stage_s": {
+        "keyframes": 7.755,
+        "ocr": 91.81,
+        "image_embed": 5.651,
+        "ocr_text_embed": 3.584,
+        "objects": 3.596,
+        "transcript": 0.0,
+        "index": 0.044,
+        "organize": 0.01
+      },
+      "keyframes": 100,
+      "keyframe_disk_kb": 9147.6,
+      "rendered_text_lines": 60,
+      "literal_found": 56,
+      "literal_recall": 0.933,
+      "timestamp_abs_err_s_max": 4.0,
+      "search_ms": {
+        "p50": 1.5,
+        "p95": 2.4
+      }
+    }
+  ],
+  "generate_from_library": {
+    "cold": {
+      "s": 19.79,
+      "clips": 1,
+      "status": "Generated 1 clip(s). (ASR unavailable: Whisper 'base' weights are not provisioned locally; clips chosen without transcript, no captions)"
+    },
+    "warm": {
+      "s": 7.72,
+      "clips": 1,
+      "status": "Generated 1 clip(s). (reused the library's normalized source; ASR unavailable: Whisper 'base' weights are not provisioned locally; clips chosen without transcript, no captions)"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+ffmpeg
+tesseract-ocr
+tesseract-ocr-eng
+libegl1
+libgles2
+fonts-dejavu-core

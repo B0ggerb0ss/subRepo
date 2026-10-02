@@ -1,0 +1,105 @@
+{
+  "fitted_on": "dev split of data/eval_set (synthetic-rendered screenshots + CC-BY photos)",
+  "heads": {
+    "context.article": {
+      "bias": -1.987049395470763,
+      "n": 164,
+      "positives": 13,
+      "weights": {
+        "prose_score": 0.4396857273693346,
+        "text_logit": 0.1227361122909278,
+        "visual_logit": 0.4256699568419572
+      }
+    },
+    "context.film_tv_frame": {
+      "bias": -1.7942952478657475,
+      "n": 164,
+      "positives": 15,
+      "weights": {
+        "letterbox": 2.3989098270907094,
+        "subtitle": 2.536703279448564,
+        "visual_logit": 0.45850953594465743
+      }
+    },
+    "context.job_posting": {
+      "bias": -3.502451596056106,
+      "n": 164,
+      "positives": 10,
+      "weights": {
+        "lexicon": 3.561530797197636,
+        "text_logit": 0.15786354900312063,
+        "visual_logit": 0.08960428667866899
+      }
+    },
+    "context.presentation_slide": {
+      "bias": -0.8688951450273871,
+      "n": 164,
+      "positives": 9,
+      "weights": {
+        "visual_logit": 1.5471160013367897
+      }
+    },
+    "context.source_code": {
+      "bias": -2.8804367423229444,
+      "n": 164,
+      "positives": 7,
+      "weights": {
+        "code_fraction": 0.04131379294987906,
+        "visual_logit": 1.0880174134414164
+      }
+    },
+    "topic.ai_ml": {
+      "bias": -1.7804162508463064,
+      "n": 164,
+      "positives": 20,
+      "weights": {
+        "lexicon": 3.704404707155171,
+        "text_logit": 0.027421110476822372,
+        "visual_logit": 0.26906544086885537
+      }
+    },
+    "topic.education": {
+      "bias": -4.114220067218009,
+      "n": 164,
+      "positives": 6,
+      "weights": {
+        "lexicon": 2.24733208968585,
+        "text_logit": 0.5440585261702032,
+        "visual_logit": -0.04630800065620906
+      }
+    },
+    "topic.entertainment": {
+      "bias": -2.482689117847071,
+      "n": 164,
+      "positives": 15,
+      "weights": {
+        "lexicon": -0.15003591273599165,
+        "text_logit": -0.41109940492710906,
+        "visual_logit": 0.4245736205233342
+      }
+    },
+    "topic.hiring": {
+      "bias": -2.8024467786981524,
+      "n": 164,
+      "positives": 14,
+      "weights": {
+        "lexicon": 1.7007759075279842,
+        "text_logit": 0.5859034484819479,
+        "visual_logit": 0.6523293500587624
+      }
+    },
+    "topic.software_development": {
+      "bias": -2.9684691571389474,
+      "n": 164,
+      "positives": 14,
+      "weights": {
+        "lexicon": 2.171704360125092,
+        "text_logit": -0.28574343470250063,
+        "visual_logit": 0.42997633221042647
+      }
+    }
+  },
+  "method": "per-head logistic regression over HEAD_FEATURES (services/analyze/context.py)",
+  "version": "platt-synthetic-dev-20260930-f49f053e95",
+  "warning": "Fitted on synthetic data; re-fit on the consented pilot before trusting absolute values."
+}
